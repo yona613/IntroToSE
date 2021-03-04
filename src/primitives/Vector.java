@@ -24,6 +24,29 @@ public class Vector {
         this.head = new Point3D(head._x, head._y, head._z);
     }
 
+    public Vector add(Vector other)
+    {
+        return new Vector(this.head._x.coord+other.head._x.coord,
+                this.head._y.coord+other.head._y.coord,
+                this.head._z.coord+other.head._z.coord);
+
+    }
+
+    public Vector substract(Vector other)
+    {
+
+        return new Vector(this.head._x.coord-other.head._x.coord,
+                this.head._y.coord-other.head._y.coord,
+                this.head._z.coord-other.head._z.coord);
+    }
+    public Vector scale(double scale)
+    {
+        return new Vector(this.head._x.coord*scale,
+                this.head._y.coord*scale,
+                this.head._z.coord*scale);
+
+    }
+
     public Point3D getHead() {
         return head;
     }
