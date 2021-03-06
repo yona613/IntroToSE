@@ -1,3 +1,8 @@
+/**
+ * Yona Szmerla 339622375 yonaszmerla@gmail.com
+ * Hillel Pinto 1475638 hillelpinto3@gmail.com
+ */
+
 package Main;
 
 import primitives.*;

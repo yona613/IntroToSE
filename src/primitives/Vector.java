@@ -23,6 +23,11 @@ public class Vector {
     public Vector(Point3D head) {
         this.head = new Point3D(head._x, head._y, head._z);
     }
+    /**
+     * returns result of addition of 2 vectors
+     * @param other
+     * @return result vector
+     */
 
     public Vector add(Vector other)
     {
@@ -32,6 +37,11 @@ public class Vector {
 
     }
 
+    /**
+     * returns result of substraction of 2 vectors
+     * @param other
+     * @return result vector
+     */
     public Vector substract(Vector other)
     {
 
@@ -39,6 +49,12 @@ public class Vector {
                 this.head._y.coord-other.head._y.coord,
                 this.head._z.coord-other.head._z.coord);
     }
+
+    /**
+     * returns vector result of product with scale
+     * @param scale
+     * @return result vector
+     */
     public Vector scale(double scale)
     {
         return new Vector(this.head._x.coord*scale,
