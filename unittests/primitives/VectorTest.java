@@ -46,9 +46,6 @@ public class VectorTest {
         } catch (IllegalArgumentException e) {}
     }
 
-    @Test
-    public void getHead() {
-    }
 
     @Test
     public void testNormalize() {
@@ -123,14 +120,6 @@ public class VectorTest {
     @Test
     public void lengthSquared() {
         assertEquals(4d, new Vector(1, 2, 3).lengthSquared(), 0.00001);
-    }
-
-    @Test
-    public void testEquals() {
-    }
-
-    @Test
-    public void testHashCode() {
     }
 
 
