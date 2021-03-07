@@ -36,7 +36,14 @@ public class VectorTest {
     }
 
     @Test
-    public void scale() {
+    public void testScale() {
+        assertEquals("Wrong vector scale", new Vector(2, 4, 6),
+                new Vector(1, 2, 3).scale(2));
+
+        try {
+            new Vector(1, 2, 3).scale(0d);
+            fail("Scale by 0 must throw exception");
+        } catch (IllegalArgumentException e) {}
     }
 
     @Test
@@ -73,6 +80,14 @@ public class VectorTest {
 
     @Test
     public void testDotProduct() {
+
+        Vector v1=new Vector(1,2,3);
+        Vector v2 = new Vector(-2, -4, -6);
+        assertEquals("dotProduct() wrong value", -28d, v1.dotProduct(v2), 0.00001);
+
+
+        Vector v3 = new Vector(0, 3, -2);
+        assertEquals("dotProduct() for orthogonal vectors is not zero", 0d, v1.dotProduct(v3), 0.00001);
     }
 
 
