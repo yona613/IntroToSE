@@ -15,6 +15,7 @@ public class Point3D {
         this._y = new Coordinate(_y.coord);
         this._z = new Coordinate(_z.coord);
     }
+
     public Point3D(double a, double b, double c)
     {
         this._x = new Coordinate(a);

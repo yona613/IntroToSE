@@ -10,18 +10,20 @@ public class Plane implements Geometry {
     public Plane(Point3D a, Point3D b, Point3D c)
     {
         _q0 = a;
-        _normal = null;
+        Vector v1 = c.subtract(a);
+        Vector v2 = c.subtract(b);
+        _normal = v1.crossProduct(v2).normalize();
     }
 
-    public Plane(Point3D pt,Vector other)
+    public Plane(Point3D pt, Vector other)
     {
-        this._q0 =pt;
-        this._normal =other;
+        this._q0 = pt;
+        this._normal = other;
 
     }
 
     @Override
-    public Vector getNormal() {
-        return null;
+    public Vector getNormal(Point3D point) {
+        return _normal;
     }
 }

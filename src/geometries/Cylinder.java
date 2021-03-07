@@ -1,5 +1,6 @@
 package geometries;
 
+import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
 
@@ -26,7 +27,7 @@ public class Cylinder extends Tube{
     }
 
     @Override
-    public Vector getNormal() {
-        return null;
+    public Vector getNormal(Point3D point) {
+        return _axisRay.get_dir();
     }
 }

@@ -17,7 +17,6 @@ public class Sphere implements Geometry {
     {
         _center = new Point3D(a, b, c);
         _radius = r;
-
     }
 
     public Point3D getCenter() {
@@ -38,7 +37,7 @@ public class Sphere implements Geometry {
     }
 
     @Override
-    public Vector getNormal() {
-        return null;
+    public Vector getNormal(Point3D point) {
+        return point.subtract(_center).normalize();
     }
 }
