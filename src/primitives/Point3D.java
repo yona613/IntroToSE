@@ -16,8 +16,7 @@ public class Point3D {
         this._z = new Coordinate(_z.coord);
     }
 
-    public Point3D(double a, double b, double c)
-    {
+    public Point3D(double a, double b, double c) {
         this._x = new Coordinate(a);
         this._y = new Coordinate(b);
         this._z = new Coordinate(c);
@@ -25,16 +24,17 @@ public class Point3D {
 
     /**
      * distance between two 3D points
+     *
      * @param other the second point
      * @return the distance
      */
-    public double distance(Point3D other)
-    {
+    public double distance(Point3D other) {
         return Math.sqrt(distanceSquared(other));
     }
 
     /**
      * squared distance between two 3D points
+     *
      * @param other the second point
      * @return the distance
      */
@@ -47,6 +47,7 @@ public class Point3D {
 
     /**
      * adds vector to a point and return the getted point
+     *
      * @param vector the vector to add
      * @return the new point
      */
@@ -59,11 +60,11 @@ public class Point3D {
 
     /**
      * vector from substraction of two point's coordinates
+     *
      * @param other the second point
      * @return the vector
      */
-    public Vector subtract(Point3D other)
-    {
+    public Vector subtract(Point3D other) {
         return new Vector(_x.coord - other._x.coord, _y.coord - other._y.coord, _z.coord - other._z.coord);
     }
 

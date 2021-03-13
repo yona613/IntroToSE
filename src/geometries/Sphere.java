@@ -13,8 +13,7 @@ public class Sphere implements Geometry {
         this._radius = radius;
     }
 
-    public Sphere(double a,double b , double c, double r)
-    {
+    public Sphere(double a, double b, double c, double r) {
         _center = new Point3D(a, b, c);
         _radius = r;
     }

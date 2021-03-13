@@ -4,7 +4,7 @@ import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
 
-public class Cylinder extends Tube{
+public class Cylinder extends Tube {
 
     private double _height;
 
