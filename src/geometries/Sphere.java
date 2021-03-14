@@ -8,7 +8,7 @@ public class Sphere implements Geometry {
     private Point3D _center;
     private double _radius;
 
-    public Sphere(Point3D center, double radius) {
+    public Sphere(double radius,Point3D center) {
         this._center = center;
         this._radius = radius;
     }
