@@ -28,12 +28,15 @@ public class Cylinder extends Tube {
 
     @Override
     public Vector getNormal(Point3D point) {
+        //when point is on the base
         if (point.subtract(_axisRay.get_p0()).dotProduct(_axisRay.get_dir()) == 0){
             return _axisRay.get_dir();
         }
+        //when point is on the top
         else if (point.subtract(_axisRay.get_p0().add(_axisRay.get_dir().scale(_height))).dotProduct(_axisRay.get_dir()) == 0){
             return _axisRay.get_dir();
         }
+        //when point on the surface, same normal as tube
         return super.getNormal(point);
     }
 }
