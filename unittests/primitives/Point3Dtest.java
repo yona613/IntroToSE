@@ -11,7 +11,6 @@ class Point3Dtest {
 
     @Test
     void testSubtract() {
-
         Vector result = new Point3D(2, 3, 4).subtract(p1);
         if (!Point3D.ZERO.equals(p1.add(new Vector(-1, -2, -3))))
             fail("ERROR: Point + Vector does not work correctly");

@@ -4,9 +4,22 @@ import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
 
+/**
+ * Tube class represents three-dimensional Tube in 3D Cartesian coordinate
+ * system
+ *
+ * @author Hillel and Yona
+ */
 public class Tube implements Geometry {
 
+    /**
+     * Ray of the Tube
+     */
     protected Ray _axisRay;
+
+    /**
+     * Radius of base of the tube
+     */
     protected double _radius;
 
     public Ray getAxisRay() {

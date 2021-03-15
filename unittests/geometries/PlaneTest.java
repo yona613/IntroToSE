@@ -6,8 +6,17 @@ import primitives.Vector;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Testing Planes
+ *
+ * @author Yona and Hillel
+ *
+ */
 class PlaneTest {
 
+    /**
+     * Test method for {@link Plane#getNormal(Point3D)}.
+     */
     @Test
     public void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============

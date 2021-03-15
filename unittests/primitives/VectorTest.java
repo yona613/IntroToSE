@@ -1,8 +1,10 @@
 package primitives;
 
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+
+import static org.junit.jupiter.api.Assertions.*;
 import static primitives.Util.isZero;
 
 public class VectorTest {
@@ -13,8 +15,8 @@ public class VectorTest {
     @Test
     public void testAdd() {
 
-        assertEquals("Wrong vector add", new Vector(1, 1, 1),
-                new Vector(2, 3, 4).add(new Vector(-1, -2, -3)));
+        assertEquals( new Vector(1, 1, 1),
+                new Vector(2, 3, 4).add(new Vector(-1, -2, -3)),"Wrong vector add");
 
 
         try {
@@ -26,8 +28,8 @@ public class VectorTest {
     @Test
     public void testSubstract() {
 
-        assertEquals("Wrong vector to substract", new Vector(1, 1, 1),
-                new Vector(2, 3, 4).substract(new Vector(1, 2, 3)));
+        assertEquals(new Vector(1, 1, 1),
+                new Vector(2, 3, 4).substract(new Vector(1, 2, 3)),"Wrong vector to substract");
 
 
         try {
@@ -40,8 +42,8 @@ public class VectorTest {
 
     @Test
     public void testScale() {
-        assertEquals("Wrong vector scale", new Vector(2, 4, 6),
-                new Vector(1, 2, 3).scale(2));
+        assertEquals(new Vector(2, 4, 6),
+                new Vector(1, 2, 3).scale(2),"Wrong vector scale");
 
         try {
             new Vector(1, 2, 3).scale(0d);
@@ -56,11 +58,11 @@ public class VectorTest {
 
         Vector n = v.normalize();
 
-        assertTrue("the function normalize does not change the vector itself", v == n);
+        assertTrue(v == n, "the function normalize does not change the vector itself");
 
-        assertEquals("wrong normalized vector length", 1d, v.lengthSquared(), 0.00001);
+        assertEquals( 1d, v.lengthSquared(), 0.00001, "wrong normalized vector length");
 
-        assertEquals("wrong normalized vector", new Vector(0, 0.6, 0.8), v);
+        assertEquals(new Vector(0, 0.6, 0.8), v, "wrong normalized vector");
     }
 
     @Test
@@ -75,16 +77,16 @@ public class VectorTest {
             v.crossProduct(n);
             fail("normalized vector is not in the same direction");
         } catch (IllegalArgumentException e) {}
-        assertEquals("wrong normalized vector", new Vector(0, 0.6, 0.8), n);
+        assertEquals(new Vector(0, 0.6, 0.8), n,"wrong normalized vector");
     }
 
     @Test
     public void testDotProduct() {
-        assertEquals("dotProduct() wrong value", -28d, v1.dotProduct(v2), 0.00001);
+        assertEquals( -28d, v1.dotProduct(v2), 0.00001,"dotProduct() wrong value");
 
 
         Vector v3 = new Vector(0, 3, -2);
-        assertEquals("dotProduct() for orthogonal vectors is not zero", 0d, v1.dotProduct(v3), 0.00001);
+        assertEquals(0d, v1.dotProduct(v3), 0.00001, "dotProduct() for orthogonal vectors is not zero");
     }
 
 
@@ -97,11 +99,11 @@ public class VectorTest {
         Vector vr = v1.crossProduct(v3);
 
         // Test that length of cross-product is proper (orthogonal vectors taken for simplicity)
-        assertEquals("crossProduct() wrong result length", v1.length() * v3.length(), vr.length(), 0.00001);
+        assertEquals(v1.length() * v3.length(), vr.length(), 0.00001, "crossProduct() wrong result length");
 
         // Test cross-product result orthogonality to its operands
-        assertTrue("crossProduct() result is not orthogonal to 1st operand", isZero(vr.dotProduct(v1)));
-        assertTrue("crossProduct() result is not orthogonal to 2nd operand", isZero(vr.dotProduct(v3)));
+        assertTrue(isZero(vr.dotProduct(v1)), "crossProduct() result is not orthogonal to 1st operand");
+        assertTrue(isZero(vr.dotProduct(v3)),"crossProduct() result is not orthogonal to 2nd operand");
 
 
      // =============== Boundary Values Tests ==================
