@@ -7,8 +7,19 @@ import primitives.Vector;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Testing Tube
+ *
+ * @author Yona and Hillel
+ *
+ */
+
 class TubeTest {
 
+
+    /**
+     * Test method for {@link Tube#getNormal(Point3D)}.
+     */
     @Test
    public void testGetNormal() {
         Tube tube = new Tube(new Ray(new Point3D(0,0,0), new Vector(0,0,1)),1d);

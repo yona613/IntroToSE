@@ -10,8 +10,19 @@ import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
+/**
+ * Testing Triangle
+ *
+ * @author Yona and Hillel
+ *
+ */
+
 class TriangleTest {
 
+    /**
+     * Test method for {@link Triangle#getNormal(Point3D)}.
+     */
     @Test
     public void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
