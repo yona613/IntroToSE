@@ -21,6 +21,12 @@ public class Point3D {
         this._y = new Coordinate(b);
         this._z = new Coordinate(c);
     }
+    public Point3D(Point3D other){
+
+        _z=other._z;
+        _y= other._y;
+        _x= other._x;
+    }
 
     /**
      * distance between two 3D points

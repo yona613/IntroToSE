@@ -3,6 +3,9 @@ package geometries;
 import org.junit.jupiter.api.Test;
 import primitives.Point3D;
 import primitives.Vector;
+import primitives.Ray;
+
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,5 +27,24 @@ class PlaneTest {
         Plane pl = new Plane(new Point3D(0, 0, 1), new Point3D(1, 0, 0), new Point3D(0, 1, 0));
         double sqrt3 = Math.sqrt(1d / 3);
         assertEquals(new Vector(sqrt3, sqrt3, sqrt3), pl.getNormal(new Point3D(0, 0, 1)), "Bad normal to plane");
+    }
+
+    @Test
+    public void testFindIntersections() {
+        Plane pl = new Plane(new Point3D(0, 0, 1), new Vector(1, 1, 1));
+
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: Ray into plane
+
+
+        // TC02: Ray out of plane
+
+        // =============== Boundary Values Tests ==================
+        // TC03: Ray parallel to plane
+
+
+        // TC12: Ray in plane
+
+
     }
 }
