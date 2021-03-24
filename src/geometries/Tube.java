@@ -4,13 +4,15 @@ import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.List;
+
 /**
  * Tube class represents three-dimensional Tube in 3D Cartesian coordinate
  * system
  *
  * @author Hillel and Yona
  */
-public class Tube implements Geometry {
+public class Tube extends RadialGeometry implements Geometry {
 
     /**
      * Ray of the Tube
@@ -26,13 +28,9 @@ public class Tube implements Geometry {
         return _axisRay;
     }
 
-    public double getRadius() {
-        return _radius;
-    }
-
-    public Tube(Ray axisRay, double radius) {
+    public Tube(double radius, Ray axisRay) {
+        super(radius);
         _axisRay = axisRay;
-        _radius = radius;
     }
 
     @Override
@@ -48,5 +46,10 @@ public class Tube implements Geometry {
                 "_axisRay=" + _axisRay +
                 ", _radius=" + _radius +
                 '}';
+    }
+
+    @Override
+    public List<Point3D> findIntersections(Ray ray) {
+        return null;
     }
 }

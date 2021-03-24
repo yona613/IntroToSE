@@ -93,4 +93,8 @@ public class Point3D {
     public int hashCode() {
         return Objects.hash(_x, _y, _z);
     }
+
+    public double getX() {
+        return _x.coord;
+    }
 }

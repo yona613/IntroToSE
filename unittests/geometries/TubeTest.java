@@ -22,7 +22,7 @@ class TubeTest {
      */
     @Test
    public void testGetNormal() {
-        Tube tube = new Tube(new Ray(new Point3D(0,0,0), new Vector(0,0,1)),1d);
+        Tube tube = new Tube(1d, new Ray(new Point3D(0,0,0), new Vector(0,0,1)));
         Vector normal = new Vector(0,1,0);
         assertEquals(tube.getNormal(new Point3D(0,1,1)), normal, "Bad normal calculation !");
     }

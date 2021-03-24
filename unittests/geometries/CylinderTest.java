@@ -23,7 +23,7 @@ class CylinderTest {
 
         // ============ Equivalence Partitions Tests ==============
         // TC01: There is a simple single test here (when point is on the top of the cylinder)
-        Cylinder pl = new Cylinder(new Ray(new Point3D(0, 0, 0),new Vector(0,0,1)), 1d, 1d);
+        Cylinder pl = new Cylinder(1d, new Ray(new Point3D(0, 0, 0),new Vector(0,0,1)),  1d);
         assertEquals(new Vector(0, 0, 1d), pl.getNormal(new Point3D(0, 0.5, 1)), "Bad normal to cylinder");
         // TC02: There is a simple single test here (when point is on the base of the cylinder)
         assertEquals(new Vector(0, 0, 1d), pl.getNormal(new Point3D(0, 0.5, 0)), "Bad normal to cylinder");
