@@ -78,7 +78,7 @@ public class Sphere extends RadialGeometry implements Geometry {
             Point3D p1 = p0.add(v.scale(t1));
             return List.of(p1);
         }
-        if (t1 > 0){
+        if (t2 > 0){
             Point3D p2 = p0.add(v.scale(t2));
             return List.of(p2);
         }

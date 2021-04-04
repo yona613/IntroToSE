@@ -5,6 +5,8 @@ import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -35,5 +37,50 @@ class CylinderTest {
         assertNotEquals(pl.getNormal(new Point3D(0,1,0.00001)),pl.getNormal(new Point3D(0,0.99999999,0)), "Error in boundary test with base !");
         // TC05: There is a single boundary test here (between surface and top of cylinder)
         assertNotEquals(pl.getNormal(new Point3D(0,1,0.99999)),pl.getNormal(new Point3D(0,0.99999999,1)), "Error in boundary test with top !");
+    }
+
+    @Test
+    void findIntersectionsTest() {
+
+        Cylinder cylinder = new Cylinder(1d,new Ray(new Point3D(2,0,0), new Vector(0,0,1)), 2d);
+
+        // ============ Equivalence Partitions Tests ==============
+
+        //TC01 ray is outside and parallel to the cylinder's ray
+
+        List<Point3D> result = cylinder.findIntersections(new Ray(new Point3D(5,0,0), new Vector(0,0,1)));
+        assertNull(result, "Wrong number of points");
+
+
+        //TC02 ray starts inside and parallel to the cylinder's ray
+
+        result = cylinder.findIntersections(new Ray(new Point3D(2.5,0,1), new Vector(0,0,1)));
+        assertEquals(1, result.size(), "Wrong number of points");
+        assertEquals(List.of(new Point3D(2.5,0,2)), result, "Bad intersection point");
+
+        //TC03 ray starts outside and parallel to the cylinder's ray and crosses the cylinder
+
+        result = cylinder.findIntersections(new Ray(new Point3D(2.5,0,-1), new Vector(0,0,1)));
+        assertEquals(2, result.size(), "Wrong number of points");
+        assertEquals(List.of(new Point3D(2.5, 0, 0), new Point3D(2.5,0,2)), result, "Bad intersection point");
+
+        //TC04 ray starts from outside and crosses the cylinder
+
+        result = cylinder.findIntersections(new Ray(new Point3D(-2,0,0), new Vector(1,0,0)));
+        assertEquals(2, result.size(), "Wrong number of points");
+        assertEquals(List.of(new Point3D(1,0,0), new Point3D(3,0,0)), result, "Bad intersection points");
+
+        //TC05 ray starts from inside and crosses the cylinder
+
+        result = cylinder.findIntersections(new Ray(new Point3D(1.5,0,0), new Vector(1,0,0)));
+        assertEquals(1, result.size(), "Wrong number of points");
+        assertEquals(List.of(new Point3D(3,0,0)), result, "Bad intersection points");
+
+        //TC06 ray starts from outside the cylinder and doesn't cross the cylinder
+
+        result = cylinder.findIntersections(new Ray(new Point3D(5,0,0), new Vector(1,0,0)));
+        assertNull(result, "Wrong number of points");
+
+
     }
 }

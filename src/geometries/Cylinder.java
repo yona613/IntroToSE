@@ -4,6 +4,11 @@ import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 public class Cylinder extends Tube {
 
     private double _height;
@@ -38,5 +43,49 @@ public class Cylinder extends Tube {
         }
         //when point on the surface, same normal as tube
         return super.getNormal(point);
+    }
+
+    @Override
+    public List<Point3D> findIntersections(Ray ray) {
+
+        List<Point3D> result = new LinkedList<>();
+        List<Point3D> result1 = super.findIntersections(ray);
+        Vector va = this._axisRay.get_dir();
+        Point3D p1 = this._axisRay.get_p0();
+        Point3D p2 = p1.add(this._axisRay.get_dir().scale(this._height));
+        if (result1 != null){
+            for (Point3D point:result1) {
+                if (va.dotProduct(point.subtract(p1)) >= 0 && va.dotProduct(point.subtract(p2)) <= 0){
+                    result.add(point);
+                }
+            }
+        }
+
+        Plane plane1 = new Plane(p1, this._axisRay.get_dir());
+        Plane plane2 = new Plane(p2, this._axisRay.get_dir());
+
+        List<Point3D> result2 = plane1.findIntersections(ray);
+        List<Point3D> result3 = plane2.findIntersections(ray);
+
+        if (result2 != null){
+            for (Point3D point : result2) {
+                if ((point.subtract(p1).dotProduct(point.subtract(p1)) < this._radius * this._radius)){
+                    result.add(point);
+                }
+            }
+        }
+
+        if (result3 != null){
+            for (Point3D point : result3) {
+                if ((point.subtract(p2).dotProduct(point.subtract(p2)) < this._radius * this._radius)){
+                    result.add(point);
+                }
+            }
+        }
+
+        if (result.size() > 0)
+            return result;
+
+        return null;
     }
 }

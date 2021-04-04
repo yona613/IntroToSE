@@ -19,11 +19,6 @@ public class Tube extends RadialGeometry implements Geometry {
      */
     protected Ray _axisRay;
 
-    /**
-     * Radius of base of the tube
-     */
-    protected double _radius;
-
     public Ray getAxisRay() {
         return _axisRay;
     }
@@ -50,6 +45,73 @@ public class Tube extends RadialGeometry implements Geometry {
 
     @Override
     public List<Point3D> findIntersections(Ray ray) {
+
+        Vector v = ray.get_dir();
+        Vector va = this.getAxisRay().get_dir();
+
+        if (v.normalize().equals(va.normalize()))
+            return null;
+
+        Vector deltaP = ray.get_p0().subtract(this._axisRay.get_p0());
+        double vva;
+        double pva;
+        double a;
+        double b;
+        double c;
+
+        vva = v.dotProduct(va);
+        pva = deltaP.dotProduct(va);
+
+        if (vva == 0 && pva == 0){
+            a = v.dotProduct(v);
+            b = 2 * v.dotProduct(deltaP);
+            c = deltaP.dotProduct(deltaP) - _radius * _radius;
+        }
+        else if (vva == 0){
+            a = v.dotProduct(v);
+            b = 2 * v.dotProduct(deltaP.substract(va.scale(deltaP.dotProduct(va))));
+            c = (deltaP.substract(va.scale(deltaP.dotProduct(va))).dotProduct(deltaP.substract(va.scale(deltaP.dotProduct(va))))) - this._radius * this._radius;
+        }
+        else if (pva == 0){
+            a = (v.substract(va.scale(vva))).dotProduct(v.substract(va.scale(vva)));
+            b = 2 * v.substract(va.scale(vva)).dotProduct(deltaP);
+            c = (deltaP.dotProduct(deltaP)) - this._radius * this._radius;
+        }
+        else {
+            a = (v.substract(va.scale(vva))).dotProduct(v.substract(va.scale(vva)));
+            b = 2 * v.substract(va.scale(vva)).dotProduct(deltaP.substract(va.scale(deltaP.dotProduct(va))));
+            c = (deltaP.substract(va.scale(deltaP.dotProduct(va))).dotProduct(deltaP.substract(va.scale(deltaP.dotProduct(va))))) - this._radius * this._radius;
+        }
+
+        double delta = b * b - 4 * a * c;
+
+        if (delta < 0){
+            return null; // no intersections
+        }
+        else if (delta == 0){
+            double t = - b / (2 * a);
+            if (t > 0){
+                Point3D p = new Point3D(ray.getPoint(t));
+                return List.of(p);
+            }
+        }
+        else{
+            double t1 = (- b - Math.sqrt(delta)) / (2 * a);
+            double t2 = (- b + Math.sqrt(delta)) / (2 * a);
+            if (t1 > 0 && t2 > 0){
+                Point3D p1 = new Point3D(ray.getPoint(t1));
+                Point3D p2 = new Point3D(ray.getPoint(t2));
+                return List.of(p1, p2);
+            }
+            else if (t1 > 0){
+                Point3D p1 = new Point3D(ray.getPoint(t1));
+                return List.of(p1);
+            }
+            else if (t2 > 0){
+                Point3D p2 = new Point3D(ray.getPoint(t2));
+                return List.of(p2);
+            }
+        }
         return null;
     }
 }

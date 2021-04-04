@@ -11,21 +11,20 @@ public class Geometries implements Intersectable{
 
     private List<Intersectable> _intersectables = new LinkedList<>();
 
-    public Geometries(Intersectable ... intersectables) {
-       add(intersectables);
+    public Geometries(Intersectable ... geometries) {
+       add(geometries);
     }
 
     public Geometries() {
         //nothing to add
     }
 
-    public void add(Intersectable... intersectables) {
-        Collections.addAll(_intersectables, intersectables);
+    public void add(Intersectable... geometries) {
+        Collections.addAll(_intersectables, geometries);
     }
 
-    public void remove(Intersectable... intersectables){
-        //TODO
-    }
+    //Not in use
+    public void remove(Intersectable... intersectables){}
 
     @Override
     public List<Point3D> findIntersections(Ray ray) {
@@ -40,7 +39,6 @@ public class Geometries implements Intersectable{
                 }
                 result.addAll(itemPoints);
             }
-            return result;
         }
         return result;
     }
