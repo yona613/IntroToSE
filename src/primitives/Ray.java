@@ -1,7 +1,7 @@
 package primitives;
 
 import java.util.Objects;
-import static primitives.Util.*;
+
 
 public class Ray {
 
