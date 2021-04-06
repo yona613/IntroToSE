@@ -3,8 +3,6 @@
  */
 package geometries;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -95,7 +93,7 @@ public class PolygonTests {
         Polygon pl = new Polygon(new Point3D(0, 0, 1), new Point3D(1, 0, 0), new Point3D(0, 1, 0),
                 new Point3D(-1, 1, 1));
         double sqrt3 = Math.sqrt(1d / 3);
-        assertEquals("Bad normal to triangle", new Vector(sqrt3, sqrt3, sqrt3), pl.getNormal(new Point3D(0, 0, 1)));
+        assertEquals(new Vector(sqrt3, sqrt3, sqrt3), pl.getNormal(new Point3D(0, 0, 1)), "Bad normal to triangle");
     }
 
     @Test
@@ -110,33 +108,33 @@ public class PolygonTests {
             // ============ Equivalence Partitions Tests ==============
             // TC01: Inside polygon
             ray = new Ray(new Point3D(1, 1, 0), new Vector(0, 0, 1));
-            assertEquals(errorBad, List.of(new Point3D(1, 1, 1)), pol.findIntersections(ray));
+            assertEquals(List.of(new Point3D(1, 1, 1)), pol.findIntersections(ray), errorBad);
 
             // TC02: Against edge
             ray = new Ray(new Point3D(-1, 1, 0), new Vector(0, 0, 1));
-            assertEquals(errorPlane, List.of(new Point3D(-1, 1, 1)), pl.findIntersections(ray));
-            assertNull(errorBad, pol.findIntersections(ray));
+            assertEquals(List.of(new Point3D(-1, 1, 1)), pl.findIntersections(ray), errorPlane);
+            assertNull(pol.findIntersections(ray), errorBad);
 
             // TC03: Against vertex
             ray = new Ray(new Point3D(-1, -1, 0), new Vector(0, 0, 1));
-            assertEquals(errorPlane, List.of(new Point3D(-1, -1, 1)), pl.findIntersections(ray));
-            assertNull(errorBad, pol.findIntersections(ray));
+            assertEquals(List.of(new Point3D(-1, -1, 1)), pl.findIntersections(ray), errorPlane);
+            assertNull(pol.findIntersections(ray), errorBad);
 
             // =============== Boundary Values Tests ==================
             // TC04: In vertex
             ray = new Ray(new Point3D(0, 2, 0), new Vector(0, 0, 1));
-            assertEquals(errorPlane, List.of(new Point3D(0, 2, 1)), pl.findIntersections(ray));
-            assertNull(errorBad, pol.findIntersections(ray));
+            assertEquals(List.of(new Point3D(0, 2, 1)), pl.findIntersections(ray), errorPlane);
+            assertNull(pol.findIntersections(ray), errorBad);
 
             // TC05: On edge
             ray = new Ray(new Point3D(0, 1, 0), new Vector(0, 0, 1));
-            assertEquals(errorPlane, List.of(new Point3D(0, 1, 1)), pl.findIntersections(ray));
-            assertNull(errorBad, pol.findIntersections(ray));
+            assertEquals(List.of(new Point3D(0, 1, 1)), pl.findIntersections(ray), errorPlane);
+            assertNull(pol.findIntersections(ray), errorBad);
 
             // TC06: On edge continuation
             ray = new Ray(new Point3D(0, 3, 0), new Vector(0, 0, 1));
-            assertEquals(errorPlane, List.of(new Point3D(0, 3, 1)), pl.findIntersections(ray));
-            assertNull(errorBad, pol.findIntersections(ray));
+            assertEquals(List.of(new Point3D(0, 3, 1)), pl.findIntersections(ray), errorPlane);
+            assertNull(pol.findIntersections(ray), errorBad);
 
     }
 

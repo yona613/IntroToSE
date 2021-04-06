@@ -66,7 +66,7 @@ class PlaneTest {
 //        assertNull( pl.findIntersections(new Ray(new Point3D(0, 0.5, 0.5), new Vector(1, 1, 1))),"Must not be plane intersection");
 
         // TC08: Ray from plane
-//        assertNull(pl.findIntersections(new Ray(new Point3D(0, 0.5, 0.5), new Vector(1, 1, 0))),"Must not be plane intersection");
+        // assertNull(pl.findIntersections(new Ray(new Point3D(0, 0.5, 0.5), new Vector(1, 1, 0))),"Must not be plane intersection");
 //
 //        // TC09: Ray from plane's Q point
 //        assertNull(   pl.findIntersections(new Ray(new Point3D(0, 0, 1), new Vector(1, 1, 0))),"Must not be plane intersection");

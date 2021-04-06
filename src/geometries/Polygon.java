@@ -16,11 +16,11 @@ public class Polygon implements Geometry {
     /**
      * List of polygon's vertices
      */
-    protected List<Point3D> vertices;
+    protected List<Point3D> _vertices;
     /**
      * Associated plane in which the polygon lays
      */
-    protected Plane plane;
+    protected Plane _plane;
 
     /**
      * Polygon constructor based on vertices list. The list must be ordered by edge
@@ -46,15 +46,15 @@ public class Polygon implements Geometry {
     public Polygon(Point3D... vertices) {
         if (vertices.length < 3)
             throw new IllegalArgumentException("A polygon can't have less than 3 vertices");
-        this.vertices = List.of(vertices);
+        this._vertices = List.of(vertices);
         // Generate the plane according to the first three vertices and associate the
         // polygon with this plane.
         // The plane holds the invariant normal (orthogonal unit) vector to the polygon
-        plane = new Plane(vertices[0], vertices[1], vertices[2]);
+        _plane = new Plane(vertices[0], vertices[1], vertices[2]);
         if (vertices.length == 3)
             return; // no need for more tests for a Triangle
 
-        Vector n = plane.getNormal(null);
+        Vector n = _plane.getNormal(null);
 
         // Subtracting any subsequent points will throw an IllegalArgumentException
         // because of Zero Vector if they are in the same point
@@ -85,13 +85,13 @@ public class Polygon implements Geometry {
 
     @Override
     public Vector getNormal(Point3D point) {
-        return plane.getNormal(null);
+        return _plane.getNormal(null);
     }
 
 
     @Override
     public List<Point3D> findIntersections(Ray ray) {
-        List<Point3D> intersections = plane.findIntersections(ray);
+        List<Point3D> intersections = _plane.findIntersections(ray);
 
         if (intersections == null)
             return null;
@@ -99,9 +99,9 @@ public class Polygon implements Geometry {
         Point3D p0 = ray.get_p0();
         Vector v = ray.get_dir();
 
-        Vector v1 = vertices.get(1).subtract(p0);
+        Vector v1 = _vertices.get(1).subtract(p0);
 
-        Vector v2 = vertices.get(0).subtract(p0);
+        Vector v2 = _vertices.get(0).subtract(p0);
 
         double sign = v.dotProduct(v1.crossProduct(v2));
 
@@ -110,9 +110,9 @@ public class Polygon implements Geometry {
 
         boolean positive = sign > 0;
 
-        for (int i = vertices.size() - 1; i > 0; --i) {
+        for (int i = _vertices.size() - 1; i > 0; --i) {
             v1 = v2;
-            v2 = vertices.get(i).subtract(p0);
+            v2 = _vertices.get(i).subtract(p0);
             sign = alignZero(v.dotProduct(v1.crossProduct(v2)));
 
             if (isZero(sign))

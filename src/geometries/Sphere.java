@@ -57,6 +57,16 @@ public class Sphere extends RadialGeometry implements Geometry {
         if (p0.equals(_center))
             throw new IllegalArgumentException("Ray's p0 cannot be equal to the center of the Sphere");
 
+        /*
+        find intersections using formula:
+        𝑢 = 𝑂 − 𝑃0
+        𝑡𝑚 = 𝑣 ∙ 𝑢
+        𝑑 = sqrt(𝑢^2 − 𝑡𝑚^2)    ⇨ if (𝒅 ≥ 𝒓) there are no intersections
+        𝑡ℎ = sqrt(𝑟^2 − 𝑑^2)
+        t1,t2 = 𝑡𝑚 ± 𝑡ℎ, 𝑃𝑖 = 𝑃0 + 𝑡𝑖   ⇨ take only 𝒕 > 0
+         */
+
+
         Vector u = _center.subtract(p0);
         double tm = u.dotProduct(v);
         double d = alignZero(Math.sqrt(u.lengthSquared() - tm * tm));
@@ -67,6 +77,8 @@ public class Sphere extends RadialGeometry implements Geometry {
         double th = alignZero(Math.sqrt(_radius * _radius - d * d));
         double t1 = tm - th;
         double t2 = tm + th;
+
+        //only t > 0 because t < 0 point is before the ray's start
 
         if (t1 > 0 && t2 > 0){
             Point3D p1 = p0.add(v.scale(t1));

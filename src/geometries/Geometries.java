@@ -30,12 +30,12 @@ public class Geometries implements Intersectable{
     public List<Point3D> findIntersections(Ray ray) {
         List<Point3D> result = null;
 
-        //TODO add explanation
+        //gets list of intersections of all elements with the ray
         for (Intersectable item : _intersectables) {
             List<Point3D> itemPoints = item.findIntersections(ray);
             if (itemPoints != null){
                 if(result == null){
-                    result = new LinkedList<>();
+                    result = new LinkedList<>(); //use of linked list because of the better speed to get objects (we won't need to remove any)
                 }
                 result.addAll(itemPoints);
             }

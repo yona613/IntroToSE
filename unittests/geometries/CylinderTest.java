@@ -97,7 +97,6 @@ class CylinderTest {
         assertEquals(2, result.size(), "Wrong number of points");
         assertEquals(List.of(new Point3D(1,0,0), new Point3D(3,0,0)), result, "Bad intersection points");
 
-        /*
         //TC08 ray is in center of the cylinder
 
         result = cylinder.findIntersections(new Ray(new Point3D(2,0,0), new Vector(0,0,1)));
@@ -149,10 +148,9 @@ class CylinderTest {
         assertEquals(1, result.size(), "Wrong number of points");
         assertEquals(List.of(new Point3D(3,0,1)), result, "Bad intersection point");
 
-        //TC16 prolongement of ray crosses cylinder
+        //TC16 prolongation of ray crosses cylinder
 
         result = cylinder.findIntersections(new Ray(new Point3D(3,0,0), new Vector(1,0,0)));
         assertNull(result, "Wrong number of points");
-        */
     }
 }

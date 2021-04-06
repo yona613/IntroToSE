@@ -6,6 +6,8 @@ import primitives.Vector;
 
 import java.util.List;
 
+import static primitives.Util.alignZero;
+
 /**
  * Tube class represents three-dimensional Tube in 3D Cartesian coordinate
  * system
@@ -46,18 +48,32 @@ public class Tube extends RadialGeometry implements Geometry {
     @Override
     public List<Point3D> findIntersections(Ray ray) {
 
+        /*
+        The equation for a tube of radius r oriented along a line pa + vat:
+        (q - pa - (va,q - pa)va)2 - r2 = 0
+        get intersections using formula : (p - pa + vt - (va,p - pa + vt)va)^2 - r^2 = 0
+        reduces to at^2 + bt + c = 0
+        with a = (v - (v,va)va)^2
+             b = 2 * (v - (v,va)va,∆p - (∆p,va)va)
+             c = (∆p - (∆p,va)va)^2 - r^2
+        where  ∆p = p - pa
+        */
+
         Vector v = ray.get_dir();
         Vector va = this.getAxisRay().get_dir();
 
+        //if vectors are parallel then there is no intersections possible
         if (v.normalize().equals(va.normalize()))
             return null;
 
+        //use of calculated variables to avoid vector ZERO
         double vva;
         double pva;
         double a;
         double b;
         double c;
 
+        //check every variables to avoid ZERO vector
         if (ray.get_p0().equals(this._axisRay.get_p0())){
             vva = v.dotProduct(va);
             if (vva == 0){
@@ -108,22 +124,16 @@ public class Tube extends RadialGeometry implements Geometry {
             }
         }
 
+        //calculate delta for result of equation
         double delta = b * b - 4 * a * c;
 
-        if (delta < 0){
+        if (delta <= 0){
             return null; // no intersections
         }
-        else if (delta == 0){
-            /*double t = - b / (2 * a);
-            if (t > 0){
-                Point3D p = new Point3D(ray.getPoint(t));
-                return List.of(p);
-            }*/
-            return null;
-        }
         else{
-            double t1 = (- b - Math.sqrt(delta)) / (2 * a);
-            double t2 = (- b + Math.sqrt(delta)) / (2 * a);
+            //calculate points taking only those with t > 0
+            double t1 = (- b - alignZero(Math.sqrt(delta))) / (2 * a);
+            double t2 = (- b + alignZero(Math.sqrt(delta))) / (2 * a);
             if (t1 > 0 && t2 > 0){
                 Point3D p1 = new Point3D(ray.getPoint(t1));
                 Point3D p2 = new Point3D(ray.getPoint(t2));

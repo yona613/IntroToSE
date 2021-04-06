@@ -22,15 +22,15 @@ public class Triangle extends Polygon {
 
     @Override
     public List<Point3D> findIntersections(Ray ray) {
-        List<Point3D> intersections = plane.findIntersections(ray);
+        List<Point3D> intersections = _plane.findIntersections(ray);
         if (intersections == null) return null;//Our plan doesn't intersect the ray
 
         Point3D p0 = ray.get_p0();
         Vector v = ray.get_dir();
 //This step is obligatory if the ray doesn't start at 0,0,0
-        Vector v1 = vertices.get(0).subtract(p0);
-        Vector v2 = vertices.get(1).subtract(p0);
-        Vector v3 = vertices.get(2).subtract(p0);
+        Vector v1 = _vertices.get(0).subtract(p0);
+        Vector v2 = _vertices.get(1).subtract(p0);
+        Vector v3 = _vertices.get(2).subtract(p0);
 //Check every side of the triangle
         double s1 = v.dotProduct(v1.crossProduct(v2));
 

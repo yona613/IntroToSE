@@ -3,13 +3,14 @@ package geometries;
 import primitives.*;
 
 import java.util.List;
+
 import static primitives.Util.*;
 
 
 public class Plane implements Geometry {
 
-    private Point3D _q0;
-    private Vector _normal;
+    private final Point3D _q0;
+    private final Vector _normal;
 
     public Plane(Point3D a, Point3D b, Point3D c) {
 
@@ -31,7 +32,6 @@ public class Plane implements Geometry {
     }
 
 
-
     @Override
     public List<Point3D> findIntersections(Ray ray) {
         Vector p0Q;
@@ -41,21 +41,18 @@ public class Plane implements Geometry {
             return null; // It means that there's no intersection.
         }
 
-        double check=_normal.dotProduct(ray.get_dir());
+        double check = _normal.dotProduct(ray.get_dir());
 
-        if(check==0){
+        if (check == 0) {
             return null;//It means that the ray is parallel to the plane
         }
 
-        double t=alignZero(_normal.dotProduct(p0Q) / check);//It gives us the t to determine the coordinate of the intersection
+        double t = alignZero(_normal.dotProduct(p0Q) / check);//It gives us the t to determine the coordinate of the intersection
 
-        if(t<0){
+        if (t < 0) {
             return null;
-        }
-
-        else{
+        } else {
             return List.of(new Point3D(ray.getPoint(t)));
-
         }
 
     }
