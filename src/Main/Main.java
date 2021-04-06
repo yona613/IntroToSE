@@ -5,7 +5,11 @@
 
 package Main;
 
+import geometries.Plane;
 import primitives.*;
+
+import java.util.List;
+
 import static java.lang.System.out;
 import static primitives.Util.*;
 import static primitives.Util.isZero;
@@ -24,6 +28,8 @@ public class Main {
      * @param args irrelevant here
      */
     public static void main(String[] args) {
+
+  ;
 
         try { // test zero vector
             new Vector(0, 0, 0);
