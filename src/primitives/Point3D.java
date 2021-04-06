@@ -103,4 +103,8 @@ public class Point3D {
     public double getX() {
         return _x.coord;
     }
+
+    public double getY() {
+        return _y.coord;
+    }
 }
