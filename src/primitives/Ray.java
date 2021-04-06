@@ -28,6 +28,7 @@ public class Ray {
         Ray ray = (Ray) o;
         return _p0.equals(ray._p0) && _dir.equals(ray._dir);
     }
+
     /**
      * Get point on ray at a distance from ray's head
      *
@@ -35,13 +36,14 @@ public class Ray {
      * @return the point
      */
     public Point3D getPoint(double t) {
-        if(t==0)
+        if (t == 0)
             return _p0;
-        else{
+        else {
             return new Point3D(_p0).add(_dir.scale(t));
         }
 
     }
+
     @Override
     public int hashCode() {
         return Objects.hash(_p0, _dir);

@@ -9,6 +9,7 @@ import java.util.List;
 
 public class Geometries implements Intersectable{
 
+    //use of linked list because of the better speed to get objects (we won't need to remove any)
     private List<Intersectable> _intersectables = new LinkedList<>();
 
     public Geometries(Intersectable ... geometries) {
@@ -35,7 +36,7 @@ public class Geometries implements Intersectable{
             List<Point3D> itemPoints = item.findIntersections(ray);
             if (itemPoints != null){
                 if(result == null){
-                    result = new LinkedList<>(); //use of linked list because of the better speed to get objects (we won't need to remove any)
+                    result = new LinkedList<>();
                 }
                 result.addAll(itemPoints);
             }

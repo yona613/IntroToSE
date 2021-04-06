@@ -43,7 +43,7 @@ public class Plane implements Geometry {
 
         double check = _normal.dotProduct(ray.get_dir());
 
-        if (check == 0) {
+        if (isZero(check)) {
             return null;//It means that the ray is parallel to the plane
         }
 

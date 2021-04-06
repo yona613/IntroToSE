@@ -132,8 +132,8 @@ public class Tube extends RadialGeometry implements Geometry {
         }
         else{
             //calculate points taking only those with t > 0
-            double t1 = (- b - alignZero(Math.sqrt(delta))) / (2 * a);
-            double t2 = (- b + alignZero(Math.sqrt(delta))) / (2 * a);
+            double t1 = alignZero((- b - Math.sqrt(delta)) / (2 * a));
+            double t2 = alignZero((- b + Math.sqrt(delta)) / (2 * a));
             if (t1 > 0 && t2 > 0){
                 Point3D p1 = new Point3D(ray.getPoint(t1));
                 Point3D p2 = new Point3D(ray.getPoint(t2));
