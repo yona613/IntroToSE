@@ -41,13 +41,20 @@ public class Plane implements Geometry {
             return null; // It means that there's no intersection.
         }
 
+         /*
+     The value of our variable t that we search for is the result of this formula :(p0−l0)⋅n/l⋅n
+     p0 is the point of our plane,n is the normal of our plane , l0 is the origin point of the ray  and l is the vector director of the ray.
+
+     So this value helps us to determine the intersection,or not.
+        */
+
         double check = _normal.dotProduct(ray.get_dir());
 
         if (isZero(check)) {
             return null;//It means that the ray is parallel to the plane
         }
 
-        double t = alignZero(_normal.dotProduct(p0Q) / check);//It gives us the t to determine the coordinate of the intersection
+        double t = alignZero(_normal.dotProduct(p0Q) / check);//It gives us the t to determine the coordinate of the intersection , so the x,y,z according to the value of t
 
         if (t < 0) {
             return null;

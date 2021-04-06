@@ -22,6 +22,14 @@ public class Triangle extends Polygon {
 
     @Override
     public List<Point3D> findIntersections(Ray ray) {
+
+         /*
+
+         We're starting to check if the plane when our triangle is ,intersect the ray ,if not ,null,if yes :
+
+
+
+        */
         List<Point3D> intersections = _plane.findIntersections(ray);
         if (intersections == null) return null;//Our plan doesn't intersect the ray
 
