@@ -25,7 +25,7 @@ public class Triangle extends Polygon {
 
          /*
 
-         We're starting to check if the plane when our triangle is ,intersect the ray ,if not ,null,if yes :
+         We're starting to check if the plane where our triangle is ,intersect the ray ,if not return null,if yes :
 
 
 
@@ -35,7 +35,7 @@ public class Triangle extends Polygon {
 
         Point3D p0 = ray.get_p0();
         Vector v = ray.get_dir();
-//This step is obligatory if the ray doesn't start at 0,0,0
+//This step is necessary if the ray doesn't start at 0,0,0
         Vector v1 = _vertices.get(0).subtract(p0);
         Vector v2 = _vertices.get(1).subtract(p0);
         Vector v3 = _vertices.get(2).subtract(p0);
