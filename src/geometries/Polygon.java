@@ -122,7 +122,6 @@ public class Polygon implements Geometry {
                 return null;
         }
 
-
         return intersections;
     }
 }

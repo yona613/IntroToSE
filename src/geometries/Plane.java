@@ -42,11 +42,11 @@ public class Plane implements Geometry {
         }
 
          /*
-     The value of our variable t that we search for is the result of this formula :(p0−l0)⋅n/l⋅n
-     p0 is the point of our plane,n is the normal of our plane , l0 is the origin point of the ray  and l is the vector director of the ray.
+         The value of our variable t that we search for is the result of this formula :(p0−l0)⋅n/l⋅n
+         p0 is the point of our plane,n is the normal of our plane , l0 is the origin point of the ray  and l is the vector director of the ray.
 
-     So this value helps us to determine the intersection,or not.
-        */
+         So this value helps us to determine the intersection,or not.
+         */
 
         double check = _normal.dotProduct(ray.get_dir());
 
