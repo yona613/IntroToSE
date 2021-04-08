@@ -91,6 +91,28 @@ public class Polygon implements Geometry {
 
     @Override
     public List<Point3D> findIntersections(Ray ray) {
+        //First ,we check if the plane of our polygon intersects with the ray ,if there's no intersection with the
+        //plane so there's no intersection with the polygon.
+
+        //N=_normal of the plane
+        //P0=_q0 of the plane
+        //R0=_p0 of the ray
+        // d is the vector offset from the origin
+        //V is _dir of the ray
+
+
+        //If there's intersection with the plane so we have to substitute the ray equation into the plane equation
+        // (replacing P) to get: (P0 + tV) . N + d = 0 and find the value of t:
+        //
+        //t = -(P0 . N + d) / (V . N)
+        //
+        //then you substitute that value of t back into your ray equation to get the value of P:
+        //
+        //R0 + tV = P.
+        //
+        //Finally, you want to go around each adjacent pair of points in the polygon checking that P is inside
+        // the polygon, which is done by checking that P is to the same side of each line made by the points.
+
         List<Point3D> intersections = _plane.findIntersections(ray);
 
         if (intersections == null)
