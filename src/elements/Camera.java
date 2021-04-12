@@ -65,6 +65,17 @@ public class Camera {
 
     public Ray constructRayThroughPixel(int nX, int nY, int j, int i){
 
+
+        /**
+         * The function constructs a ray from Camera location throw the center of a
+         * pixel (i,j) in the view plane
+         *
+         * @param nX             number of pixels in a row of view plane
+         * @param nY             number of pixels in a column of view plane
+         * @param j              number of the pixel in a row
+         * @param i              number of the pixel in a column
+         * @return the ray through pixel's center
+         */
         //𝑃𝑐 = 𝑃0 + 𝑑∙𝑣𝑡𝑜
         Point3D pc = _p0.add(_vTo.scale(_distance));
         Point3D pIJ = pc;
