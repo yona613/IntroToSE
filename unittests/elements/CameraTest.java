@@ -1,9 +1,13 @@
 package elements;
 
+import geometries.Intersectable;
+import geometries.Sphere;
 import org.junit.jupiter.api.Test;
 import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,5 +46,62 @@ class CameraTest {
         // TC13: 3X3 Center of Left Side (1,0)
         assertEquals(new Ray(Point3D.ZERO, new Vector(-2, 0, 10)),
                 camera.setViewPlaneSize(6, 6).constructRayThroughPixel(3, 3, 0, 1));
+
+
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: Sphere r = 1, two intersection points
+        camera = new Camera(new Point3D(0,0,0), new Vector(0,0,-1), new Vector(0,1,0));
+
+        assertEquals(2, countIntersectionsCameraGeometry(
+                camera.setDistance(1d).setViewPlaneSize(3d,3d),
+                3,3,
+                new Sphere(1d, new Point3D(0,0,-3))
+        ), "Bad number of intersections");
+    }
+
+    @Test
+    public void testIntersectionsCameraGeometries(){
+
+
+
+    }
+
+    private int countIntersectionsCameraGeometry(Camera camera, int nX, int nY, Intersectable geometry){
+
+        int count = 0;
+        List<Point3D> intersections;
+        for (int i = 0; i <= nX/2; i++) {
+            for (int j = 0; j <= nY/2; j++) {
+                if (i == 0 && j == 0){
+                    if ((nX % 2 != 0) && (nY % 2 != 0)){
+                        intersections = geometry.findIntersections(camera.constructRayThroughPixel(nX,nY,j,i));
+                        count += intersections== null ? 0 : intersections.size();
+                    }
+                }
+                else if (i == 0){
+                    intersections = geometry.findIntersections(camera.constructRayThroughPixel(nX,nY,j,i));
+                    count += intersections== null ? 0 : intersections.size();
+                    intersections = geometry.findIntersections(camera.constructRayThroughPixel(nX,nY,(j * - 1),i));
+                    count += intersections== null ? 0 : intersections.size();
+                }
+                else if (j == 0){
+                    intersections = geometry.findIntersections(camera.constructRayThroughPixel(nX,nY,j,i));
+                    count += intersections== null ? 0 : intersections.size();
+                    intersections = geometry.findIntersections(camera.constructRayThroughPixel(nX,nY,j,(i * -1)));
+                    count += intersections== null ? 0 : intersections.size();
+                }
+                else {
+                    intersections = geometry.findIntersections(camera.constructRayThroughPixel(nX,nY,j,i));
+                    count += intersections== null ? 0 : intersections.size();
+                    intersections = geometry.findIntersections(camera.constructRayThroughPixel(nX,nY,(j * - 1),i));
+                    count += intersections== null ? 0 : intersections.size();
+                    intersections = geometry.findIntersections(camera.constructRayThroughPixel(nX,nY,j,(i * -1)));
+                    count += intersections== null ? 0 : intersections.size();
+                    intersections = geometry.findIntersections(camera.constructRayThroughPixel(nX,nY,(j * - 1),(i * -1)));
+                    count += intersections== null ? 0 : intersections.size();
+                }
+            }
+        }
+        return count;
     }
 }

@@ -25,7 +25,7 @@ public class Camera {
 
     public Camera(Point3D p0, Vector vTo, Vector vUp) {
         _p0 = p0;
-         if(vTo.dotProduct(vUp) != 0){
+         if(!isZero(vTo.dotProduct(vUp))){
              throw new IllegalArgumentException("The 2 vectors aren't orthogonal");
          }
         _vTo = vTo.normalized();
@@ -64,6 +64,8 @@ public class Camera {
     }
 
     public Ray constructRayThroughPixel(int nX, int nY, int j, int i){
+
+        //𝑃𝑐 = 𝑃0 + 𝑑∙𝑣𝑡𝑜
         Point3D pc = _p0.add(_vTo.scale(_distance));
         Point3D pIJ = pc;
 
