@@ -62,8 +62,6 @@ class CameraTest {
     @Test
     public void testIntersectionsCameraGeometries(){
 
-
-
     }
 
     private int countIntersectionsCameraGeometry(Camera camera, int nX, int nY, Intersectable geometry){
