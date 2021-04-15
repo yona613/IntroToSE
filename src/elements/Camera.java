@@ -23,7 +23,18 @@ public class Camera {
     private double _width;
     private double _height;
 
-    public Camera(Point3D p0, Vector vTo, Vector vUp) {
+    private Camera(CameraBuilder builder) {
+        this._p0 = builder._p0;
+        this._vTo = builder._vTo;
+        this._vUp = builder._vUp;
+        this._vRight = builder._vRight;
+        this._distance = builder._distance;
+        this._width = builder._width;
+        this._height = builder._height;
+    }
+
+
+    /*public Camera(Point3D p0, Vector vTo, Vector vUp) {
         _p0 = p0;
          if(!isZero(vTo.dotProduct(vUp))){
              throw new IllegalArgumentException("The 2 vectors aren't orthogonal");
@@ -31,7 +42,7 @@ public class Camera {
         _vTo = vTo.normalized();
         _vUp = vUp.normalized();
         _vRight = vTo.crossProduct(vUp).normalized();
-    }
+    }*/
 
     public Point3D getP0() {
         return _p0;
@@ -49,33 +60,69 @@ public class Camera {
         return _vRight;
     }
 
-    public Camera setViewPlaneSize(double width, double height){
-       _width = width;
-       _height = height;
-        return this;
-    }
+    public static class CameraBuilder {
 
-    public Camera setDistance(double distance){
-        if (isZero(distance)){
-            throw new IllegalArgumentException("Distance can't be ZERO");
+        final Point3D _p0;
+        final Vector _vTo;
+        final Vector _vUp;
+        final Vector _vRight;
+
+        double _distance;
+        double _width;
+        double _height;
+
+        public CameraBuilder(Point3D p0, Vector vTo, Vector vUp){
+            this._p0 = p0;
+            if(!isZero(vTo.dotProduct(vUp))){
+                throw new IllegalArgumentException("The 2 vectors aren't orthogonal");
+            }
+            this._vTo = vTo.normalized();
+            this._vUp = vUp.normalized();
+            this._vRight = vTo.crossProduct(vUp).normalized();
         }
-        _distance = distance;
-        return this;
+
+        public CameraBuilder(Camera camera){
+            this._p0 = camera._p0;
+            this._vTo = camera._vTo;
+            this._vUp = camera._vUp;
+            this._vRight = camera._vRight;
+            this._distance = camera._distance;
+            this._height = camera._height;
+            this._width = camera._width;
+        }
+
+        public CameraBuilder setViewPlaneSize(double width, double height){
+            _width = width;
+            _height = height;
+            return this;
+        }
+
+        public CameraBuilder setDistance(double distance){
+            if (isZero(distance)){
+                throw new IllegalArgumentException("Distance can't be ZERO");
+            }
+            _distance = distance;
+            return this;
+        }
+
+        public Camera build(){
+            Camera camera = new Camera(this);
+            return camera;
+        }
     }
 
+    /**
+     * The function constructs a ray from Camera location throw the center of a
+     * pixel (i,j) in the view plane
+     *
+     * @param nX             number of pixels in a row of view plane
+     * @param nY             number of pixels in a column of view plane
+     * @param j              number of the pixel in a row
+     * @param i              number of the pixel in a column
+     * @return the ray through pixel's center
+     */
     public Ray constructRayThroughPixel(int nX, int nY, int j, int i){
 
-
-        /**
-         * The function constructs a ray from Camera location throw the center of a
-         * pixel (i,j) in the view plane
-         *
-         * @param nX             number of pixels in a row of view plane
-         * @param nY             number of pixels in a column of view plane
-         * @param j              number of the pixel in a row
-         * @param i              number of the pixel in a column
-         * @return the ray through pixel's center
-         */
         //𝑃𝑐 = 𝑃0 + 𝑑∙𝑣𝑡𝑜
         Point3D pc = _p0.add(_vTo.scale(_distance));
         Point3D pIJ = pc;
