@@ -6,8 +6,6 @@ import primitives.Ray;
 import primitives.Vector;
 import elements.Camera.*;
 
-
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class CameraTest {
@@ -45,5 +43,16 @@ class CameraTest {
         // TC13: 3X3 Center of Left Side (1,0)
         assertEquals(new Ray(Point3D.ZERO, new Vector(-2, 0, 10)),
                 new CameraBuilder(camera).setViewPlaneSize(6, 6).build().constructRayThroughPixel(3, 3, 0, 1));
+    }
+
+    @Test
+    void turnCameraTest() {
+
+        Camera camera = new CameraBuilder(Point3D.ZERO, new Vector(1,0,0), new Vector(0,0,1)).build();
+        Camera camera2 = new CameraBuilder(Point3D.ZERO, new Vector(1,0,0), new Vector(0,-1,0)).build();
+        camera.turnCamera(new Vector(1,0,0),90);
+        System.out.println(camera);
+        System.out.println(camera2);
+
     }
 }

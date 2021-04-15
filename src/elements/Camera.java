@@ -4,6 +4,8 @@ import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.Objects;
+
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
@@ -111,6 +113,22 @@ public class Camera {
         }
     }
 
+    public Camera moveCamera(double up, double right, double to){
+        if (up == 0 && right == 0 && to == 0) return this;
+        if (up != 0) this._p0.add(_vUp.scale(up));
+        if (right != 0) this._p0.add(_vRight.scale(right));
+        if (to != 0) this._p0.add(_vTo.scale(to));
+        return this;
+    }
+
+    public Camera turnCamera(Vector axis, double theta){
+        if (theta == 0) return this;
+        this._vUp.rotateVector(axis, theta);
+        this._vRight.rotateVector(axis, theta);
+        this._vTo.rotateVector(axis, theta);
+        return this;
+    }
+
     /**
      * The function constructs a ray from Camera location throw the center of a
      * pixel (i,j) in the view plane
@@ -147,5 +165,31 @@ public class Camera {
         Vector vIJ = pIJ.subtract(_p0);
 
         return new Ray(_p0, vIJ);
+    }
+
+    @Override
+    public String toString() {
+        return "Camera{" +
+                "_p0=" + _p0 +
+                ", _vTo=" + _vTo +
+                ", _vUp=" + _vUp +
+                ", _vRight=" + _vRight +
+                ", _distance=" + _distance +
+                ", _width=" + _width +
+                ", _height=" + _height +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Camera camera = (Camera) o;
+        return Double.compare(camera._distance, _distance) == 0 && Double.compare(camera._width, _width) == 0 && Double.compare(camera._height, _height) == 0 && _p0.equals(camera._p0) && _vTo.equals(camera._vTo) && _vUp.equals(camera._vUp) && _vRight.equals(camera._vRight);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_p0, _vTo, _vUp, _vRight, _distance, _width, _height);
     }
 }

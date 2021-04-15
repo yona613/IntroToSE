@@ -130,6 +130,30 @@ public class Vector {
         return ZERO.distanceSquared(head);
     }
 
+    public Vector rotateVector(Vector axis, double theta) {
+        double x, y, z;
+        double u, v, w;
+        x = this.head.getX();
+        y = this.head.getY();
+        z = this.head.getZ();
+        u = axis.head.getX();
+        v = axis.head.getY();
+        w = axis.head.getZ();
+        double v1 = u * x + v * y + w * z;
+        double thetaRad = Math.toRadians(theta);
+        double xPrime = u * v1 * (1d - Math.cos(thetaRad))
+                + x * Math.cos(thetaRad)
+                + (-w * y + v * z) * Math.sin(thetaRad);
+        double yPrime = v * v1 * (1d - Math.cos(thetaRad))
+                + y * Math.cos(thetaRad)
+                + (w * x - u * z) * Math.sin(thetaRad);
+        double zPrime = w * v1 * (1d - Math.cos(thetaRad))
+                + z * Math.cos(thetaRad)
+                + (-v * x + u * y) * Math.sin(thetaRad);
+        this.head = new Point3D(xPrime, yPrime, zPrime);
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
