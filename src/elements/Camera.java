@@ -113,20 +113,31 @@ public class Camera {
         }
     }
 
-    public Camera moveCamera(double up, double right, double to){
-        if (up == 0 && right == 0 && to == 0) return this;
+    /***
+     * Move camera (move point of view of the camera)
+     * @param up Vertical distance
+     * @param right Horizontal side distance
+     * @param to Horizontal to distance
+     */
+    public void moveCamera(double up, double right, double to){
+        //move Point0 according to params
+        if (up == 0 && right == 0 && to == 0) return; //don't create Vector.Zero
         if (up != 0) this._p0.add(_vUp.scale(up));
         if (right != 0) this._p0.add(_vRight.scale(right));
         if (to != 0) this._p0.add(_vTo.scale(to));
-        return this;
     }
 
-    public Camera turnCamera(Vector axis, double theta){
-        if (theta == 0) return this;
+    /***
+     * Rotate camera through axis and angle of rotation
+     * @param axis Axis of rotation
+     * @param theta Angle of rotation (degrees)
+     */
+    public void rotateCamera(Vector axis, double theta){
+        //rotate all vector's using Vector.rotateVector Method
+        if (theta == 0) return; //no rotation
         this._vUp.rotateVector(axis, theta);
         this._vRight.rotateVector(axis, theta);
         this._vTo.rotateVector(axis, theta);
-        return this;
     }
 
     /**
