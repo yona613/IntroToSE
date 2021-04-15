@@ -1,7 +1,9 @@
 package elements;
 
 import geometries.Intersectable;
+import geometries.Plane;
 import geometries.Sphere;
+import geometries.Triangle;
 import org.junit.jupiter.api.Test;
 import primitives.Point3D;
 import primitives.Ray;
@@ -64,6 +66,11 @@ class CameraTest {
 
     }
 
+    /**
+     * Integration tests of Camera Ray construction with Ray-Sphere intersections
+     */
+
+
     private int countIntersectionsCameraGeometry(Camera camera, int nX, int nY, Intersectable geometry){
 
         int count = 0;
@@ -101,5 +108,52 @@ class CameraTest {
             }
         }
         return count;
+    }
+    @Test
+    public void CameraRaySphereIntegration() {
+        Camera cam1 = new Camera(Point3D.ZERO, new Vector(0, 0, 1), new Vector(0, -1, 0));
+        Camera cam2 = new Camera(new Point3D(0, 0, -0.5), new Vector(0, 0, 1), new Vector(0, -1, 0));
+       cam1.setDistance(1);
+       cam2.setDistance(1);
+
+        // TC01:  18 points
+        assertEquals(countIntersectionsCameraGeometry(cam1, 3, 3, new Sphere(1,new Point3D(0,0,3))),18,"Error !");
+
+        // TC02: 9 points
+        assertEquals(countIntersectionsCameraGeometry(cam2,3,3, new Sphere(4, new Point3D(0, 0, 1))), 9,"Error !");
+
+        // TC03: 0 points
+        assertEquals(countIntersectionsCameraGeometry(cam1,3,3, new Sphere(0.5, new Point3D(0, 0, -1))), 0,"Error !");
+
+        //TC04: 10 points
+
+        //TC05:2 points
+    }
+    @Test
+    public void CameraRayTriangleIntegration() {
+        Camera cam = new Camera(Point3D.ZERO, new Vector(0, 0, 1), new Vector(0, -1, 0));
+        cam.setDistance(1);
+        cam.setViewPlaneSize(3,3);
+        // TC01:  1 point
+        assertEquals(countIntersectionsCameraGeometry(cam,3,3,new Triangle(new Point3D(1, 1, 2), new Point3D(-1, 1, 2), new Point3D(0, -1, 2))),1,"Error ");
+
+        // TC02:  2 points
+
+    }
+
+    @Test
+    public void CameraRayPlaneIntegration() {
+        Camera cam = new Camera(Point3D.ZERO, new Vector(0, 0, 1), new Vector(0, -1, 0));
+        cam.setViewPlaneSize(3,3);
+        cam.setDistance(1);
+        // TC01: Plane against camera 9 points
+        assertEquals(countIntersectionsCameraGeometry(cam,3,3 ,new Plane(new Point3D(0, 0, 5), new Vector(0, 0, 1))), 9,"Error !");
+
+        // TC02: Plane with small angle 9 points
+        assertEquals(countIntersectionsCameraGeometry(cam,3,3, new Plane(new Point3D(0, 0, 5), new Vector(0, -1, 2))), 9,"Error !");
+
+        // TC03:  6 points
+
+        // TC04:  0 points
     }
 }
