@@ -50,7 +50,7 @@ class CameraTest {
 
         Camera camera = new CameraBuilder(Point3D.ZERO, new Vector(1,0,0), new Vector(0,0,1)).build();
         Camera camera2 = new CameraBuilder(Point3D.ZERO, new Vector(1,0,0), new Vector(0,-1,0)).build();
-        camera.turnCamera(new Vector(1,0,0),90);
+        camera.rotateCamera(new Vector(1,0,0),90);
         System.out.println(camera);
         System.out.println(camera2);
 
