@@ -23,6 +23,11 @@ public class CameraRayIntersectionsIntegrationTests {
 
     private int countIntersectionsCameraGeometry(Camera camera, int nX, int nY, Intersectable geometry){
 
+        //This function return the number of point of intersection between the geometries and a ray from our camera
+
+        //In details,we get the position of the pixel by nX & nY and launch a ray to this pixel ,if there's no
+        //intersection so the count will be null but if there's intersection point so we add them up to our variable
+        //"count" and return it
         int count = 0;
         List<Point3D> intersections;
 
