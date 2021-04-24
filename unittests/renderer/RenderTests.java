@@ -1,4 +1,3 @@
-/*
 package renderer;
 
 
@@ -9,12 +8,11 @@ import org.junit.jupiter.api.Test;
 import primitives.*;
 import scene.Scene;
 
-*/
 /**
- * Test rendering a basic image
- * 
- * @author Dan
- *//*
+ *  Test rendering a basic image
+ *
+ *  @author Dan
+ */
 
 public class RenderTests {
 	private Camera camera = new Camera.CameraBuilder(Point3D.ZERO, new Vector(0, 0, -1), new Vector(0, -1, 0)) //
@@ -22,18 +20,18 @@ public class RenderTests {
 			.setViewPlaneSize(500, 500)
 			.build();
 
-	*/
-/**
+	/**
 	 * Produce a scene with basic 3D model and render it into a jpeg image with a
 	 * grid
-	 *//*
+	 */
 
 	@Test
 	public void basicRenderTwoColorTest() throws ExecutionControl.NotImplementedException {
 
-		Scene scene = new Scene("Test scene")//
+		Scene scene = new Scene.SceneBuilder("Test scene")//
 				.setAmbientLight(new AmbientLight(new Color(255, 191, 191), 1)) //
-				.setBackground(new Color(75, 127, 90));
+				.setBackground(new Color(75, 127, 90))
+				.build();
 
 		scene.geometries.add(new Sphere(50, new Point3D(0, 0, -100)),
 				new Triangle(new Point3D(-100, 0, -100), new Point3D(0, 100, -100), new Point3D(-100, 100, -100)), // up left
@@ -53,15 +51,15 @@ public class RenderTests {
 		render.printGrid(100, new Color(java.awt.Color.YELLOW));
 		render.writeToImage();
 	}
-	
-	*/
-/**
-	 * Test for XML based scene - for bonus
-	 *//*
+
+	/**
+ 	* Test for XML based scene - for bonus
+ 	*/
+
 
 	@Test
-	public void basicRenderXml() throws ExecutionControl.NotImplementedException {
-		Scene scene = new Scene("XML Test scene");
+	public void basicRenderXml(){
+		Scene scene = new Scene.SceneBuilder("XML Test scene").build();
 		// enter XML file name and parse from XML file into scene object
 		// ...
 		
@@ -80,4 +78,3 @@ public class RenderTests {
 
 	
 }
-*/
