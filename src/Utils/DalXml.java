@@ -6,7 +6,6 @@ import geometries.Sphere;
 import geometries.Triangle;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 import primitives.Color;
 import primitives.Point3D;
@@ -19,7 +18,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,11 +25,10 @@ public class DalXml {
 
     // parse XML file
     private DocumentBuilder db;
-    private final String path = "C:/Users/yonas/IdeaProjects/IntroToSE/XML/";
-    private final String _fileName;
+    private final String _filePath;
 
     public DalXml(String fileName) throws ParserConfigurationException {
-        this._fileName = fileName;
+        this._filePath = fileName;
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         db = dbf.newDocumentBuilder();
@@ -39,8 +36,8 @@ public class DalXml {
 
     public Scene getSceneFromXML() {
         try {
-            Scene.SceneBuilder sceneBuilder = new Scene.SceneBuilder(_fileName);
-            Document doc = db.parse(new File(path + _fileName + ".xml"));
+            Scene.SceneBuilder sceneBuilder = new Scene.SceneBuilder(_filePath);
+            Document doc = db.parse(new File(_filePath + ".xml"));
             // optional, but recommended
             // http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
             doc.getDocumentElement().normalize();

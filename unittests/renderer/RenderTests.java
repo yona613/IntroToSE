@@ -65,7 +65,7 @@ public class RenderTests {
 		//Scene scene = new Scene.SceneBuilder("XML Test scene").build();
 		// enter XML file name and parse from XML file into scene object
 		// ...
-		DalXml xml = new DalXml("basicRenderTestTwoColors");
+		DalXml xml = new DalXml("C:/Users/User/Essai");
 		Scene scene = xml.getSceneFromXML();
 		
 		ImageWriter imageWriter = new ImageWriter("xml render test", 1000, 1000);
