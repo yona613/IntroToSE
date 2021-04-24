@@ -1,8 +1,8 @@
 package renderer;
 
 import elements.Camera;
-import jdk.jshell.spi.ExecutionControl;
 import primitives.Color;
+import primitives.Ray;
 import scene.Scene;
 
 import java.util.MissingResourceException;
@@ -53,7 +53,7 @@ public class Render {
         }
     }
 
-    public void renderImage() throws ExecutionControl.NotImplementedException {
+    public void renderImage() {
         if (_imageWriter == null)
             throw new MissingResourceException("You need to enter a image writer", ImageWriter.class.getName(), "");
         if (_camera == null)
@@ -62,26 +62,38 @@ public class Render {
             throw new MissingResourceException("You need to enter a scene", Scene.class.getName(), "");
         if (_rayTracer == null)
             throw new MissingResourceException("You need to enter a ray tracer", RayTracerBase.class.getName(), "");
-        throw new ExecutionControl.NotImplementedException("Function not implemented yet");
+
+        for (int i = 0; i < _imageWriter.getNy(); i++) {
+            for (int j = 0; j < _imageWriter.getNy(); j++) {
+                Ray myRay = _camera.constructRayThroughPixel(
+                        _imageWriter.getNx(),
+                        _imageWriter.getNy(),
+                        j,
+                        i);
+                Color myColor = _rayTracer.traceRay(myRay);
+                _imageWriter.writePixel(i, j, myColor);
+            }
+        }
     }
 
     public void printGrid(int interval, Color color) {
         if (_imageWriter == null)
             throw new MissingResourceException("You need to enter a image writer", ImageWriter.class.getName(), "");
-        for (int i = 0; i < 800; i += interval) {
-            for (int j = 0; j < 500; j++) {
+
+        for (int i = 0; i < _imageWriter.getNx(); i += interval) {
+            for (int j = 0; j < _imageWriter.getNy(); j++) {
                 _imageWriter.writePixel(i, j, color);
             }
         }
 
-        for (int i = 0; i < 500; i += interval) {
-            for (int j = 0; j < 800; j++) {
+        for (int i = 0; i < _imageWriter.getNx(); i += interval) {
+            for (int j = 0; j < _imageWriter.getNy(); j++) {
                 _imageWriter.writePixel(j, i, color);
             }
         }
     }
 
-    public void writeToImage(){
+    public void writeToImage() {
         if (_imageWriter == null)
             throw new MissingResourceException("You need to enter a image writer", ImageWriter.class.getName(), "");
         _imageWriter.writeToImage();

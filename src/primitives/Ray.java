@@ -58,26 +58,19 @@ public class Ray {
                 '}';
     }
 
-    public Point3D findClosestPoint(List<Point3D> points){
-        Point3D myPoint = null;
-        if(points!=null)
-        {
-        for (int i = 0; i < points.size(); i++) {
-            if(myPoint==null)
-            {
-                myPoint=points.get(i);
-            }
-            if(_p0.distance(myPoint)>_p0.distance(points.get(i)))
-            {
-                myPoint=points.get(i);
-            }
+    public Point3D findClosestPoint(List<Point3D> points) {
+        if (points == null)
+            return null;
 
+        Point3D myPoint = points.get(0);
+
+        for (Point3D point : points
+        ) {
+            if (_p0.distance(myPoint) > _p0.distance(point)) {
+                myPoint = point;
+            }
         }
 
-
-            }
-
         return myPoint;
-
     }
 }

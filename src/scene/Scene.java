@@ -12,26 +12,46 @@ import primitives.Color;
 public class Scene {
 
     public String name;
-    public Color background = Color.BLACK;
-    public AmbientLight ambientLight = new AmbientLight(Color.BLACK, 0);
-    public Geometries geometries = new Geometries();
+    public Color background;
+    public AmbientLight ambientLight;
+    public Geometries geometries;
 
-    public Scene(String name) {
-        this.name = name;
+    private Scene(SceneBuilder builder){
+        this.name = builder.name;
+        this. background = builder.background;
+        this.ambientLight = builder.ambientLight;
+        this.geometries = builder.geometries;
     }
 
-    public Scene setBackground(Color background) {
-        this.background = background;
-        return this;
-    }
 
-    public Scene setAmbientLight(AmbientLight ambientLight) {
-        this.ambientLight = ambientLight;
-        return this;
-    }
+    public static class SceneBuilder{
 
-    public Scene setGeometries(Geometries geometries) {
-        this.geometries = geometries;
-        return this;
+        public String name;
+        public Color background = Color.BLACK;
+        public AmbientLight ambientLight = new AmbientLight(background, 0);
+        public Geometries geometries = new Geometries();
+
+        public SceneBuilder(String name) {
+            this.name = name;
+        }
+
+        public SceneBuilder setBackground(Color background) {
+            this.background = background;
+            return this;
+        }
+
+        public SceneBuilder setAmbientLight(AmbientLight ambientLight) {
+            this.ambientLight = ambientLight;
+            return this;
+        }
+
+        public SceneBuilder setGeometries(Geometries geometries) {
+            this.geometries = geometries;
+            return this;
+        }
+
+        public Scene build(){
+            return new Scene(this);
+        }
     }
 }
