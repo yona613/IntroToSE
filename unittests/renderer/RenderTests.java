@@ -1,12 +1,15 @@
 package renderer;
 
 
+import Utils.DalXml;
 import elements.*;
 import geometries.*;
 import jdk.jshell.spi.ExecutionControl;
 import org.junit.jupiter.api.Test;
 import primitives.*;
 import scene.Scene;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  *  Test rendering a basic image
@@ -58,10 +61,12 @@ public class RenderTests {
 
 
 	@Test
-	public void basicRenderXml(){
-		Scene scene = new Scene.SceneBuilder("XML Test scene").build();
+	public void basicRenderXml() throws ParserConfigurationException {
+		//Scene scene = new Scene.SceneBuilder("XML Test scene").build();
 		// enter XML file name and parse from XML file into scene object
 		// ...
+		DalXml xml = new DalXml("basicRenderTestTwoColors");
+		Scene scene = xml.getSceneFromXML();
 		
 		ImageWriter imageWriter = new ImageWriter("xml render test", 1000, 1000);
 		Render render = new Render.RenderBuilder() //
