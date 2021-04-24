@@ -2,33 +2,36 @@ package scene;
 
 import elements.AmbientLight;
 import geometries.Geometries;
-import geometries.Geometry;
 import primitives.Color;
 
+/**
+ * Class for implementation of picture's Scene
+ *
+ * @author Hillel & Yona
+ */
 public class Scene {
 
-    private String _name;
-    private Color _background = Color.BLACK;
-    private AmbientLight _ambientLight = new AmbientLight(Color.BLACK, 0);
-    private Geometries _geometries = new Geometries();
+    public String name;
+    public Color background = Color.BLACK;
+    public AmbientLight ambientLight = new AmbientLight(Color.BLACK, 0);
+    public Geometries geometries = new Geometries();
 
     public Scene(String name) {
-
-        _name = name;
+        this.name = name;
     }
 
     public Scene setBackground(Color background) {
-        _background = background;
+        this.background = background;
         return this;
     }
 
     public Scene setAmbientLight(AmbientLight ambientLight) {
-        _ambientLight = ambientLight;
+        this.ambientLight = ambientLight;
         return this;
     }
 
     public Scene setGeometries(Geometries geometries) {
-        _geometries = geometries;
+        this.geometries = geometries;
         return this;
     }
 }

@@ -62,6 +62,8 @@ class PlaneTest {
         // TC06: Orthogonal ray out of plane
         assertNull(  pl.findIntersections(new Ray(new Point3D(1, 1, 1), new Vector(1, 1, 1))),"Must not be plane intersection");
 
+
+
          //TC07: Orthogonal ray from plane
 //        assertNull( pl.findIntersections(new Ray(new Point3D(0, 0.5, 0.5), new Vector(1, 1, 1))),"Must not be plane intersection");
 
@@ -72,4 +74,5 @@ class PlaneTest {
 //        assertNull(   pl.findIntersections(new Ray(new Point3D(0, 0, 1), new Vector(1, 1, 0))),"Must not be plane intersection");
 
     }
+
 }
