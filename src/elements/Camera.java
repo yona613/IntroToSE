@@ -73,9 +73,9 @@ public class Camera {
         double _width;
         double _height;
 
-        public CameraBuilder(Point3D p0, Vector vTo, Vector vUp){
+        public CameraBuilder(Point3D p0, Vector vTo, Vector vUp) {
             this._p0 = p0;
-            if(!isZero(vTo.dotProduct(vUp))){
+            if (!isZero(vTo.dotProduct(vUp))) {
                 throw new IllegalArgumentException("The 2 vectors aren't orthogonal");
             }
             this._vTo = vTo.normalized();
@@ -83,7 +83,7 @@ public class Camera {
             this._vRight = vTo.crossProduct(vUp).normalized();
         }
 
-        public CameraBuilder(Camera camera){
+        public CameraBuilder(Camera camera) {
             this._p0 = camera._p0;
             this._vTo = camera._vTo;
             this._vUp = camera._vUp;
@@ -93,21 +93,21 @@ public class Camera {
             this._width = camera._width;
         }
 
-        public CameraBuilder setViewPlaneSize(double width, double height){
+        public CameraBuilder setViewPlaneSize(double width, double height) {
             _width = width;
             _height = height;
             return this;
         }
 
-        public CameraBuilder setDistance(double distance){
-            if (isZero(distance)){
+        public CameraBuilder setDistance(double distance) {
+            if (isZero(distance)) {
                 throw new IllegalArgumentException("Distance can't be ZERO");
             }
             _distance = distance;
             return this;
         }
 
-        public Camera build(){
+        public Camera build() {
             Camera camera = new Camera(this);
             return camera;
         }
@@ -119,7 +119,7 @@ public class Camera {
      * @param right Horizontal side distance
      * @param to Horizontal to distance
      */
-    public void moveCamera(double up, double right, double to){
+    public void moveCamera(double up, double right, double to) {
         //move Point0 according to params
         if (up == 0 && right == 0 && to == 0) return; //don't create Vector.Zero
         if (up != 0) this._p0.add(_vUp.scale(up));
@@ -132,7 +132,7 @@ public class Camera {
      * @param axis Axis of rotation
      * @param theta Angle of rotation (degrees)
      */
-    public void rotateCamera(Vector axis, double theta){
+    public void rotateCamera(Vector axis, double theta) {
         //rotate all vector's using Vector.rotateVector Method
         if (theta == 0) return; //no rotation
         this._vUp.rotateVector(axis, theta);
@@ -144,26 +144,26 @@ public class Camera {
      * The function constructs a ray from Camera location throw the center of a
      * pixel (i,j) in the view plane
      *
-     * @param nX             number of pixels in a row of view plane
-     * @param nY             number of pixels in a column of view plane
-     * @param j              number of the pixel in a row
-     * @param i              number of the pixel in a column
+     * @param nX number of pixels in a row of view plane
+     * @param nY number of pixels in a column of view plane
+     * @param j  number of the pixel in a row
+     * @param i  number of the pixel in a column
      * @return the ray through pixel's center
      */
-    public Ray constructRayThroughPixel(int nX, int nY, int j, int i){
+    public Ray constructRayThroughPixel(int nX, int nY, int j, int i) {
 
         //𝑃𝑐 = 𝑃0 + 𝑑∙𝑣𝑡𝑜
         Point3D pc = _p0.add(_vTo.scale(_distance));
         Point3D pIJ = pc;
 
         //𝑅𝑦 = ℎ/𝑁𝑦
-        double rY = alignZero(_height/nY);
+        double rY = alignZero(_height / nY);
         //𝑅𝑥 = 𝑤/𝑁x
-        double rX = alignZero(_width/nX);
+        double rX = alignZero(_width / nX);
         //𝑦𝑖 = −(𝑖 – (𝑁𝑦 − 1)/2) ∙ 𝑅𝑦
-        double xJ = alignZero((j - ((nX-1)/2d)) * rX);
+        double xJ = alignZero((j - ((nX - 1) / 2d)) * rX);
         //𝑥𝑗 = (𝑗 – (𝑁𝑥 − 1)/2) ∙ 𝑅x
-        double yI = alignZero(- (i - ((nY-1)/2d)) * rY);
+        double yI = alignZero(-(i - ((nY - 1) / 2d)) * rY);
 
         if (xJ != 0) {
             pIJ = pIJ.add(_vRight.scale(xJ));
