@@ -21,6 +21,8 @@ public class Render {
     private Camera _camera;
     private RayTracerBase _rayTracer;
 
+    //We made a real Build Pattern,here is its implementation
+
     public static class RenderBuilder {
 
         private ImageWriter _imageWriter;
@@ -75,7 +77,13 @@ public class Render {
             }
         }
     }
-
+    /**
+     * Create a grid [over the picture] in the pixel color map. given the grid's
+     * step and color.
+     *
+     * @param interval  grid's step
+     * @param color grid's color
+     */
     public void printGrid(int interval, Color color) {
         if (_imageWriter == null)
             throw new MissingResourceException("You need to enter a image writer", ImageWriter.class.getName(), "");

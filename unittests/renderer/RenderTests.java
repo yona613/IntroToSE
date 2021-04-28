@@ -64,7 +64,8 @@ public class RenderTests {
 	public void basicRenderXml() throws ParserConfigurationException {
 		//Scene scene = new Scene.SceneBuilder("XML Test scene").build();
 		// enter XML file name and parse from XML file into scene object
-		// ...
+
+		//To get the scene from xml ,please type the local path to the xml file in the ctor.
 		DalXml xml = new DalXml("C:/Users/yonas/IdeaProjects/IntroToSE/basicRenderTestTwoColors");
 		Scene scene = xml.getSceneFromXML();
 		

@@ -57,7 +57,13 @@ public class Ray {
                 ", dir=" + _dir +
                 '}';
     }
-
+    /**
+     * Find intersections of a ray with a list of Point3D and return the
+     * intersection point that is closest to the ray head. If there are no
+     * intersections, null will be returned.
+     *
+     * @return the closest point
+     */
     public Point3D findClosestPoint(List<Point3D> points) {
         if (points == null)
             return null;
