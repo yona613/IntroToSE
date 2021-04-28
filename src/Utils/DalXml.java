@@ -27,8 +27,8 @@ public class DalXml {
     private DocumentBuilder db;
     private final String _filePath;
 
-    public DalXml(String fileName) throws ParserConfigurationException {
-        this._filePath = fileName;
+    public DalXml(String filePath) throws ParserConfigurationException {
+        this._filePath = filePath;
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         db = dbf.newDocumentBuilder();
@@ -71,47 +71,56 @@ public class DalXml {
             list = scene.getElementsByTagName("geometries");
 
             var geometries = list.item(0).getChildNodes();
-            var sphereNode = geometries.item(1);
-            var sphere = (Element) sphereNode;
-            String center = sphere.getAttribute("center");
-            stringList = Arrays.stream(center.split("\\s")).collect(Collectors.toList());
-            Point3D point = new Point3D(
-                    Double.valueOf(stringList.get(0)),
-                    Double.valueOf(stringList.get(1)),
-                    Double.valueOf(stringList.get(2))
-            );
-            String radius = sphere.getAttribute("radius");
-            Sphere mySphere = new Sphere(Double.valueOf(radius), point);
-            geos.add(mySphere);
 
+            for (int i = 0; i < geometries.getLength(); i++) {
 
-            for (int i = 3; i < geometries.getLength(); i += 2) {
+                var node = geometries.item(i);
+                if (node.hasAttributes()) {
+                    String attribute = node.getNodeName();
+                    var element1 = (Element) node;
+                    switch (attribute) {
+                        case "triangle":
+                            String pointStr = element1.getAttribute("p0");
+                            stringList = Arrays.stream(pointStr.split("\\s")).collect(Collectors.toList());
+                            Point3D p0 = new Point3D(
+                                    Double.valueOf(stringList.get(0)),
+                                    Double.valueOf(stringList.get(1)),
+                                    Double.valueOf(stringList.get(2))
+                            );
+                            pointStr = element1.getAttribute("p1");
+                            stringList = Arrays.stream(pointStr.split("\\s")).collect(Collectors.toList());
+                            Point3D p1 = new Point3D(
+                                    Double.valueOf(stringList.get(0)),
+                                    Double.valueOf(stringList.get(1)),
+                                    Double.valueOf(stringList.get(2))
+                            );
+                            pointStr = element1.getAttribute("p2");
+                            stringList = Arrays.stream(pointStr.split("\\s")).collect(Collectors.toList());
+                            Point3D p2 = new Point3D(
+                                    Double.valueOf(stringList.get(0)),
+                                    Double.valueOf(stringList.get(1)),
+                                    Double.valueOf(stringList.get(2))
+                            );
+                            Triangle triangle1 = new Triangle(p0, p1, p2);
+                            geos.add(triangle1);
+                            break;
+                        case "sphere":
+                            String center1 = element1.getAttribute("center");
+                            stringList = Arrays.stream(center1.split("\\s")).collect(Collectors.toList());
+                            Point3D point1 = new Point3D(
+                                    Double.valueOf(stringList.get(0)),
+                                    Double.valueOf(stringList.get(1)),
+                                    Double.valueOf(stringList.get(2))
+                            );
+                            String radius1 = element1.getAttribute("radius");
+                            Sphere mySphere1 = new Sphere(Double.valueOf(radius1), point1);
+                            geos.add(mySphere1);
+                            break;
+                        default:
+                            break;
+                    }
 
-                var triangle = geometries.item(i);
-                var triangleEle = (Element) triangle;
-                String pointStr = triangleEle.getAttribute("p0");
-                stringList = Arrays.stream(pointStr.split("\\s")).collect(Collectors.toList());
-                Point3D p0 = new Point3D(
-                        Double.valueOf(stringList.get(0)),
-                        Double.valueOf(stringList.get(1)),
-                        Double.valueOf(stringList.get(2))
-                );
-                pointStr = triangleEle.getAttribute("p1");
-                stringList = Arrays.stream(pointStr.split("\\s")).collect(Collectors.toList());
-                Point3D p1 = new Point3D(
-                        Double.valueOf(stringList.get(0)),
-                        Double.valueOf(stringList.get(1)),
-                        Double.valueOf(stringList.get(2))
-                );
-                pointStr = triangleEle.getAttribute("p2");
-                stringList = Arrays.stream(pointStr.split("\\s")).collect(Collectors.toList());
-                Point3D p2 = new Point3D(
-                        Double.valueOf(stringList.get(0)),
-                        Double.valueOf(stringList.get(1)),
-                        Double.valueOf(stringList.get(2))
-                );
-                Triangle triangle1 = new Triangle(p0, p1, p2);
-                geos.add(triangle1);
+                }
             }
 
             sceneBuilder.setGeometries(geos);
