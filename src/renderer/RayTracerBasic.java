@@ -1,8 +1,11 @@
 package renderer;
 
+import elements.LightSource;
+import geometries.GeoPoint;
 import primitives.Color;
 import primitives.Point3D;
 import primitives.Ray;
+import primitives.Vector;
 import scene.Scene;
 
 /**
@@ -42,4 +45,23 @@ public class RayTracerBasic extends RayTracerBase {
     private Color calcColor(Point3D point){
         return _scene.ambientLight.getIntensity();
     }
+
+
+//    private Color calcLocalEffects(GeoPoint intersection, Ray ray) {
+//        Vector v = ray.getDir (); Vector n = intersection.geometry.getNormal();
+//        double nv = alignZero(n.dotProduct(v); if (nv == 0) return Color.BLACK;
+//        int nShininess = intersection.geometry.;
+//        double kd = intersection.geometry.getKd(), ks = intersection.geometry.getKs();
+//        Color color = Color.BLACK;
+//        for (LightSource lightSource : scene.lights) {
+//            Vector l = lightSource.getL(intersection.point);
+//            double nl = alignZero(n.dotProduct(l);
+//            if (nl * nv > 0) { // sign(nl) == sing(nv)
+//                Color lightIntensity = lightSource.getIntensity(intersection.point);
+//                color = color.add(calcDiffusive(kd, l, n, lightIntensity),
+//                        calcSpecular(ks, l, n, v, nShininess, lightIntensity));
+//            }
+//        }
+//        return color;
+//    }
 }
