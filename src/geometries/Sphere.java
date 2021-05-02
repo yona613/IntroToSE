@@ -4,6 +4,7 @@ import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static primitives.Util.*;
@@ -14,20 +15,26 @@ import static primitives.Util.*;
  *
  * @author Dan
  */
-public class Sphere extends RadialGeometry implements Geometry {
+public class Sphere extends Geometry {
 
     /**
      * Center of the sphere
      */
     private Point3D _center;
 
+    private final double _radius;
+
+    public double getRadius() {
+        return _radius;
+    }
+
     public Sphere(double radius,Point3D center) {
-        super(radius);
+        this._radius = radius;
         this._center = center;
     }
 
     public Sphere(double a, double b, double c, double radius) {
-        super(radius);
+        this._radius = radius;
         _center = new Point3D(a, b, c);
     }
 
@@ -96,5 +103,17 @@ public class Sphere extends RadialGeometry implements Geometry {
         }
 
         return null;
+    }
+
+    @Override
+    public List<GeoPoint> findGeoIntersections(Ray ray) {
+        List<Point3D> intersections = this.findIntersections(ray);
+        if (intersections == null) return null;
+        List<GeoPoint> geoIntersections = new LinkedList<>();
+        for (var point: intersections
+        ) {
+            geoIntersections.add(new GeoPoint(this, point));
+        }
+        return geoIntersections;
     }
 }

@@ -6,6 +6,7 @@ import primitives.Vector;
 import static primitives.Util.*;
 
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -55,5 +56,17 @@ public class Triangle extends Polygon {
         if (!((s1 > 0 && s2 > 0 && s3 > 0) || (s1 < 0 && s2 < 0 && s3 < 0))) return null;
 
         return intersections;
+    }
+
+    @Override
+    public List<GeoPoint> findGeoIntersections(Ray ray) {
+        List<Point3D> intersections = this.findIntersections(ray);
+        if (intersections == null) return null;
+        List<GeoPoint> geoIntersections = new LinkedList<>();
+        for (var point: intersections
+        ) {
+            geoIntersections.add(new GeoPoint(this, point));
+        }
+        return geoIntersections;
     }
 }

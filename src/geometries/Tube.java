@@ -4,6 +4,7 @@ import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static primitives.Util.alignZero;
@@ -14,19 +15,25 @@ import static primitives.Util.alignZero;
  *
  * @author Hillel and Yona
  */
-public class Tube extends RadialGeometry implements Geometry {
+public class Tube extends Geometry {
 
     /**
      * Ray of the Tube
      */
     protected Ray _axisRay;
 
+    protected final double _radius;
+
+    public double getRadius() {
+        return _radius;
+    }
+
     public Ray getAxisRay() {
         return _axisRay;
     }
 
     public Tube(double radius, Ray axisRay) {
-        super(radius);
+        this._radius = radius;
         _axisRay = axisRay;
     }
 
@@ -149,5 +156,17 @@ public class Tube extends RadialGeometry implements Geometry {
             }
         }
         return null;
+    }
+
+    @Override
+    public List<GeoPoint> findGeoIntersections(Ray ray) {
+        List<Point3D> intersections = this.findIntersections(ray);
+        if (intersections == null) return null;
+        List<GeoPoint> geoIntersections = new LinkedList<>();
+        for (var point: intersections
+        ) {
+            geoIntersections.add(new GeoPoint(this, point));
+        }
+        return geoIntersections;
     }
 }

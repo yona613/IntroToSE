@@ -91,11 +91,6 @@ public class Render {
         for (int i = 0; i < _imageWriter.getNx(); i += interval) {
             for (int j = 0; j < _imageWriter.getNy(); j++) {
                 _imageWriter.writePixel(i, j, color);
-            }
-        }
-
-        for (int i = 0; i < _imageWriter.getNx(); i += interval) {
-            for (int j = 0; j < _imageWriter.getNy(); j++) {
                 _imageWriter.writePixel(j, i, color);
             }
         }

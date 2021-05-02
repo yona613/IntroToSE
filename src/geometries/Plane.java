@@ -2,12 +2,13 @@ package geometries;
 
 import primitives.*;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static primitives.Util.*;
 
 
-public class Plane implements Geometry {
+public class Plane extends Geometry {
 
     private final Point3D _q0;
     private final Vector _normal;
@@ -62,5 +63,16 @@ public class Plane implements Geometry {
             return List.of(new Point3D(ray.getPoint(t)));
         }
 
+    }
+    @Override
+    public List<GeoPoint> findGeoIntersections(Ray ray) {
+        List<Point3D> intersections = this.findIntersections(ray);
+        if (intersections == null) return null;
+        List<GeoPoint> geoIntersections = new LinkedList<>();
+        for (var point: intersections
+        ) {
+            geoIntersections.add(new GeoPoint(this, point));
+        }
+        return geoIntersections;
     }
 }

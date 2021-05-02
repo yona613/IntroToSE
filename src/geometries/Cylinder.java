@@ -15,7 +15,7 @@ public class Cylinder extends Tube {
         return _height;
     }
 
-    public Cylinder(double radius,  Ray axisRay, double height) {
+    public Cylinder(double radius, Ray axisRay, double height) {
         super(radius, axisRay);
         _height = height;
     }
@@ -102,5 +102,17 @@ public class Cylinder extends Tube {
             return result;
 
         return null;
+    }
+
+    @Override
+    public List<GeoPoint> findGeoIntersections(Ray ray) {
+        List<Point3D> intersections = this.findIntersections(ray);
+        if (intersections == null) return null;
+        List<GeoPoint> geoIntersections = new LinkedList<>();
+        for (var point: intersections
+             ) {
+            geoIntersections.add(new GeoPoint(this, point));
+        }
+        return geoIntersections;
     }
 }

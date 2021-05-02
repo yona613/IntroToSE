@@ -29,7 +29,7 @@ public class RenderTests {
 	 */
 
 	@Test
-	public void basicRenderTwoColorTest() throws ExecutionControl.NotImplementedException {
+	public void basicRenderTwoColorTest() {
 
 		Scene scene = new Scene.SceneBuilder("Test scene")//
 				.setAmbientLight(new AmbientLight(new Color(255, 191, 191), 1)) //
@@ -82,5 +82,32 @@ public class RenderTests {
 		render.writeToImage();
 	}
 
+	@Test
+	public void basicRenderMultiColorTest() {
+		Scene scene = new Scene.SceneBuilder("Test scene")//
+				.setAmbientLight(new AmbientLight(new Color(java.awt.Color.WHITE), 0.2))
+				.build(); //
+
+		scene.geometries.add(new Sphere(50, new Point3D(0, 0, -100)), //
+				new Triangle(new Point3D(-100, 0, -100), new Point3D(0, 100, -100), new Point3D(-100, 100, -100)) // up left
+						.setEmission(new Color(java.awt.Color.GREEN)),
+				new Triangle(new Point3D(100, 0, -100), new Point3D(0, 100, -100), new Point3D(100, 100, -100)), // up right
+				new Triangle(new Point3D(-100, 0, -100), new Point3D(0, -100, -100), new Point3D(-100, -100, -100)) // down left
+						.setEmission(new Color(java.awt.Color.RED)),
+				new Triangle(new Point3D(100, 0, -100), new Point3D(0, -100, -100), new Point3D(100, -100, -100)) // down right
+						.setEmission(new Color(java.awt.Color.BLUE)));
+
+		ImageWriter imageWriter = new ImageWriter("color render test", 1000, 1000);
+		Render render = new Render.RenderBuilder() //
+				.setImageWriter(imageWriter) //
+				.setScene(scene) //
+				.setCamera(camera) //
+				.setRayTracer(new RayTracerBasic(scene))
+				.build();
+
+		render.renderImage();
+		render.printGrid(100, new Color(java.awt.Color.WHITE));
+		render.writeToImage();
+	}
 	
 }
