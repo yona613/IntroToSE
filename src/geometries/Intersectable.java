@@ -17,6 +17,7 @@ public interface Intersectable {
      */
      List<Point3D> findIntersections(Ray ray);
 
+<<<<<<< HEAD
     /**
      * Function that finds all intersections between geometric element and ray
      * @param ray
@@ -55,4 +56,12 @@ public interface Intersectable {
         }
     }
 
+=======
 }
+
+public static class GeoPoint {
+    public Geometry geometry;
+    public Point3D point;
+>>>>>>> main
+}
+

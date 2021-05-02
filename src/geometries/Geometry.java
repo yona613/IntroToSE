@@ -1,6 +1,9 @@
 package geometries;
 
 import primitives.Color;
+
+import primitives.Material;
+
 import primitives.Point3D;
 import primitives.Vector;
 
@@ -10,6 +13,8 @@ public abstract class Geometry implements Intersectable {
      * Color emitted by the geometry
      */
     protected Color _emission = Color.BLACK;
+
+    protected Material _material = new Material();
 
     /**
      * Get emission of the geometry
@@ -34,5 +39,6 @@ public abstract class Geometry implements Intersectable {
      * @return
      */
     public abstract Vector getNormal(Point3D point);
+
 
 }
