@@ -2,6 +2,7 @@ package geometries;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import primitives.*;
 
@@ -91,7 +92,7 @@ public class Polygon extends Geometry {
 
 
     @Override
-    public List<Point3D> findIntersections(Ray ray) {
+    public List<GeoPoint> findGeoIntersections(Ray ray) {
         //First ,we check if the plane of our polygon intersects with the ray ,if there's no intersection with the
         //plane so there's no intersection with the polygon.
 
@@ -114,7 +115,7 @@ public class Polygon extends Geometry {
         //Finally, you want to go around each adjacent pair of points in the polygon checking that P is inside
         // the polygon, which is done by checking that P is to the same side of each line made by the points.
 
-        List<Point3D> intersections = _plane.findIntersections(ray);
+        List<GeoPoint> intersections = _plane.findGeoIntersections(ray);
 
         if (intersections == null)
             return null;
@@ -145,18 +146,6 @@ public class Polygon extends Geometry {
                 return null;
         }
 
-        return intersections;
-    }
-
-    @Override
-    public List<GeoPoint> findGeoIntersections(Ray ray) {
-        List<Point3D> intersections = this.findIntersections(ray);
-        if (intersections == null) return null;
-        List<GeoPoint> geoIntersections = new LinkedList<>();
-        for (var point: intersections
-        ) {
-            geoIntersections.add(new GeoPoint(this, point));
-        }
-        return geoIntersections;
+        return intersections.stream().map(pt -> new GeoPoint(this, pt.point)).collect(Collectors.toList());
     }
 }

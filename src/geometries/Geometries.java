@@ -48,7 +48,6 @@ public class Geometries implements Intersectable{
     public List<GeoPoint> findGeoIntersections(Ray ray) {
         List<GeoPoint> result = null;
 
-        //gets list of intersections of all elements with the ray
         for (Intersectable item : _intersectables) {
             List<GeoPoint> itemPoints = item.findGeoIntersections(ray);
             if (itemPoints != null){

@@ -1,12 +1,12 @@
 package renderer;
 
-import elements.LightSource;
-import geometries.GeoPoint;
+import geometries.Intersectable.GeoPoint;
 import primitives.Color;
 import primitives.Point3D;
 import primitives.Ray;
-import primitives.Vector;
 import scene.Scene;
+
+import java.util.List;
 
 /**
  * Class to implement rayTracing between the camera rays and the scene
@@ -27,12 +27,12 @@ public class RayTracerBasic extends RayTracerBase {
     @Override
     public Color traceRay(Ray ray) {
 
-        var myPoints = _scene.geometries.findIntersections(ray);
+        List<GeoPoint> myPoints = _scene.geometries.findGeoIntersections(ray);
 
         if (myPoints == null)
             return _scene.background;
 
-        Point3D myPoint = ray.findClosestPoint(myPoints);
+        GeoPoint myPoint = ray.getClosestGeoPoint(myPoints);
 
         return calcColor(myPoint);
     }
@@ -42,8 +42,8 @@ public class RayTracerBasic extends RayTracerBase {
      * @param point point of intersection
      * @return Color of the intersection poitn
      */
-    private Color calcColor(Point3D point){
-        return _scene.ambientLight.getIntensity();
+    private Color calcColor(GeoPoint point){
+        return point.geometry.getEmission();
     }
 
 

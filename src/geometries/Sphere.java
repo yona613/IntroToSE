@@ -57,7 +57,7 @@ public class Sphere extends Geometry {
     }
 
     @Override
-    public List<Point3D> findIntersections(Ray ray) {
+    public List<GeoPoint> findGeoIntersections(Ray ray) {
         Point3D p0 = ray.get_p0();
         Vector v = ray.get_dir();
 
@@ -90,30 +90,18 @@ public class Sphere extends Geometry {
         if (t1 > 0 && t2 > 0){
             Point3D p1 = p0.add(v.scale(t1));
             Point3D p2 = p0.add(v.scale(t2));
-            return List.of(p1, p2);
+            return List.of(new GeoPoint(this, p1), new GeoPoint(this, p2));
         }
 
         if (t1 > 0){
             Point3D p1 = p0.add(v.scale(t1));
-            return List.of(p1);
+            return List.of(new GeoPoint(this, p1));
         }
         if (t2 > 0){
             Point3D p2 = p0.add(v.scale(t2));
-            return List.of(p2);
+            return List.of(new GeoPoint(this, p2));
         }
 
         return null;
-    }
-
-    @Override
-    public List<GeoPoint> findGeoIntersections(Ray ray) {
-        List<Point3D> intersections = this.findIntersections(ray);
-        if (intersections == null) return null;
-        List<GeoPoint> geoIntersections = new LinkedList<>();
-        for (var point: intersections
-        ) {
-            geoIntersections.add(new GeoPoint(this, point));
-        }
-        return geoIntersections;
     }
 }

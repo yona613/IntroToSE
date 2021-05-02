@@ -49,34 +49,34 @@ public class Cylinder extends Tube {
     }
 
     @Override
-    public List<Point3D> findIntersections(Ray ray) {
+    public List<GeoPoint> findGeoIntersections(Ray ray) {
 
-        List<Point3D> result = new LinkedList<>();
+        List<GeoPoint> result = new LinkedList<>();
         Vector va = this._axisRay.get_dir();
         Point3D p1 = this._axisRay.get_p0();
         Point3D p2 = p1.add(this._axisRay.get_dir().scale(this._height));
 
         Plane plane1 = new Plane(p1, this._axisRay.get_dir()); //get plane of bottom base
-        List<Point3D> result2 = plane1.findIntersections(ray); //intersections with bottom's plane
+        List<GeoPoint> result2 = plane1.findGeoIntersections(ray); //intersections with bottom's plane
         if (result2 != null){
             //Add all intersections of bottom's plane that are in the base's bounders
-            for (Point3D point : result2) {
-                if (point.equals(p1)){ //to avoid vector ZERO
-                    result.add(p1);
+            for (GeoPoint point : result2) {
+                if (point.point.equals(p1)){ //to avoid vector ZERO
+                    result.add(point);
                 }
                 //Formula that checks that point is inside the base
-                else if ((point.subtract(p1).dotProduct(point.subtract(p1)) < this._radius * this._radius)){
+                else if ((point.point.subtract(p1).dotProduct(point.point.subtract(p1)) < this._radius * this._radius)){
                     result.add(point);
                 }
             }
         }
 
-        List<Point3D> result1 = super.findIntersections(ray); //get intersections for tube
+        List<GeoPoint> result1 = super.findGeoIntersections(ray); //get intersections for tube
 
         if (result1 != null){
             //Add all intersections of tube that are in the cylinder's bounders
-            for (Point3D point:result1) {
-                if (va.dotProduct(point.subtract(p1)) > 0 && va.dotProduct(point.subtract(p2)) < 0){
+            for (GeoPoint point:result1) {
+                if (va.dotProduct(point.point.subtract(p1)) > 0 && va.dotProduct(point.point.subtract(p2)) < 0){
                     result.add(point);
                 }
             }
@@ -84,16 +84,16 @@ public class Cylinder extends Tube {
 
 
         Plane plane2 = new Plane(p2, this._axisRay.get_dir()); //get plane of top base
-        List<Point3D> result3 = plane2.findIntersections(ray); //intersections with top's plane
+        List<GeoPoint> result3 = plane2.findGeoIntersections(ray); //intersections with top's plane
 
         if (result3 != null){
-            for (Point3D point : result3) {
-                if (point.equals(p2)){ //to avoid vector ZERO
-                    result.add(p2);
+            for (GeoPoint point : result3) {
+                if (point.point.equals(p2)){ //to avoid vector ZERO
+                    result.add(point);
                 }
                 //Formula that checks that point is inside the base
-                else if ((point.subtract(p2).dotProduct(point.subtract(p2)) < this._radius * this._radius)){
-                    result.add(point);
+                else if ((point.point.subtract(p2).dotProduct(point.point.subtract(p2)) < this._radius * this._radius)){
+                    result.add( point);
                 }
             }
         }
@@ -102,17 +102,5 @@ public class Cylinder extends Tube {
             return result;
 
         return null;
-    }
-
-    @Override
-    public List<GeoPoint> findGeoIntersections(Ray ray) {
-        List<Point3D> intersections = this.findIntersections(ray);
-        if (intersections == null) return null;
-        List<GeoPoint> geoIntersections = new LinkedList<>();
-        for (var point: intersections
-             ) {
-            geoIntersections.add(new GeoPoint(this, point));
-        }
-        return geoIntersections;
     }
 }

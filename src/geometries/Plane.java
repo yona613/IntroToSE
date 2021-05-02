@@ -34,7 +34,7 @@ public class Plane extends Geometry {
 
 
     @Override
-    public List<Point3D> findIntersections(Ray ray) {
+    public List<GeoPoint> findGeoIntersections(Ray ray) {
         Vector p0Q;
         try {
             p0Q = _q0.subtract(ray.get_p0());//_q0 its a point from the plane and getP0 of the ray returns his origin.
@@ -60,19 +60,8 @@ public class Plane extends Geometry {
         if (t < 0) {
             return null;
         } else {
-            return List.of(new Point3D(ray.getPoint(t)));
+            return List.of(new GeoPoint(this, ray.getPoint(t)));
         }
 
-    }
-    @Override
-    public List<GeoPoint> findGeoIntersections(Ray ray) {
-        List<Point3D> intersections = this.findIntersections(ray);
-        if (intersections == null) return null;
-        List<GeoPoint> geoIntersections = new LinkedList<>();
-        for (var point: intersections
-        ) {
-            geoIntersections.add(new GeoPoint(this, point));
-        }
-        return geoIntersections;
     }
 }

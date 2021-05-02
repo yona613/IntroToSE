@@ -53,8 +53,7 @@ public class Tube extends Geometry {
     }
 
     @Override
-    public List<Point3D> findIntersections(Ray ray) {
-
+    public List<GeoPoint> findGeoIntersections(Ray ray) {
         /*
         The equation for a tube of radius r oriented along a line pa + vat:
         (q - pa - (va,q - pa)va)2 - r2 = 0
@@ -144,29 +143,17 @@ public class Tube extends Geometry {
             if (t1 > 0 && t2 > 0){
                 Point3D p1 = new Point3D(ray.getPoint(t1));
                 Point3D p2 = new Point3D(ray.getPoint(t2));
-                return List.of(p1, p2);
+                return List.of(new GeoPoint(this, p1), new GeoPoint(this, p2));
             }
             else if (t1 > 0){
                 Point3D p1 = new Point3D(ray.getPoint(t1));
-                return List.of(p1);
+                return List.of(new GeoPoint(this, p1));
             }
             else if (t2 > 0){
                 Point3D p2 = new Point3D(ray.getPoint(t2));
-                return List.of(p2);
+                return List.of(new GeoPoint(this, p2));
             }
         }
         return null;
-    }
-
-    @Override
-    public List<GeoPoint> findGeoIntersections(Ray ray) {
-        List<Point3D> intersections = this.findIntersections(ray);
-        if (intersections == null) return null;
-        List<GeoPoint> geoIntersections = new LinkedList<>();
-        for (var point: intersections
-        ) {
-            geoIntersections.add(new GeoPoint(this, point));
-        }
-        return geoIntersections;
     }
 }

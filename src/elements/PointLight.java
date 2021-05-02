@@ -4,10 +4,10 @@ import primitives.Color;
 import primitives.Point3D;
 import primitives.Vector;
 
-public class PointLight extends Light implements LightSource{
+public class PointLight extends Light implements LightSource {
 
     private Point3D _position;
-    private double _kC,_kl,_kQ;
+    private double _kC, _kl, _kQ;
 
     public PointLight(Color c, Point3D pos, double kc, double kl, double kq) {
         super(c);
@@ -16,8 +16,6 @@ public class PointLight extends Light implements LightSource{
         _kl = kl;
         _kQ = kq;
     }
-
-
 
     @Override
     public Color getIntensity(Point3D p) {

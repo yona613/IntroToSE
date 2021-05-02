@@ -4,7 +4,7 @@ public class Material {
     private double _kd = 0d;
     private double _ks = 0d;
     private int _nShininess = 1;
-    private Material material=new Material();
+    private Material material;
 
     public Material getMaterial() {
         return this.material;

@@ -1,5 +1,7 @@
 package primitives;
 
+import geometries.Intersectable.GeoPoint;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -22,14 +24,6 @@ public class Ray {
         return _dir;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Ray ray = (Ray) o;
-        return _p0.equals(ray._p0) && _dir.equals(ray._dir);
-    }
-
     /**
      * Get point on ray at a distance from ray's head
      *
@@ -42,21 +36,8 @@ public class Ray {
         else {
             return new Point3D(_p0).add(_dir.scale(t));
         }
-
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(_p0, _dir);
-    }
-
-    @Override
-    public String toString() {
-        return "Ray{" +
-                "p0=" + _p0 +
-                ", dir=" + _dir +
-                '}';
-    }
     /**
      * Find intersections of a ray with a list of Point3D and return the
      * intersection point that is closest to the ray head. If there are no
@@ -78,5 +59,42 @@ public class Ray {
         }
 
         return myPoint;
+    }
+
+    public GeoPoint getClosestGeoPoint(List<GeoPoint> points){
+        if (points == null)
+            return null;
+
+       GeoPoint myPoint = points.get(0);
+
+        for (var point : points
+        ) {
+            if (_p0.distance(myPoint.point) > _p0.distance(point.point)) {
+                myPoint = point;
+            }
+        }
+
+        return myPoint;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ray ray = (Ray) o;
+        return _p0.equals(ray._p0) && _dir.equals(ray._dir);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_p0, _dir);
+    }
+
+    @Override
+    public String toString() {
+        return "Ray{" +
+                "p0=" + _p0 +
+                ", dir=" + _dir +
+                '}';
     }
 }

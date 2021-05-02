@@ -3,11 +3,14 @@ package geometries;
 import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
+
 import static primitives.Util.*;
 
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Triangle class represents two-dimensional Tube in 3D Cartesian coordinate
@@ -22,16 +25,12 @@ public class Triangle extends Polygon {
     }
 
     @Override
-    public List<Point3D> findIntersections(Ray ray) {
+    public List<GeoPoint> findGeoIntersections(Ray ray) {
 
          /*
-
          We're starting to check if the plane where our triangle is ,intersect the ray ,if not return null,if yes :
-
-
-
         */
-        List<Point3D> intersections = _plane.findIntersections(ray);
+        List<GeoPoint> intersections = _plane.findGeoIntersections(ray);
         if (intersections == null) return null;//Our plan doesn't intersect the ray
 
         Point3D p0 = ray.get_p0();
@@ -55,18 +54,6 @@ public class Triangle extends Polygon {
 
         if (!((s1 > 0 && s2 > 0 && s3 > 0) || (s1 < 0 && s2 < 0 && s3 < 0))) return null;
 
-        return intersections;
-    }
-
-    @Override
-    public List<GeoPoint> findGeoIntersections(Ray ray) {
-        List<Point3D> intersections = this.findIntersections(ray);
-        if (intersections == null) return null;
-        List<GeoPoint> geoIntersections = new LinkedList<>();
-        for (var point: intersections
-        ) {
-            geoIntersections.add(new GeoPoint(this, point));
-        }
-        return geoIntersections;
+        return intersections.stream().map(pt -> new GeoPoint(this, pt.point)).collect(Collectors.toList());
     }
 }
