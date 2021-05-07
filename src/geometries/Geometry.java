@@ -38,5 +38,21 @@ public abstract class Geometry implements Intersectable {
      */
     public abstract Vector getNormal(Point3D point);
 
+    /**
+     * Get material of the geometry
+     * @return Material of the geometry
+     */
+    public Material getMaterial() {
+        return _material;
+    }
 
+    /**
+     * Set material of the geometry
+     * @param material Material of the geometry
+     * @return the geometry itself
+     */
+    public Geometry setMaterial(Material material){
+        this._material = material;
+        return this;
+    }
 }

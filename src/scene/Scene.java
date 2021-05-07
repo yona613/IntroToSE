@@ -19,24 +19,24 @@ public class Scene {
     public Color background;
     public AmbientLight ambientLight;
     public Geometries geometries;
-    public List<LightSource> lights= new LinkedList<>();
+    public List<LightSource> lights;
 
-    private Scene(SceneBuilder builder){
+    private Scene(SceneBuilder builder) {
         this.name = builder.name;
-        this. background = builder.background;
+        this.background = builder.background;
         this.ambientLight = builder.ambientLight;
         this.geometries = builder.geometries;
-        this.lights=builder.lights;
+        this.lights = builder.lights;
     }
 
 
-    public static class SceneBuilder{
+    public static class SceneBuilder {
 
         public String name;
         public Color background = Color.BLACK;
         public AmbientLight ambientLight = new AmbientLight(background, 0);
         public Geometries geometries = new Geometries();
-        public List<LightSource> lights=new LinkedList<>();
+        public List<LightSource> lights = new LinkedList<>();
 
         public SceneBuilder(String name) {
             this.name = name;
@@ -56,12 +56,13 @@ public class Scene {
             this.geometries = geometries;
             return this;
         }
-        public SceneBuilder setLights(List<LightSource> Lights){
-            this.lights=Lights;
+
+        public SceneBuilder setLights(List<LightSource> Lights) {
+            this.lights = Lights;
             return this;
         }
 
-        public Scene build(){
+        public Scene build() {
             return new Scene(this);
         }
     }

@@ -1,14 +1,10 @@
 package primitives;
 
 public class Material {
-    private double _kd = 0d;
-    private double _ks = 0d;
-    private int _nShininess = 1;
-    private Material material;
 
-    public Material getMaterial() {
-        return this.material;
-    }
+    public double _kd = 0d;
+    public double _ks = 0d;
+    public double _nShininess = 1d;
 
     public Material setKd(double kd) {
         _kd = kd;
@@ -20,7 +16,7 @@ public class Material {
         return this;
     }
 
-    public Material setnShininess(int nShininess) {
+    public Material setnShininess(double nShininess) {
         _nShininess = nShininess;
         return this;
     }

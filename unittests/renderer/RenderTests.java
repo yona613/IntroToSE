@@ -85,7 +85,7 @@ public class RenderTests {
 	@Test
 	public void basicRenderMultiColorTest() {
 		Scene scene = new Scene.SceneBuilder("Test scene")//
-				.setAmbientLight(new AmbientLight(new Color(java.awt.Color.WHITE), 0.2))
+				.setAmbientLight(new AmbientLight(Color.WHITE, 0.2))
 				.build(); //
 
 		scene.geometries.add(new Sphere(50, new Point3D(0, 0, -100)), //
