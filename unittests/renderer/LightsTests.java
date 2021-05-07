@@ -16,19 +16,19 @@ public class LightsTests {
     private Scene scene2 = new Scene.SceneBuilder("Test scene") //
             .setAmbientLight(new AmbientLight(new Color(java.awt.Color.WHITE), 0.15))
             .build();
-    private Camera camera1 = new Camera.CameraBuilder(new Point3D(0, 0, 1000), new Vector(0, 0, -1), new Vector(0, -1, 0)) //
+    private Camera camera1 = new Camera.CameraBuilder(new Point3D(0, 0, 1000), new Vector(0, 0, -1), new Vector(0, 1, 0)) //
             .setViewPlaneSize(150, 150) //
             .setDistance(1000)
             .build();
-    private Camera camera2 = new Camera.CameraBuilder(new Point3D(0, 0, 1000), new Vector(0, 0, -1), new Vector(0, -1, 0)) //
+    private Camera camera2 = new Camera.CameraBuilder(new Point3D(0, 0, 1000), new Vector(0, 0, -1), new Vector(0, 1, 0)) //
             .setViewPlaneSize(200, 200) //
             .setDistance(1000)
             .build();
 
     private static Geometry triangle1 = new Triangle( //
-            new Point3D(-150, -150, -150), new Point3D(150, -150, -150), new Point3D(75, 75, -150));
+            new Point3D(-150, -150, -150),new Point3D(150, -150, -150), new Point3D(75, 75, -150));
     private static Geometry triangle2 = new Triangle( //
-            new Point3D(-150, -150, -150), new Point3D(-70, 70, -50), new Point3D(75, 75, -150));
+            new Point3D(-150, -150, -150),new Point3D(-70, 70, -50)  , new Point3D(75, 75, -150));
     private static Geometry sphere = new Sphere(50, new Point3D(0, 0, -50)) //
             .setEmission(new Color(java.awt.Color.BLUE)) //
             .setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(100));

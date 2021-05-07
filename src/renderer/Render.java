@@ -21,7 +21,7 @@ public class Render {
     private Camera _camera;
     private RayTracerBase _rayTracer;
 
-    //We made a real Build Pattern,here is its implementation
+    //We made a real Build Pattern,here is it's implementation
 
     public static class RenderBuilder {
 
@@ -55,6 +55,9 @@ public class Render {
         }
     }
 
+    /**
+     * Render the image by writing every pixel of the grid
+     */
     public void renderImage() {
         if (_imageWriter == null)
             throw new MissingResourceException("You need to enter a image writer", ImageWriter.class.getName(), "");
@@ -66,17 +69,18 @@ public class Render {
             throw new MissingResourceException("You need to enter a ray tracer", RayTracerBase.class.getName(), "");
 
         for (int i = 0; i < _imageWriter.getNy(); i++) {
-            for (int j = 0; j < _imageWriter.getNy(); j++) {
+            for (int j = 0; j < _imageWriter.getNx(); j++) {
                 Ray myRay = _camera.constructRayThroughPixel(
                         _imageWriter.getNx(),
                         _imageWriter.getNy(),
                         j,
                         i);
                 Color myColor = _rayTracer.traceRay(myRay);
-                _imageWriter.writePixel(i, j, myColor);
+                _imageWriter.writePixel(j, i, myColor);
             }
         }
     }
+
     /**
      * Create a grid [over the picture] in the pixel color map. given the grid's
      * step and color.

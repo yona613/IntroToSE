@@ -35,17 +35,6 @@ public class Camera {
         this._height = builder._height;
     }
 
-
-    /*public Camera(Point3D p0, Vector vTo, Vector vUp) {
-        _p0 = p0;
-         if(!isZero(vTo.dotProduct(vUp))){
-             throw new IllegalArgumentException("The 2 vectors aren't orthogonal");
-         }
-        _vTo = vTo.normalized();
-        _vUp = vUp.normalized();
-        _vRight = vTo.crossProduct(vUp).normalized();
-    }*/
-
     public Point3D getP0() {
         return _p0;
     }
@@ -160,9 +149,9 @@ public class Camera {
         double rY = alignZero(_height / nY);
         //𝑅𝑥 = 𝑤/𝑁x
         double rX = alignZero(_width / nX);
-        //𝑦𝑖 = −(𝑖 – (𝑁𝑦 − 1)/2) ∙ 𝑅𝑦
-        double xJ = alignZero((j - ((nX - 1) / 2d)) * rX);
         //𝑥𝑗 = (𝑗 – (𝑁𝑥 − 1)/2) ∙ 𝑅x
+        double xJ = alignZero((j - ((nX - 1) / 2d)) * rX);
+        //𝑦𝑖 = −(𝑖 – (𝑁𝑦 − 1)/2) ∙ 𝑅𝑦
         double yI = alignZero(-(i - ((nY - 1) / 2d)) * rY);
 
         if (xJ != 0) {
