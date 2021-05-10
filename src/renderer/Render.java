@@ -11,13 +11,11 @@ public class Render {
 
     private Render(RenderBuilder renderBuilder) {
         this._imageWriter = renderBuilder._imageWriter;
-        this._scene = renderBuilder._scene;
         this._rayTracer = renderBuilder._rayTracer;
         this._camera = renderBuilder._camera;
     }
 
     private ImageWriter _imageWriter;
-    private Scene _scene;
     private Camera _camera;
     private RayTracerBase _rayTracer;
 
@@ -26,7 +24,6 @@ public class Render {
     public static class RenderBuilder {
 
         private ImageWriter _imageWriter;
-        private Scene _scene;
         private Camera _camera;
         private RayTracerBase _rayTracer;
 
@@ -36,7 +33,6 @@ public class Render {
         }
 
         public RenderBuilder setScene(Scene scene) {
-            this._scene = scene;
             return this;
         }
 
@@ -63,8 +59,7 @@ public class Render {
             throw new MissingResourceException("You need to enter a image writer", ImageWriter.class.getName(), "");
         if (_camera == null)
             throw new MissingResourceException("You need to enter a camera", Camera.class.getName(), "");
-        if (_scene == null)
-            throw new MissingResourceException("You need to enter a scene", Scene.class.getName(), "");
+
         if (_rayTracer == null)
             throw new MissingResourceException("You need to enter a ray tracer", RayTracerBase.class.getName(), "");
 
