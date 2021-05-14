@@ -41,6 +41,13 @@ public class Scene {
         public SceneBuilder(String name) {
             this.name = name;
         }
+        public SceneBuilder(Scene scene){
+            this.name = scene.name;
+            this.background = scene.background;
+            this.ambientLight = scene.ambientLight;
+            this.geometries = scene.geometries;
+            this.lights = scene.lights;
+        }
 
         public SceneBuilder setBackground(Color background) {
             this.background = background;

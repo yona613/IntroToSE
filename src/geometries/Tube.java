@@ -53,7 +53,7 @@ public class Tube extends Geometry {
     }
 
     @Override
-    public List<GeoPoint> findGeoIntersections(Ray ray) {
+    public List<GeoPoint> findGeoIntersections(Ray ray, double maxDistance) {
         /*
         The equation for a tube of radius r oriented along a line pa + vat:
         (q - pa - (va,q - pa)va)2 - r2 = 0
@@ -142,16 +142,35 @@ public class Tube extends Geometry {
             double t2 = alignZero((- b + Math.sqrt(delta)) / (2 * a));
             if (t1 > 0 && t2 > 0){
                 Point3D p1 = new Point3D(ray.getPoint(t1));
+                double distance1 = ray.get_p0().distance(p1);
                 Point3D p2 = new Point3D(ray.getPoint(t2));
-                return List.of(new GeoPoint(this, p1), new GeoPoint(this, p2));
+                double distance2 = ray.get_p0().distance(p2);
+                if (distance1 <= maxDistance && distance2 <= maxDistance){
+                    return List.of(new GeoPoint(this, p1), new GeoPoint(this, p2));
+                }
+                else if (distance1 <= maxDistance){
+                    return List.of(new GeoPoint(this, p1));
+                }
+                else if (distance2 <= maxDistance){
+                    return List.of(new GeoPoint(this, p2));
+                }
+                else{
+                    return null;
+                }
             }
             else if (t1 > 0){
                 Point3D p1 = new Point3D(ray.getPoint(t1));
-                return List.of(new GeoPoint(this, p1));
+                double distance1 = ray.get_p0().distance(p1);
+                if (distance1 <= maxDistance){
+                    return List.of(new GeoPoint(this, p1));
+                }
             }
             else if (t2 > 0){
                 Point3D p2 = new Point3D(ray.getPoint(t2));
-                return List.of(new GeoPoint(this, p2));
+                double distance2 = ray.get_p0().distance(p2);
+                if (distance2 <= maxDistance){
+                    return List.of(new GeoPoint(this, p2));
+                }
             }
         }
         return null;

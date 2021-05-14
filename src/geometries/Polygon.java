@@ -92,7 +92,7 @@ public class Polygon extends Geometry {
 
 
     @Override
-    public List<GeoPoint> findGeoIntersections(Ray ray) {
+    public List<GeoPoint> findGeoIntersections(Ray ray, double maxDistance) {
         //First ,we check if the plane of our polygon intersects with the ray ,if there's no intersection with the
         //plane so there's no intersection with the polygon.
 
@@ -115,7 +115,7 @@ public class Polygon extends Geometry {
         //Finally, you want to go around each adjacent pair of points in the polygon checking that P is inside
         // the polygon, which is done by checking that P is to the same side of each line made by the points.
 
-        List<GeoPoint> intersections = _plane.findGeoIntersections(ray);
+        List<GeoPoint> intersections = _plane.findGeoIntersections(ray, maxDistance);
 
         if (intersections == null)
             return null;

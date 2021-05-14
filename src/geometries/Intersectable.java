@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
  * Class for interface intersectable with fonction that returns list of intersections of a ray with the geometry object
  */
 public interface Intersectable {
+
     /**
      * Function that finds all intersections between geometric element and ray
      * @param ray
@@ -22,13 +23,23 @@ public interface Intersectable {
                 : geoList.stream().map(gp -> gp.point).collect(Collectors.toList());
     }
 
+    /**
+     * By default the distance is infinite
+     * @param ray
+     * @return
+     */
+    default List<GeoPoint> findGeoIntersections(Ray ray) {
+        return findGeoIntersections(ray, Double.POSITIVE_INFINITY);
+    }
 
     /**
-     * Function that finds all intersections between geometric element and ray
+     * Function that finds all intersections at good distance between geometric element and ray
      * @param ray
+     * @param maxDistance max distance of the intersection
      * @return List of GeoPoints of intersection
      */
-    public List<GeoPoint> findGeoIntersections(Ray ray);
+    public List<GeoPoint> findGeoIntersections(Ray ray, double maxDistance);
+
 
     /**
      * Class that contains geometry and point for implementation of intersectable

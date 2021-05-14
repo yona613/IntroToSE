@@ -21,14 +21,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Class to parse a XML file
+ */
 public class DalXml {
 
-    // parse XML file
     private DocumentBuilder db;
     private final String _filePath;
 
-    //The constructor will set the path of the file and create an instance of DocumentBuilder and too it
-    // add to it precautions/security to our DocumentBuilder "db"
+    /**
+     * The constructor will set the path of the file and create an instance of DocumentBuilder and too it
+     * add to it precautions/security to our DocumentBuilder "db"
+     */
     public DalXml(String filePath) throws ParserConfigurationException {
         this._filePath = filePath;
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -51,7 +55,7 @@ public class DalXml {
             //We studied together how the xml file is structured and we know that every time the background-color and
             //the ambient light will be the first data in the xml file and after we have all the data on the geometries
             //so we will get the first 2 value manually (attribute after attribute...)and for the geometries we set a switch
-            //to get data on all the geometries possible writed in the xml file.
+            //to get data on all the geometries possibly written in the xml file.
 
             var scene = doc.getDocumentElement();
             String color = scene.getAttribute("background-color");

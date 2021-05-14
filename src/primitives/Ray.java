@@ -10,10 +10,17 @@ public class Ray {
 
     final Point3D _p0;
     final Vector _dir;
+    private static final double DELTA = 0.1;
 
     public Ray(Point3D _p0, Vector _dir) {
         this._p0 = _p0;
         this._dir = _dir.normalized();
+    }
+
+    public Ray(Point3D head, Vector direction, Vector normal){
+        double delta = direction.dotProduct(normal) >= 0 ? DELTA : - DELTA;
+        _p0 = head.add(normal.scale(delta));
+        _dir = direction;
     }
 
     public Point3D get_p0() {
@@ -34,7 +41,12 @@ public class Ray {
         if (t == 0)
             return _p0;
         else {
-            return new Point3D(_p0).add(_dir.scale(t));
+            try {
+                Point3D point = new Point3D(_p0).add(_dir.scale(t));
+                return point;
+            } catch (Exception exception) {
+                return null;
+            }
         }
     }
 

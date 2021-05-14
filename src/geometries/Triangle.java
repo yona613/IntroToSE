@@ -25,12 +25,12 @@ public class Triangle extends Polygon {
     }
 
     @Override
-    public List<GeoPoint> findGeoIntersections(Ray ray) {
+    public List<GeoPoint> findGeoIntersections(Ray ray, double maxDistance) {
 
          /*
          We're starting to check if the plane where our triangle is ,intersect the ray ,if not return null,if yes :
         */
-        List<GeoPoint> intersections = _plane.findGeoIntersections(ray);
+        List<GeoPoint> intersections = _plane.findGeoIntersections(ray, maxDistance);
         if (intersections == null) return null;//Our plan doesn't intersect the ray
 
         Point3D p0 = ray.get_p0();

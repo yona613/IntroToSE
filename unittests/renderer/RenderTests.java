@@ -18,7 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 
 public class RenderTests {
-	private Camera camera = new Camera.CameraBuilder(Point3D.ZERO, new Vector(0, 0, -1), new Vector(0, -1, 0)) //
+	private Camera camera = new Camera.CameraBuilder(Point3D.ZERO, new Vector(0, 0, -1), new Vector(0, 1, 0)) //
 			.setDistance(100) //
 			.setViewPlaneSize(500, 500)
 			.build();
@@ -45,7 +45,6 @@ public class RenderTests {
 		ImageWriter imageWriter = new ImageWriter("base render test", 1000, 1000);
 		Render render = new Render.RenderBuilder() //
 				.setImageWriter(imageWriter) //
-				.setScene(scene) //
 				.setCamera(camera) //
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
@@ -72,7 +71,6 @@ public class RenderTests {
 		ImageWriter imageWriter = new ImageWriter("xml render test", 1000, 1000);
 		Render render = new Render.RenderBuilder() //
 				.setImageWriter(imageWriter) //
-				.setScene(scene) //
 				.setCamera(camera) //
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
@@ -100,7 +98,6 @@ public class RenderTests {
 		ImageWriter imageWriter = new ImageWriter("color render test", 1000, 1000);
 		Render render = new Render.RenderBuilder() //
 				.setImageWriter(imageWriter) //
-				.setScene(scene) //
 				.setCamera(camera) //
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();

@@ -5,12 +5,18 @@ import primitives.Point3D;
 import primitives.Util;
 import primitives.Vector;
 
+/**
+ * Class to implement a spot light source of the scene
+ */
 public class SpotLight extends PointLight implements LightSource {
 
+    /**
+     * Direction of the light
+     */
     protected Vector _dir;
 
-    public SpotLight(Color c, Point3D pos, double kc, double kl, double kq, Vector direction) {
-        super(c, pos, kc, kl, kq);
+    public SpotLight(Color c, Point3D pos, Vector direction) {
+        super(c, pos);
         this._dir = direction.normalized();
     }
 
