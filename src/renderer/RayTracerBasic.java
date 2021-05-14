@@ -226,4 +226,32 @@ public class RayTracerBasic extends RayTracerBase {
         return true;
     }
 
+/*    *//**
+     * The function checks whether there are any objects shading the light source
+     * from the point and returns false if it is and true otherwise
+     *
+     * @param lightSource       light source
+     * @param l        light to point direction vector (normalized)
+     * @param n        normal vector (normalized)
+     * @param geopoint checked geo-point
+     * @return light source not being shaded
+     *//*
+    private boolean unshaded(Vector l, Vector n, GeoPoint geopoint,LightSource lightSource) {
+
+        Vector lDir = l.scale(-1);
+        double Nv=n.dotProduct(lDir);
+        Vector delta = n.scale(Nv >= 0 ? DELTA : -DELTA);
+        geopoint.point.add(delta);
+        Ray shadowRay = new Ray(geopoint.point, lDir);
+        List<GeoPoint> intersections = _scene.geometries.findGeoIntersections(shadowRay);
+        if (intersections == null)
+            return true;
+
+        for (GeoPoint gp : intersections)
+            if (gp.geometry.getMaterial()._kd== 0)
+                return false;
+
+        return true;
+    }
+>>>>>>> 495a8260d39f3b4983b53eab241c424421c737fa*/
 }

@@ -34,4 +34,9 @@ public class SpotLight extends PointLight implements LightSource {
 
         return (pointlightIntensity.scale(factor));
     }
+    @Override
+    public double getDistance(Point3D point){
+        return getDistance(point);
+    }
+
 }
