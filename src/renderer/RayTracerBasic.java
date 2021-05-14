@@ -203,12 +203,12 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
     /**
-     * Checks if the point is in the shade or not
-     *
-     * @param light    the light
-     * @param l
-     * @param n
-     * @param geopoint the point
+     * The function checks whether there are any objects shading the light source
+     * from the point and returns false if it is and true otherwise
+     * @param light light source
+     * @param l light to point direction vector (normalized)
+     * @param n normal vector (normalized)
+     * @param geopoint checked geo-point
      * @return is the point unshaded
      */
     private boolean unshaded(LightSource light, Vector l, Vector n, GeoPoint geopoint) {
