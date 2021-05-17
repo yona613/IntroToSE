@@ -83,21 +83,29 @@ public class RayTracerBasic extends RayTracerBase {
         Vector n = geopoint.geometry.getNormal(geopoint.point);
         if (kkr > MIN_CALC_COLOR_K) {
             Ray reflectedRay = constructReflectedRay(n, geopoint.point, inRay);
-            List<GeoPoint> myPoints = geopoint.geometry.findGeoIntersections(reflectedRay);
+            GeoPoint reflectedPoint = findClosestIntersection(reflectedRay);
+            if (reflectedPoint != null){
+                color = color.add(calcColor(reflectedPoint, reflectedRay, level - 1, kkr).scale(kr));
+            }
+/*            List<GeoPoint> myPoints = _scene.geometries.findGeoIntersections(reflectedRay);
             if (myPoints != null) {
                 GeoPoint reflectedPoint = findClosestIntersection(reflectedRay, myPoints);
                 color = color.add(calcColor(reflectedPoint, reflectedRay, level - 1, kkr).scale(kr));
-            }
+            }*/
         }
         double kt = material.kT;
         double kkt = k * kt;
         if (kkt > MIN_CALC_COLOR_K) {
             Ray refractedRay = constructRefractedRay(n, geopoint.point, inRay);
-            List<GeoPoint> myPoints = geopoint.geometry.findGeoIntersections(refractedRay);
+            GeoPoint refractedPoint = findClosestIntersection(refractedRay);
+            if (refractedPoint != null){
+                color = color.add(calcColor(refractedPoint, refractedRay, level - 1, kkt).scale(kt));
+            }
+        /*    List<GeoPoint> myPoints = _scene.geometries.findGeoIntersections(refractedRay);
             if (myPoints != null) {
                 GeoPoint refractedPoint = findClosestIntersection(refractedRay, myPoints);
                 color = color.add(calcColor(refractedPoint, refractedRay, level - 1, kkt).scale(kt));
-            }
+            }*/
         }
         return color;
     }
@@ -115,15 +123,16 @@ public class RayTracerBasic extends RayTracerBase {
         Vector v = inRay.get_dir();
         Vector r = null;
         try {
-            r = v.substract(n.scale(v.dotProduct(n)).scale(2));
+            r = v.substract(n.scale(v.dotProduct(n)).scale(2)).normalized();
         } catch (Exception e) {
             return null;
         }
         return new Ray(point, r, n);
     }
 
-    private GeoPoint findClosestIntersection(Ray ray, List<GeoPoint> points) {
-        return ray.getClosestGeoPoint(points);
+    private GeoPoint findClosestIntersection(Ray ray) {
+        List<GeoPoint> geoPoints = _scene.geometries.findGeoIntersections(ray);
+        return ray.getClosestGeoPoint(geoPoints);
     }
 
 
