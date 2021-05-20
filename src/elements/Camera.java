@@ -16,10 +16,10 @@ import static primitives.Util.isZero;
  */
 public class Camera {
 
-    private final Point3D _p0;
-    private final Vector _vTo;
-    private final Vector _vUp;
-    private final Vector _vRight;
+    private Point3D _p0;
+    private Vector _vTo;
+    private Vector _vUp;
+    private Vector _vRight;
 
     private double _distance;
     private double _width;
@@ -110,10 +110,12 @@ public class Camera {
      */
     public void moveCamera(double up, double right, double to) {
         //move Point0 according to params
+        Point3D myPoint = new Point3D(this._p0);
         if (up == 0 && right == 0 && to == 0) return; //don't create Vector.Zero
-        if (up != 0) this._p0.add(_vUp.scale(up));
-        if (right != 0) this._p0.add(_vRight.scale(right));
-        if (to != 0) this._p0.add(_vTo.scale(to));
+        if (up != 0) myPoint = myPoint.add(_vUp.scale(up));
+        if (right != 0) myPoint = myPoint.add(_vRight.scale(right));
+        if (to != 0) myPoint = myPoint.add(_vTo.scale(to));
+        this._p0 = myPoint;
     }
 
     /***

@@ -37,7 +37,6 @@ public class ShadowTests {
 
 		Render render = new Render.RenderBuilder(). //
 				setImageWriter(new ImageWriter("shadowSphereTriangleInitial", 400, 400)) //
-
 				.setCamera(camera) //
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
