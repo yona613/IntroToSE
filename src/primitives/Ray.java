@@ -12,13 +12,14 @@ public class Ray {
     final Vector _dir;
     private static final double DELTA = 0.1;
 
+
     public Ray(Point3D _p0, Vector _dir) {
         this._p0 = _p0;
         this._dir = _dir.normalized();
     }
 
-    public Ray(Point3D head, Vector direction, Vector normal){
-        double delta = direction.dotProduct(normal) >= 0 ? DELTA : - DELTA;
+    public Ray(Point3D head, Vector direction, Vector normal) {
+        double delta = direction.dotProduct(normal) >= 0 ? DELTA : -DELTA;
         _p0 = head.add(normal.scale(delta));
         _dir = direction;
     }
@@ -73,11 +74,11 @@ public class Ray {
         return myPoint;
     }
 
-    public GeoPoint getClosestGeoPoint(List<GeoPoint> points){
+    public GeoPoint getClosestGeoPoint(List<GeoPoint> points) {
         if (points == null)
             return null;
 
-       GeoPoint myPoint = points.get(0);
+        GeoPoint myPoint = points.get(0);
 
         for (var point : points
         ) {

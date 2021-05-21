@@ -87,11 +87,6 @@ public class RayTracerBasic extends RayTracerBase {
             if (reflectedPoint != null){
                 color = color.add(calcColor(reflectedPoint, reflectedRay, level - 1, kkr).scale(kr));
             }
-/*            List<GeoPoint> myPoints = _scene.geometries.findGeoIntersections(reflectedRay);
-            if (myPoints != null) {
-                GeoPoint reflectedPoint = findClosestIntersection(reflectedRay, myPoints);
-                color = color.add(calcColor(reflectedPoint, reflectedRay, level - 1, kkr).scale(kr));
-            }*/
         }
         double kt = material.kT;
         double kkt = k * kt;
@@ -101,19 +96,28 @@ public class RayTracerBasic extends RayTracerBase {
             if (refractedPoint != null){
                 color = color.add(calcColor(refractedPoint, refractedRay, level - 1, kkt).scale(kt));
             }
-        /*    List<GeoPoint> myPoints = _scene.geometries.findGeoIntersections(refractedRay);
-            if (myPoints != null) {
-                GeoPoint refractedPoint = findClosestIntersection(refractedRay, myPoints);
-                color = color.add(calcColor(refractedPoint, refractedRay, level - 1, kkt).scale(kt));
-            }*/
         }
         return color;
     }
 
+    /**
+     * Construct the ray getting refracted on a point
+     * @param n normal to the point
+     * @param point the point
+     * @param inRay the ray entering
+     * @return the refracted ray
+     */
     private Ray constructRefractedRay(Vector n, Point3D point, Ray inRay) {
         return new Ray(point, inRay.get_dir(), n);
     }
 
+    /**
+     * Construct the ray getting reflected on a point
+     * @param n normal to the point
+     * @param point the point
+     * @param inRay the ray entering
+     * @return the reflected ray
+     */
     private Ray constructReflectedRay(Vector n, Point3D point, Ray inRay) {
         //𝒓 = 𝒗 − 𝟐 ∙ (𝒗 ∙ 𝒏) ∙ 𝒏
         Vector v = inRay.get_dir();
@@ -233,6 +237,14 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
 
+    /**
+     * Calculate value of transparency of the point
+     * @param light light source
+     * @param l light to point direction vector (normalized)
+     * @param n normal vector (normalized)
+     * @param geopoint checked geo-point
+     * @return value of the transparency
+     */
     private double transparency(LightSource light, Vector l, Vector n, GeoPoint geopoint) {
         Vector lightDirection = l.scale(-1); // from point to light source
         Ray lightRay = new Ray(geopoint.point, lightDirection, n);
