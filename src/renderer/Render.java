@@ -13,11 +13,13 @@ public class Render {
         this._imageWriter = renderBuilder._imageWriter;
         this._rayTracer = renderBuilder._rayTracer;
         this._camera = renderBuilder._camera;
+        this._numberOfRaySamples = renderBuilder._numberOfRaySamples;
     }
 
     private ImageWriter _imageWriter;
     private Camera _camera;
     private RayTracerBase _rayTracer;
+    private int _numberOfRaySamples;
 
     //We made a real Build Pattern,here is it's implementation
 
@@ -26,6 +28,7 @@ public class Render {
         private ImageWriter _imageWriter;
         private Camera _camera;
         private RayTracerBase _rayTracer;
+        private int _numberOfRaySamples = 4;
 
         public RenderBuilder setImageWriter(ImageWriter imageWriter) {
             this._imageWriter = imageWriter;
@@ -42,9 +45,16 @@ public class Render {
             return this;
         }
 
+        public RenderBuilder setNumberOfRaySamples(int numberOfRaySamples) {
+            this._numberOfRaySamples = numberOfRaySamples;
+            return this;
+        }
+
         public Render build() {
             return new Render(this);
         }
+
+
     }
 
     /**
@@ -84,22 +94,21 @@ public class Render {
         if (_rayTracer == null)
             throw new MissingResourceException("You need to enter a ray tracer", RayTracerBase.class.getName(), "");
 
-        int numberOfSamples = 20;
         for (int i = 0; i < _imageWriter.getNy(); i++) {
             for (int j = 0; j < _imageWriter.getNx(); j++) {
                 Color myColor = new Color(0, 0, 0);
-                for (double k = 0; k < numberOfSamples; k++) {
-                    for (double l = 0; l < numberOfSamples; l++) {
+                for (double k = 0; k < this._numberOfRaySamples; k++) {
+                    for (double l = 0; l < this._numberOfRaySamples; l++) {
                         Ray myRay = _camera.constructRayThroughPixel(
                                 _imageWriter.getNx(),
                                 _imageWriter.getNy(),
-                                (j + l / (numberOfSamples)),
-                                (i + k / numberOfSamples));
+                                (j + l / (this._numberOfRaySamples)),
+                                (i + k / this._numberOfRaySamples));
                         Color color = _rayTracer.traceRay(myRay);
                         myColor = myColor.add(color);
                     }
                 }
-                _imageWriter.writePixel(j, i, myColor.reduce((numberOfSamples * numberOfSamples)));
+                _imageWriter.writePixel(j, i, myColor.reduce((this._numberOfRaySamples * this._numberOfRaySamples)));
             }
         }
     }
