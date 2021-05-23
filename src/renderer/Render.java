@@ -72,11 +72,44 @@ public class Render {
     }
 
     /**
+     * Render the image by writing every pixel of the grid
+     * Use of AntiAliasing method that is shooting lots of beams in place of only one in the
+     * center of the pixel
+     */
+    public void renderImageWithAntialiasing() {
+        if (_imageWriter == null)
+            throw new MissingResourceException("You need to enter a image writer", ImageWriter.class.getName(), "");
+        if (_camera == null)
+            throw new MissingResourceException("You need to enter a camera", Camera.class.getName(), "");
+        if (_rayTracer == null)
+            throw new MissingResourceException("You need to enter a ray tracer", RayTracerBase.class.getName(), "");
+
+        int numberOfSamples = 20;
+        for (int i = 0; i < _imageWriter.getNy(); i++) {
+            for (int j = 0; j < _imageWriter.getNx(); j++) {
+                Color myColor = new Color(0, 0, 0);
+                for (double k = 0; k < numberOfSamples; k++) {
+                    for (double l = 0; l < numberOfSamples; l++) {
+                        Ray myRay = _camera.constructRayThroughPixel(
+                                _imageWriter.getNx(),
+                                _imageWriter.getNy(),
+                                (j + l / (numberOfSamples)),
+                                (i + k / numberOfSamples));
+                        Color color = _rayTracer.traceRay(myRay);
+                        myColor = myColor.add(color);
+                    }
+                }
+                _imageWriter.writePixel(j, i, myColor.reduce((numberOfSamples * numberOfSamples)));
+            }
+        }
+    }
+
+    /**
      * Create a grid [over the picture] in the pixel color map. given the grid's
      * step and color.
      *
-     * @param interval  grid's step
-     * @param color grid's color
+     * @param interval grid's step
+     * @param color    grid's color
      */
     public void printGrid(int interval, Color color) {
         if (_imageWriter == null)

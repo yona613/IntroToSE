@@ -76,8 +76,8 @@ public class Tube extends Geometry {
         double vva;
         double pva;
         double a;
-        double b;
-        double c;
+        double b = 0;
+        double c = 0;
 
         //check every variables to avoid ZERO vector
         if (ray.get_p0().equals(this._axisRay.get_p0())){
@@ -103,13 +103,20 @@ public class Tube extends Geometry {
             }
             else if (vva == 0){
                 a = v.dotProduct(v);
-                if (deltaP.equals(va.scale(deltaP.dotProduct(va)))){
-                    b = 0;
-                    c = - _radius * _radius;
-                }
-                else{
-                    b = 2 * v.dotProduct(deltaP.substract(va.scale(deltaP.dotProduct(va))));
-                    c = (deltaP.substract(va.scale(deltaP.dotProduct(va))).dotProduct(deltaP.substract(va.scale(deltaP.dotProduct(va))))) - this._radius * this._radius;
+                Vector scale;
+                try {
+                    scale = va.scale(deltaP.dotProduct(va));
+                    if (deltaP.equals(scale)){
+                        b = 0;
+                        c = - _radius * _radius;
+                    }
+                    else{
+                        b = 2 * v.dotProduct(deltaP.substract(scale));
+                        c = (deltaP.substract(scale).dotProduct(deltaP.substract(scale))) - this._radius * this._radius;
+                    }
+                } catch (Exception e) {
+                    b = 2 * v.dotProduct(deltaP);
+                    c = (deltaP).dotProduct(deltaP) - this._radius * this._radius;
                 }
             }
             else if (pva == 0){
@@ -119,14 +126,22 @@ public class Tube extends Geometry {
             }
             else {
                 a = (v.substract(va.scale(vva))).dotProduct(v.substract(va.scale(vva)));
-                if (deltaP.equals(va.scale(deltaP.dotProduct(va)))){
-                    b = 0;
-                    c = - _radius * _radius;
+                Vector scale;
+                try {
+                    scale = va.scale(deltaP.dotProduct(va));
+                    if (deltaP.equals(scale)){
+                        b = 0;
+                        c = - _radius * _radius;
+                    }
+                    else{
+                        b = 2 * v.substract(va.scale(vva)).dotProduct(deltaP.substract(scale));
+                        c = (deltaP.substract(scale).dotProduct(deltaP.substract(scale))) - this._radius * this._radius;
+                    }
+                } catch (Exception e) {
+                    b = 2 * v.substract(va.scale(vva)).dotProduct(deltaP);
+                    c = (deltaP.dotProduct(deltaP)) - this._radius * this._radius;
                 }
-                else{
-                    b = 2 * v.substract(va.scale(vva)).dotProduct(deltaP.substract(va.scale(deltaP.dotProduct(va))));
-                    c = (deltaP.substract(va.scale(deltaP.dotProduct(va))).dotProduct(deltaP.substract(va.scale(deltaP.dotProduct(va))))) - this._radius * this._radius;
-                }
+
             }
         }
 

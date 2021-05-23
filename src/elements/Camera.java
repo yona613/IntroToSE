@@ -141,7 +141,7 @@ public class Camera {
      * @param i  number of the pixel in a column
      * @return the ray through pixel's center
      */
-    public Ray constructRayThroughPixel(int nX, int nY, int j, int i) {
+    public Ray constructRayThroughPixel(int nX, int nY, double j, double i) {
 
         //𝑃𝑐 = 𝑃0 + 𝑑∙𝑣𝑡𝑜
         Point3D pc = _p0.add(_vTo.scale(_distance));

@@ -34,7 +34,6 @@ public class RayTracerBasic extends RayTracerBase {
     public Color traceRay(Ray ray) {
 
         List<GeoPoint> myPoints = _scene.geometries.findGeoIntersections(ray);
-
         if (myPoints != null) {
             GeoPoint myPoint = ray.getClosestGeoPoint(myPoints);
             return calcColor(myPoint, ray);
@@ -130,6 +129,11 @@ public class RayTracerBasic extends RayTracerBase {
         return new Ray(point, r, n);
     }
 
+    /**
+     * Find closest intersection point between a ray and the scene's geometries
+     * @param ray the ray
+     * @return the closest point
+     */
     private GeoPoint findClosestIntersection(Ray ray) {
         List<GeoPoint> geoPoints = _scene.geometries.findGeoIntersections(ray);
         return ray.getClosestGeoPoint(geoPoints);
@@ -139,9 +143,9 @@ public class RayTracerBasic extends RayTracerBase {
     /**
      * Calculate the color of the local effects of the light
      *
-     * @param point
-     * @param ray
-     * @return
+     * @param point point calculated
+     * @param ray ray entering to the point
+     * @return local color effect on the point
      */
     private Color calcLocalEffects(GeoPoint point, Ray ray, double k) {
         Vector v = ray.get_dir();
@@ -155,7 +159,7 @@ public class RayTracerBasic extends RayTracerBase {
         for (LightSource lightSource : _scene.lights) {
             Vector l = lightSource.getL(point.point);
             double nl = alignZero(n.dotProduct(l));
-            if (nl * nv > 0) { // sign(nl) == sing(nv)
+            if (nl * nv > 0) { // sign(nl) == sign(nv)
                 double ktr = transparency(lightSource, l, n, point);
                 if (ktr * k > MIN_CALC_COLOR_K) {
                     Color lightIntensity = lightSource.getIntensity(point.point).scale(ktr);
@@ -172,11 +176,11 @@ public class RayTracerBasic extends RayTracerBase {
     /**
      * Calculate color of the diffusive effects of the light
      *
-     * @param kd
-     * @param l
-     * @param n
-     * @param lightIntensity
-     * @return
+     * @param kd diffusive ratio
+     * @param l light's direction vector
+     * @param n normal vector
+     * @param lightIntensity intensity of the light
+     * @return color of the diffusive effect
      */
     private Color calcDiffusive(double kd, Vector l, Vector n, Color lightIntensity) {
         double lN;
@@ -191,13 +195,13 @@ public class RayTracerBasic extends RayTracerBase {
     /**
      * Calculate color of the specular effects of the light
      *
-     * @param ks
-     * @param l
-     * @param n
-     * @param v
-     * @param nShininess
-     * @param lightIntensity
-     * @return
+     * @param ks specular ratio
+     * @param l light's direction vector
+     * @param n normal vector
+     * @param v ray's direction vector
+     * @param nShininess shininess of the object
+     * @param lightIntensity intensity of the light
+     * @return color of specular effect
      */
     private Color calcSpecular(double ks, Vector l, Vector n, Vector v, double nShininess, Color lightIntensity) {
 
@@ -211,31 +215,6 @@ public class RayTracerBasic extends RayTracerBase {
 
         return lightIntensity.scale(ks * Math.pow(Math.max(0, vR), nShininess));
     }
-
-    /**
-     * The function checks whether there are any objects shading the light source
-     * from the point and returns false if it is and true otherwise
-     * @param light light source
-     * @param l light to point direction vector (normalized)
-     * @param n normal vector (normalized)
-     * @param geopoint checked geo-point
-     * @return is the point unshaded
-     */
-    private boolean unshaded(LightSource light, Vector l, Vector n, GeoPoint geopoint) {
-        Vector lightDirection = l.scale(-1); // from point to light source
-        Ray lightRay = new Ray(geopoint.point, lightDirection, n); // refactored ray head move
-        List<GeoPoint> intersections = _scene.geometries.findGeoIntersections(lightRay, light.getDistance(geopoint.point));
-        if (intersections != null) {
-            double lightDistance = light.getDistance(geopoint.point);
-            for (GeoPoint intersection : intersections) {
-                if (alignZero(intersection.point.distance(geopoint.point) - lightDistance) <= 0 && intersection.geometry.getMaterial().kT == 0){
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
 
     /**
      * Calculate value of transparency of the point
@@ -261,33 +240,27 @@ public class RayTracerBasic extends RayTracerBase {
         return ktr;
     }
 
-
-    /*    *//**
+    /**
      * The function checks whether there are any objects shading the light source
      * from the point and returns false if it is and true otherwise
-     *
-     * @param lightSource       light source
-     * @param l        light to point direction vector (normalized)
-     * @param n        normal vector (normalized)
+     * @param light light source
+     * @param l light to point direction vector (normalized)
+     * @param n normal vector (normalized)
      * @param geopoint checked geo-point
-     * @return light source not being shaded
-     *//*
-    private boolean unshaded(Vector l, Vector n, GeoPoint geopoint,LightSource lightSource) {
-
-        Vector lDir = l.scale(-1);
-        double Nv=n.dotProduct(lDir);
-        Vector delta = n.scale(Nv >= 0 ? DELTA : -DELTA);
-        geopoint.point.add(delta);
-        Ray shadowRay = new Ray(geopoint.point, lDir);
-        List<GeoPoint> intersections = _scene.geometries.findGeoIntersections(shadowRay);
-        if (intersections == null)
-            return true;
-
-        for (GeoPoint gp : intersections)
-            if (gp.geometry.getMaterial()._kd== 0)
-                return false;
-
+     * @return is the point unshaded
+     */
+    private boolean unshaded(LightSource light, Vector l, Vector n, GeoPoint geopoint) {
+        Vector lightDirection = l.scale(-1); // from point to light source
+        Ray lightRay = new Ray(geopoint.point, lightDirection, n); // refactored ray head move
+        List<GeoPoint> intersections = _scene.geometries.findGeoIntersections(lightRay, light.getDistance(geopoint.point));
+        if (intersections != null) {
+            double lightDistance = light.getDistance(geopoint.point);
+            for (GeoPoint intersection : intersections) {
+                if (alignZero(intersection.point.distance(geopoint.point) - lightDistance) <= 0 && intersection.geometry.getMaterial().kT == 0){
+                    return false;
+                }
+            }
+        }
         return true;
     }
->>>>>>> 495a8260d39f3b4983b53eab241c424421c737fa*/
 }

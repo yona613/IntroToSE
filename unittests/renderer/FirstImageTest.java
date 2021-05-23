@@ -61,9 +61,9 @@ public class FirstImageTest {
                         .setKd(0.7).setKs(0.5).setkT(0.4))
                 .setEmission(new Color(30, 30, 150)));
 
-        myScene.geometries.add(new Polygon(new Point3D(1, 0, 0), new Point3D(800, 0, 0), new Point3D(800, 0, 1000), new Point3D(0, 0, 1000))
+      /*  myScene.geometries.add(new Polygon(new Point3D(1, 0, 0), new Point3D(800, 0, 0), new Point3D(800, 0, 1000), new Point3D(0, 0, 1000))
                 .setEmission(Color.WHITE)
-                .setMaterial(new Material().setkT(0).setnShininess(1).setKs(0.000001).setKd(0.000001).setkR(5000)));
+                .setMaterial(new Material().setkT(0).setnShininess(1).setKs(0.000001).setKd(0.000001).setkR(5000)));*/
 
         myScene = new Scene.SceneBuilder(myScene).setAmbientLight(new AmbientLight(Color.MAGENTA, 0.2)).setBackground(Color.PINK).build();
 
