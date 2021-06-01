@@ -55,6 +55,7 @@ public class RayTracerBasic extends RayTracerBase {
 
     /**
      * Get the color of an intersection point using the Phong model
+     * Recursive function
      *
      * @param geoPoint point of intersection
      * @return Color of the intersection point
@@ -148,27 +149,33 @@ public class RayTracerBasic extends RayTracerBase {
      * @return local color effect on the point
      */
     private Color calcLocalEffects(GeoPoint point, Ray ray, double k) {
+        //direction vector of the ray
         Vector v = ray.get_dir();
+        //normal to geometry of the point
         Vector n = point.geometry.getNormal(point.point);
+        //check if normal to the geometry is orthogonal to ray
         double nv = alignZero(n.dotProduct(v));
-        if (nv == 0) return Color.BLACK;
+        if (nv == 0) return Color.BLACK; //then no color
         double nShininess = point.geometry.getMaterial()._nShininess;
         double kd = point.geometry.getMaterial()._kd;
         double ks = point.geometry.getMaterial()._ks;
         Color color = Color.BLACK;
+        //get color given by every light source
         for (LightSource lightSource : _scene.lights) {
             Vector l = lightSource.getL(point.point);
             double nl = alignZero(n.dotProduct(l));
             if (nl * nv > 0) { // sign(nl) == sign(nv)
+                //get transparency of the object
                 double ktr = transparency(lightSource, l, n, point);
-                if (ktr * k > MIN_CALC_COLOR_K) {
+                if (ktr * k > MIN_CALC_COLOR_K) { //check if the depth of calculation was reached then don't calculate any more
+                    // color is scaled by transparency to get the right color effect
                     Color lightIntensity = lightSource.getIntensity(point.point).scale(ktr);
+                    //get effects of the color and add them to the color
                     color = color.add(calcDiffusive(kd, l, n, lightIntensity),
                             calcSpecular(ks, l, n, v, nShininess, lightIntensity));
                 }
             }
         }
-
         return color;
     }
 
@@ -189,6 +196,7 @@ public class RayTracerBasic extends RayTracerBase {
         } catch (Exception exception) {
             return lightIntensity.scale(0);
         }
+        //color = light * |l.n| * kd
         return lightIntensity.scale(Math.abs(lN) * kd);
     }
 
@@ -210,14 +218,16 @@ public class RayTracerBasic extends RayTracerBase {
         try {
             vR = v.scale(-1).normalized().dotProduct(r.normalized());
         } catch (Exception exception) {
+            //vR = 0, 0^everything = 1
             return lightIntensity.scale(1);
         }
-
+        //color = ks * max(0, -v.r)^nSh
         return lightIntensity.scale(ks * Math.pow(Math.max(0, vR), nShininess));
     }
 
     /**
      * Calculate value of transparency of the point
+     *
      * @param light light source
      * @param l light to point direction vector (normalized)
      * @param n normal vector (normalized)
@@ -229,7 +239,7 @@ public class RayTracerBasic extends RayTracerBase {
         Ray lightRay = new Ray(geopoint.point, lightDirection, n);
         double lightDistance = light.getDistance(geopoint.point);
         var intersections = _scene.geometries.findGeoIntersections(lightRay);
-        if (intersections == null) return 1.0;
+        if (intersections == null) return 1.0; //no intersection
         double ktr = 1.0;
         for (GeoPoint gp : intersections) {
             if (alignZero(gp.point.distance(geopoint.point) - lightDistance) <= 0) {

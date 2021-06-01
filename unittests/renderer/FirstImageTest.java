@@ -9,61 +9,60 @@ import scene.Scene;
 public class FirstImageTest {
 
     Camera myCamera = new Camera.CameraBuilder(new Point3D(0, 0, 10), new Vector(1, 0, -1 / 3), new Vector(1 / 3, 0, 1))
-            .setDistance(300)
-            .setViewPlaneSize(400, 400)
+            .setDistance(600)
+            .setViewPlaneSize(800, 800)
             .build();
 
     Scene myScene = new Scene.SceneBuilder("firstImage").build();
 
     @Test
     public void createFirstImage() {
-        myScene.geometries.add(new Sphere(20d, new Point3D(200, 0, 20))
-                .setEmission(Color.BLUE)
-                .setMaterial(new Material().setKd(0.5).setkR(0.8).setkT(0.9).setKs(0.5).setnShininess(3)));
-        myScene.geometries.add(new Sphere(20d, new Point3D(200, -50, 20))
-                .setEmission(Color.RED)
+        myScene.geometries.add(new Sphere(20d, new Point3D(200, -90, 20))
+                .setEmission(Color.BLUE.reduce(3))
+                .setMaterial(new Material().setKd(0.5).setkR(0.8).setkT(0.9).setKs(0.5).setnShininess(30)));
+        myScene.geometries.add(new Sphere(20d, new Point3D(200, -150, 20))
+                .setEmission(new Color(153,50,204))
                 .setMaterial(new Material().setKd(0.5).setkT(0.1).setKs(0.5).setnShininess(7)));
         myScene.geometries.add(new Sphere(25d, new Point3D(130, -15, 25))
-                .setEmission(Color.GREEN)
+                .setEmission(Color.GREEN.reduce(3))
                 .setMaterial(new Material().setKd(0.5).setkR(0.4).setKs(0.5).setnShininess(6)));
-        myScene.geometries.add(new Sphere(27d, new Point3D(-50, 100, 27))
-                .setEmission(Color.DARKGREY)
-                .setMaterial(new Material().setKd(0.5).setkT(0.1).setKs(0.5).setnShininess(3)));
-        myScene.geometries.add(new Sphere(28d, new Point3D(-90, -80, 28))
-                .setEmission(Color.YELLOW)
-                .setMaterial(new Material().setkT(0.5).setKd(0.5).setkR(0.4).setKs(0.5).setnShininess(3)));
-        myScene.geometries.add(new Sphere(10d, new Point3D(90, 10, 10))
-                .setEmission(Color.CYAN)
+        myScene.geometries.add(new Sphere(27d, new Point3D(100, 100, 27))
+                .setEmission(Color.PINK.reduce(10))
+                .setMaterial(new Material().setKd(0.5).setkT(0.1).setKs(0.5).setnShininess(43)));
+        myScene.geometries.add(new Sphere(28d, new Point3D(390, -80, 28))
+                .setEmission(Color.YELLOW.reduce(3))
+                .setMaterial(new Material().setkT(0.5).setKd(0.5).setkR(0.4).setKs(0.5).setnShininess(53)));
+        myScene.geometries.add(new Sphere(10d, new Point3D(90, -100, 10))
+                .setEmission(Color.CYAN.reduce(3))
                 .setMaterial(new Material().setKd(0.5).setKs(0.5).setkT(0.3).setnShininess(10)));
-        myScene.geometries.add(new Sphere(30d, new Point3D(90, 10, -30))
-                .setEmission(Color.RED)
+        myScene.geometries.add(new Sphere(30d, new Point3D(90, -50, -30))
+                .setEmission(Color.MAGENTA.reduce(3))
                 .setMaterial(new Material().setKd(0.5).setKs(0.5).setkT(0.8).setkR(0.4).setnShininess(6)));
-        myScene.geometries.add(new Cylinder(10d, new Ray(new Point3D(90, 10, -30), new Vector(0, 10 / 9, 2)), 200d)
+        myScene.geometries.add(new Cylinder(10d, new Ray(new Point3D(90, 10, 1), new Vector(0, 10 / 9, 2)), 200d)
                 .setEmission(new Color(100, 80, 0))
-                .setMaterial(new Material().setkT(0.7).setKd(0.5).setKs(0.5).setnShininess(60)));
+                .setMaterial(new Material().setkT(0.7).setKd(0.5).setKs(0.5).setnShininess(30)));
 
         myScene.geometries.add(new Polygon(new Point3D(200, -50, 50), new Point3D(130, 40, 50), new Point3D(-50, 100, 50))
-                .setEmission(Color.ORANGE)
-                .setMaterial(new Material().setkT(0.7).setKd(0.5).setKs(0.5).setnShininess(60)));
+                .setEmission(Color.ORANGE.reduce(3))
+                .setMaterial(new Material().setkT(0.7).setKd(0.5).setKs(0.5).setnShininess(20)));
 
         myScene.geometries.add(new Plane(new Point3D(-90, -80, 200), new Point3D(90, 80, 0), new Point3D(90, -80, 90))
-                .setMaterial(new Material().setnShininess(100)
+                .setMaterial(new Material().setnShininess(10)
                         .setKd(0.7).setKs(0.5).setkT(0.8))
                 .setEmission(new Color(100, 10, 10)));
 
         myScene.geometries.add(new Plane(new Point3D(0, 0, 0), new Point3D(1, 0, 0), new Point3D(0, 1, 0))
-                .setMaterial(new Material().setnShininess(70)
-                        .setKd(0.7).setKs(0.5).setkT(0.4))
-                .setEmission(Color.BLUE));
+                .setMaterial(new Material().setnShininess(30)
+                        .setKd(0.7).setKs(0.5).setkT(0.4).setkR(0.6))
+                .setEmission(Color.BLUE.reduce(3)));
 
         myScene.geometries.add(new Tube(15d, new Ray(new Point3D(90, -100, 0), new Vector(1 / 3, 0, 1)))
-                .setMaterial(new Material().setnShininess(100)
+                .setMaterial(new Material().setnShininess(10)
                         .setKd(0.7).setKs(0.5).setkT(0.4))
                 .setEmission(new Color(30, 30, 150)));
 
-      /*  myScene.geometries.add(new Polygon(new Point3D(1, 0, 0), new Point3D(800, 0, 0), new Point3D(800, 0, 1000), new Point3D(0, 0, 1000))
-                .setEmission(Color.WHITE)
-                .setMaterial(new Material().setkT(0).setnShininess(1).setKs(0.000001).setKd(0.000001).setkR(5000)));*/
+        myScene.geometries.add(new Polygon(new Point3D(1, 0, -1000), new Point3D(1, 0, 1000), new Point3D(1000, 0, 1000), new Point3D(1000, 0, -1000))
+                .setMaterial(new Material().setkR(1).setKs(1)));
 
         myScene = new Scene.SceneBuilder(myScene).setAmbientLight(new AmbientLight(Color.MAGENTA, 0.2)).setBackground(Color.PINK).build();
 
@@ -76,7 +75,11 @@ public class FirstImageTest {
                         .setkL(1E-10).setkQ(1.5E-10));
 
         myScene.lights.add(
-                new DirectionalLight(Color.GREEN, new Vector(1, 1, -23))
+                new PointLight(new Color(100, 40, 100), new Point3D(100, 300, 500))
+                        .setkL(1E-10).setkQ(1.5E-10));
+
+        myScene.lights.add(
+                new DirectionalLight(Color.GREEN, new Vector(50, 50, 50))
         );
 
         Render render = new Render.RenderBuilder(). //
@@ -84,7 +87,7 @@ public class FirstImageTest {
                 .setCamera(myCamera) //
                 .setRayTracer(new RayTracerBasic(myScene))
                 .build();
-        render.renderImage();
+        render.renderImageWithAntialiasing();
         render.writeToImage();
 
         myCamera.moveCamera(40, 150, -40);
@@ -95,7 +98,7 @@ public class FirstImageTest {
                 .setCamera(myCamera) //
                 .setRayTracer(new RayTracerBasic(myScene))
                 .build();
-        render.renderImage();
+        render.renderImageWithAntialiasing();
         render.writeToImage();
 
     }

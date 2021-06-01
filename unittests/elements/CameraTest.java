@@ -6,6 +6,8 @@ import primitives.Ray;
 import primitives.Vector;
 import elements.Camera.*;
 
+import java.util.HashMap;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CameraTest {
@@ -54,5 +56,13 @@ class CameraTest {
         System.out.println(camera);
         System.out.println(camera2);
 
+    }
+
+    @Test
+    void construct5RaysFromRay(){
+        HashMap<Integer, Ray> myRays = new HashMap<>();
+        Camera camera = new CameraBuilder(Point3D.ZERO, new Vector(1,0,0), new Vector(0,0,1)).setViewPlaneSize(3,3).setDistance(1).build();
+        myRays.put(3, new Ray(new Point3D(0,0,0), new Vector(1,0,0)));
+        myRays = camera.construct5RaysFromRay(myRays,1, 1);
     }
 }
