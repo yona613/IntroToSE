@@ -46,7 +46,7 @@ public class ReflectionRefractionTests {
 				.setCamera(camera) //
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
-		render.renderImage();
+		render.renderImageWithAntialiasing();
 		render.writeToImage();
 	}
 
@@ -88,7 +88,7 @@ public class ReflectionRefractionTests {
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
 
-		render.renderImage();
+		render.renderImageWithAntialiasing();
 		render.writeToImage();
 	}
 
@@ -124,7 +124,7 @@ public class ReflectionRefractionTests {
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
 
-		render.renderImage();
+		render.renderImageWithAntialiasing();
 		render.writeToImage();
 	}
 }

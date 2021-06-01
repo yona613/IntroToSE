@@ -2,11 +2,29 @@ package primitives;
 
 public class Material {
 
+    /**
+     * Diffusion ratio
+     */
     public double _kd = 0d;
+
+    /**
+     * Specular ratio
+     */
     public double _ks = 0d;
+
+    /**
+     * Shininess of the object ratio
+     */
     public double _nShininess = 1d;
 
+    /**
+     * Transparency ratio
+     */
     public double kT = 0d;
+
+    /**
+     * Reflection ratio ratio
+     */
     public double kR = 0d;
 
     public Material setkT(double kT) {

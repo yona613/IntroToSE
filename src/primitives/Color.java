@@ -1,5 +1,7 @@
 package primitives;
 
+import java.util.Objects;
+
 /**
  * Wrapper class for java.awt.Color The constructors operate with any
  * non-negative RGB values. The colors are maintained without upper limit of
@@ -186,4 +188,16 @@ public class Color {
         return new Color(r / k, g / k, b / k);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Color color = (Color) o;
+        return Math.abs(this.r - ((Color) o).r) < 2 && Math.abs(this.g - ((Color) o).g) < 2 && Math.abs(this.b - ((Color) o).b) < 2;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(r, g, b);
+    }
 }

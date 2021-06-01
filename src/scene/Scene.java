@@ -15,10 +15,29 @@ import java.util.List;
  */
 public class Scene {
 
+    /**
+     * name of the scene
+     */
     public String name;
+
+    /**
+     * background color of the scene
+     */
     public Color background;
+
+    /**
+     * Ambient light of the scene
+     */
     public AmbientLight ambientLight;
+
+    /**
+     * Geometries figures of the scene
+     */
     public Geometries geometries;
+
+    /**
+     * Light sources of the scene
+     */
     public List<LightSource> lights;
 
     private Scene(SceneBuilder builder) {
