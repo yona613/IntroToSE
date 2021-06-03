@@ -229,34 +229,6 @@ public class Camera {
 
     }
 
-    public Ray constructRayFromPixel(int nX, int nY, double j, double i, double pixelH, double pixelW, Ray ray) {
-
-        Point3D pIJ = ray.getPoint(_distance);
-
-        //𝑅𝑦 = ℎ/𝑁𝑦
-        double rY = pixelH / nY;
-        //𝑅𝑥 = 𝑤/𝑁x
-        double rX = pixelW / nX;
-        //𝑥𝑗 = (𝑗 – (𝑁𝑥 − 1)/2) ∙ 𝑅x
-        double xJ = ((j + r.nextDouble() / (r.nextBoolean() ? 2 : -2)) - ((nX - 1) / 2d)) * rX;
-        //𝑦𝑖 = −(𝑖 – (𝑁𝑦 − 1)/2) ∙ 𝑅𝑦
-        double yI = -((i + r.nextDouble() / (r.nextBoolean() ? 2 : -2)) - ((nY - 1) / 2d)) * rY;
-
-        if (xJ != 0) {
-            pIJ = pIJ.add(_vRight.scale(xJ));
-        }
-        if (yI != 0) {
-            pIJ = pIJ.add(_vUp.scale(yI));
-        }
-
-        //𝒗𝒊,𝒋 = 𝑷𝒊,𝒋 − 𝑷𝟎
-        Vector vIJ = ray.getPoint(_distance + _depthOfField).subtract(pIJ);
-
-        return new Ray(pIJ, vIJ);
-
-    }
-
-
     /**
      * This function get a ray launched in the center of a pixel and launch n*m others rays
      * on the same pixel
@@ -287,7 +259,40 @@ public class Camera {
         return myRays;
     }
 
-    public List<Ray> constructRaysGridFromPixel(int nX, int nY, int n, int m, Ray ray) {
+
+    /**
+     * This function get a ray launched in the center of a pixel and launch n*m others rays
+     * on the same pixel
+     *
+     * @param n   number of the rays to launch in pixel
+     * @param m   number of the ray to launch in the pixel
+     * @param ray the ray that it is already launched in the center of the pixel
+     * @return list of rays when every ray is launched inside a pixel with random emplacement
+     */
+    public List<Ray> constructRaysGridFromCamera(int n, int m, Ray ray) {
+
+        List<Ray> myRays = new LinkedList<>(); //to save all the rays
+
+        double t0 = _depthOfField + _distance;
+        double t = t0/(_vTo.dotProduct(ray.get_dir()));
+        Point3D point = ray.getPoint(t);
+
+        double pixelSize = alignZero((_dOFRadius * 2) / n);
+
+        //We call the function constructRayThroughPixel like we used to but this time we launch m*n ray in the same pixel
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                myRays.add(constructRayFromPixel(n, m, j, i, pixelSize, pixelSize, point));
+            }
+        }
+
+        return myRays;
+    }
+
+
+
+/*    public List<Ray> constructRaysGridFromPixel(int nX, int nY, int n, int m, Ray ray) {
 
         Point3D p0 = ray.getPoint(_distance); //center of the pixel
         List<Ray> myRays = new LinkedList<>(); //to save all the rays
@@ -302,6 +307,34 @@ public class Camera {
         }
 
         return myRays;
+    }*/
+
+
+    public Ray constructRayFromPixel(int nX, int nY, double j, double i, double pixelH, double pixelW, Point3D point) {
+
+        Point3D pIJ = new Point3D(_p0);
+
+    /*    //𝑅𝑦 = ℎ/𝑁𝑦
+        double rY = pixelH / nY;
+        //𝑅𝑥 = 𝑤/𝑁x
+        double rX = pixelW / nX;*/
+        //𝑥𝑗 = (𝑗 – (𝑁𝑥 − 1)/2) ∙ 𝑅x
+        double xJ = ((j + r.nextDouble() / (r.nextBoolean() ? 2 : -2)) - ((nX - 1) / 2d)) * pixelH;
+        //𝑦𝑖 = −(𝑖 – (𝑁𝑦 − 1)/2) ∙ 𝑅𝑦
+        double yI = -((i + r.nextDouble() / (r.nextBoolean() ? 2 : -2)) - ((nY - 1) / 2d)) * pixelW;
+
+        if (xJ != 0) {
+            pIJ = pIJ.add(_vRight.scale(xJ));
+        }
+        if (yI != 0) {
+            pIJ = pIJ.add(_vUp.scale(yI));
+        }
+
+        //𝒗𝒊,𝒋 = 𝑷𝒊,𝒋 − 𝑷𝟎
+        Vector vIJ = point.subtract(pIJ);
+
+        return new Ray(pIJ, vIJ);
+
     }
 
 

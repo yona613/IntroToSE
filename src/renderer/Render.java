@@ -13,8 +13,8 @@ public class Render {
         this._imageWriter = renderBuilder._imageWriter;
         this._rayTracer = renderBuilder._rayTracer;
         this._camera = renderBuilder._camera;
-        this._M=renderBuilder._M;
-        this._N= renderBuilder._N;
+        this._M = renderBuilder._M;
+        this._N = renderBuilder._N;
     }
 
     private ImageWriter _imageWriter;
@@ -48,11 +48,12 @@ public class Render {
         }
 
         public RenderBuilder setN(int h) {
-            this._N=h;
+            this._N = h;
             return this;
         }
+
         public RenderBuilder setM(int h) {
-            this._M=h;
+            this._M = h;
             return this;
         }
 
@@ -75,19 +76,24 @@ public class Render {
         if (_rayTracer == null)
             throw new MissingResourceException("You need to enter a ray tracer", RayTracerBase.class.getName(), "");
 
-        //Render every pixel of the image
-        for (int i = 0; i < _imageWriter.getNy(); i++) {
-            for (int j = 0; j < _imageWriter.getNx(); j++) {
-                //construct ray for every pixel
-                Ray myRay = _camera.constructRayThroughPixel(
-                        _imageWriter.getNx(),
-                        _imageWriter.getNy(),
-                        j,
-                        i);
-                //Get the color of every pixel
-                Color myColor = _rayTracer.traceRay(myRay);
-                //write the color on the image
-                _imageWriter.writePixel(j, i, myColor);
+        if (this._M != 0 && this._N != 0){
+            renderImageWithAntialiasing();
+        }
+        else{
+            //Render every pixel of the image
+            for (int i = 0; i < _imageWriter.getNy(); i++) {
+                for (int j = 0; j < _imageWriter.getNx(); j++) {
+                    //construct ray for every pixel
+                    Ray myRay = _camera.constructRayThroughPixel(
+                            _imageWriter.getNx(),
+                            _imageWriter.getNy(),
+                            j,
+                            i);
+                    //Get the color of every pixel
+                    Color myColor = _rayTracer.traceRay(myRay);
+                    //write the color on the image
+                    _imageWriter.writePixel(j, i, myColor);
+                }
             }
         }
     }
@@ -98,16 +104,8 @@ public class Render {
      * of the real image ,in order to avoid aliasing
      */
     public void renderImageWithAntialiasing() {
-        if (_imageWriter == null)
-            throw new MissingResourceException("You need to enter a image writer", ImageWriter.class.getName(), "");
-        if (_camera == null)
-            throw new MissingResourceException("You need to enter a camera", Camera.class.getName(), "");
-        if (_rayTracer == null)
-            throw new MissingResourceException("You need to enter a ray tracer", RayTracerBase.class.getName(), "");
-        if(_N==0||_M==0)
+        if (_N == 0 || _M == 0)
             throw new MissingResourceException("You need to set the n*m value for the rays launching", RayTracerBase.class.getName(), "");
-
-
 
         for (int i = 0; i < _imageWriter.getNy(); i++) {
             for (int j = 0; j < _imageWriter.getNx(); j++) {
@@ -116,12 +114,12 @@ public class Render {
                         _imageWriter.getNy(),
                         j,
                         i);
-                List<Ray> myRays = _camera.constructRaysGridFromRay(_imageWriter.getNx(), _imageWriter.getNy(),_N,_M, myRay);
-                Color myColor = new Color(0,0,0);
+                List<Ray> myRays = _camera.constructRaysGridFromRay(_imageWriter.getNx(), _imageWriter.getNy(), _N, _M, myRay);
+                Color myColor = new Color(0, 0, 0);
                 for (Ray ray : myRays) {
                     myColor = myColor.add(_rayTracer.traceRay(ray));
                 }
-                _imageWriter.writePixel(j, i, myColor.reduce(_N*_M));
+                _imageWriter.writePixel(j, i, myColor.reduce(_N * _M));
             }
         }
     }
@@ -141,17 +139,15 @@ public class Render {
                         _imageWriter.getNy(),
                         j,
                         i);
-                List<Ray> myRays = _camera.constructRaysGridFromPixel(_imageWriter.getNx(), _imageWriter.getNy(),8,8, myRay);
-                //List<Ray> myRays = _camera.construct64RaysFromRay(_imageWriter.getNx(), _imageWriter.getNy(), myRay);
-                Color myColor = new Color(0,0,0);
+                List<Ray> myRays = _camera.constructRaysGridFromCamera(8, 8,  myRay);
+                Color myColor = new Color(0, 0, 0);
                 for (Ray ray : myRays) {
                     myColor = myColor.add(_rayTracer.traceRay(ray));
                 }
-                _imageWriter.writePixel(j, i, myColor.reduce(8*8));
+                _imageWriter.writePixel(j, i, myColor.reduce(8 * 8));
             }
         }
     }
-
 
 
     /**
