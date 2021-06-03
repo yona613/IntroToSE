@@ -12,7 +12,7 @@ import static primitives.Util.alignZero;
 /**
  * Class to implement rayTracing between the camera rays and the scene
  *
- * @author Hillel & Yona
+ * @author Hillel, Yona
  */
 public class RayTracerBasic extends RayTracerBase {
 
@@ -119,7 +119,8 @@ public class RayTracerBasic extends RayTracerBase {
      * @return the reflected ray
      */
     private Ray constructReflectedRay(Vector n, Point3D point, Ray inRay) {
-        //𝒓 = 𝒗 − 𝟐 ∙ (𝒗 ∙ 𝒏) ∙ 𝒏
+        //r = v - 2 * (v*n) * n
+        //r is the reflected ray
         Vector v = inRay.get_dir();
         Vector r = null;
         try {

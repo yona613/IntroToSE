@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 import primitives.Color;
 
 
+/**
+ * Tests of the image writer
+ */
 class ImageWriterTest {
 
     @Test

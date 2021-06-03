@@ -7,6 +7,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests of Ray
+ */
 class RayTest {
 
     @Test

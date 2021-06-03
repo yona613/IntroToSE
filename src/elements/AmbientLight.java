@@ -9,9 +9,12 @@ public class AmbientLight extends Light {
 
     /**
      * Intensity of ambient light
+     * The ambient light's color is the color scaled by the ka factor
+     *
+     * @param color color at start
+     * @param ka attenuation factor
      */
     public AmbientLight(Color color, double ka) {
-        // 𝑰𝑷=𝒌𝑨∙𝑰𝑨
         super(color.scale(ka));
     }
 

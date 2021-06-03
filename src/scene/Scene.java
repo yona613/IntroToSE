@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Class for implementation of picture's Scene
  *
- * @author Hillel & Yona
+ * @author Hillel, Yona
  */
 public class Scene {
 
@@ -49,6 +49,9 @@ public class Scene {
     }
 
 
+    /**
+     * Builder of the scene
+     */
     public static class SceneBuilder {
 
         public String name;

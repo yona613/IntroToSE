@@ -7,6 +7,9 @@ import scene.Scene;
 
 import java.util.*;
 
+/**
+ * Class to implement the rendering of our scene
+ */
 public class Render {
 
     private Render(RenderBuilder renderBuilder) {
@@ -17,13 +20,35 @@ public class Render {
         this._N = renderBuilder._N;
     }
 
+    /**
+     * Writer of the image
+     */
     private ImageWriter _imageWriter;
+
+    /**
+     * The camera that renders the image
+     */
     private Camera _camera;
+
+    /**
+     * The tracer
+     */
     private RayTracerBase _rayTracer;
+
+    /**
+     * Height of the grid for antialiasing
+     */
     private int _N;
+
+    /**
+     * Width of the grid for antialiasing
+     */
     private int _M;
     //We made a real Build Pattern,here is it's implementation
 
+    /**
+     * Buider of the rendering motor
+     */
     public static class RenderBuilder {
 
         private ImageWriter _imageWriter;
@@ -124,6 +149,9 @@ public class Render {
         }
     }
 
+    /**
+     * Render the image with implementation of the depth of field
+     */
     public void renderImageWithDepthOfField() {
         if (_imageWriter == null)
             throw new MissingResourceException("You need to enter a image writer", ImageWriter.class.getName(), "");

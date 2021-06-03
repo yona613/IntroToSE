@@ -2,9 +2,14 @@ package primitives;
 
 import static primitives.Util.*;
 
-
+/**
+ * Class to implement a coordinate value in our model
+ */
 public final class Coordinate {
 
+    /**
+     * coordinate value
+     */
     final double coord;
 
     /**

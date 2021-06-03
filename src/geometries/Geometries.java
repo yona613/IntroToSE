@@ -7,6 +7,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Class to implement a
+ */
 public class Geometries implements Intersectable{
 
     //use of linked list because of the better speed to get objects (we won't need to remove any)

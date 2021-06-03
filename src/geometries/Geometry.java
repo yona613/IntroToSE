@@ -5,6 +5,9 @@ import primitives.Material;
 import primitives.Point3D;
 import primitives.Vector;
 
+/**
+ * Class to implement geometries in our model
+ */
 public abstract class Geometry implements Intersectable {
 
     /**
@@ -12,6 +15,9 @@ public abstract class Geometry implements Intersectable {
      */
     protected Color _emission = Color.BLACK;
 
+    /**
+     * Material of the geometry
+     */
     protected Material _material = new Material();
 
     /**

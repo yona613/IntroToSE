@@ -7,7 +7,9 @@ import java.util.List;
 
 import static primitives.Util.*;
 
-
+/**
+ * Class to implement a plane object
+ */
 public class Plane extends Geometry {
 
     private final Point3D _q0;

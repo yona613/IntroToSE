@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import primitives.*;
 import scene.Scene;
 
+/**
+ * Test of the rending of image with implementation of depth of field amelioration
+ */
 public class DepthOfFieldTest {
 
     Camera myCamera = new Camera.CameraBuilder(new Point3D(0, 0, 500), new Vector(1, 0, -1 / 3), new Vector(1 / 3, 0, 1))

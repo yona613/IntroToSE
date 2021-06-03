@@ -66,11 +66,11 @@ public class Sphere extends Geometry {
 
         /*
         find intersections using formula:
-        𝑢 = 𝑂 − 𝑃0
-        𝑡𝑚 = 𝑣 ∙ 𝑢
-        𝑑 = sqrt(𝑢^2 − 𝑡𝑚^2)    ⇨ if (𝒅 ≥ 𝒓) there are no intersections
-        𝑡ℎ = sqrt(𝑟^2 − 𝑑^2)
-        t1,t2 = 𝑡𝑚 ± 𝑡ℎ, 𝑃𝑖 = 𝑃0 + 𝑡𝑖   ⇨ take only 𝒕 > 0
+        u = O - p0
+        tm = v * u
+        d = sqrt(u^2 - tm^2)   if d >= r there are no intersections
+        th = sqrt(r^2 -d^2)
+        t1,t2 = tm +/- th, pI = p0 + ti   we take only ti > 0
          */
 
 

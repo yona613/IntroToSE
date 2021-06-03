@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * Integration tests of Camera Ray construction with Ray-Sphere intersections
  *
- * @author Yona & Hillel
+ * @author Yona, Hillel
  */
 public class CameraRayIntersectionsIntegrationTests {
 

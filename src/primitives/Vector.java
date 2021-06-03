@@ -4,8 +4,14 @@ import java.util.Objects;
 
 import static primitives.Point3D.ZERO;
 
+/**
+ * Class to implement a vector in our model
+ */
 public class Vector {
 
+    /**
+     * Head of the vector
+     */
     private Point3D head;
 
     public Vector(double a, double b, double c) {

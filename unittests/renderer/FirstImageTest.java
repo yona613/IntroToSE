@@ -6,6 +6,10 @@ import org.junit.jupiter.api.Test;
 import primitives.*;
 import scene.Scene;
 
+/**
+ * Test of our first image with 10 geometries and 4 lights
+ * We also tested the camera turn and move actions
+ */
 public class FirstImageTest {
 
     Camera myCamera = new Camera.CameraBuilder(new Point3D(0, 0, 10), new Vector(1, 0, -1 / 3), new Vector(1 / 3, 0, 1))

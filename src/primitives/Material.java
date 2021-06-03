@@ -1,5 +1,8 @@
 package primitives;
 
+/**
+ * Class to implement the material of the objects
+ */
 public class Material {
 
     /**

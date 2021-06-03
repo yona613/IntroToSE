@@ -2,6 +2,9 @@ package elements;
 
 import primitives.Color;
 
+/**
+ * Abstract class to implement a light source
+ */
 abstract class Light {
 
     /**
@@ -11,7 +14,7 @@ abstract class Light {
 
     /**
      * Constructor
-     * @param color
+     * @param color color intensity of the light
      */
     protected Light(Color color) {
         this._intensity = color;

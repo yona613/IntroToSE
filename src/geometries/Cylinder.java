@@ -7,6 +7,9 @@ import primitives.Vector;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Class to implement a Cylinder object
+ */
 public class Cylinder extends Tube {
 
     private double _height;

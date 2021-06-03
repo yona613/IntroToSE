@@ -6,10 +6,24 @@ import java.util.List;
 import java.util.Objects;
 
 
+/**
+ * Class to implement a ray in our model
+ */
 public class Ray {
 
+    /**
+     * Base point of the ray
+     */
     final Point3D _p0;
+
+    /**
+     * direction's vector of the ray
+     */
     final Vector _dir;
+
+    /**
+     * delta to move the p0 of the vector because of the model constraints
+     */
     private static final double DELTA = 0.1;
 
 
@@ -74,6 +88,11 @@ public class Ray {
         return myPoint;
     }
 
+    /**
+     * get the closest GeoPoint in the list of points
+     * @param points list of intersection points
+     * @return the closest point
+     */
     public GeoPoint getClosestGeoPoint(List<GeoPoint> points) {
         if (points == null)
             return null;

@@ -2,10 +2,22 @@ package primitives;
 
 import java.util.Objects;
 
+/**
+ * Class to implement a Point in 3D in our model
+ */
 public class Point3D {
 
+    /**
+     * right coordinate
+     */
     final Coordinate _x;
+    /**
+     * up coordinate
+     */
     final Coordinate _y;
+    /**
+     * to coordinate
+     */
     final Coordinate _z;
 
     public final static Point3D ZERO = new Point3D(0.0, 0.0, 0.0);
