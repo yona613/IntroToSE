@@ -106,12 +106,12 @@ public class Camera {
             return this;
         }
 
-        public CameraBuilder setDepthOfField(double depthOfField){
-            _depthOfField =depthOfField;
+        public CameraBuilder setDepthOfField(double depthOfField) {
+            _depthOfField = depthOfField;
             return this;
         }
 
-        public CameraBuilder setApertureRadius(double radius){
+        public CameraBuilder setApertureRadius(double radius) {
             _dOFRadius = radius;
             return this;
         }
@@ -190,19 +190,30 @@ public class Camera {
 
     }
 
-
-    public Ray constructRayThroughPixel(int nX, int nY, double j, double i, double pixelH, double pixelW, Point3D pc) {
+    /**
+     * This function get the center of a pixel and will launch n*m ray in random areas of this pixel
+     *
+     * @param m      number of ray to launch in only one pixel
+     * @param n      number of pixels to launch in a only one pixel
+     * @param j      number of the pixel in the row
+     * @param i      number of the pixel in the column
+     * @param pixelH height of the pixel
+     * @param pixelW width of the pixel
+     * @param pc     pixel center
+     * @return the ray through pixel's center
+     */
+    public Ray constructRayThroughPixel(int m, int n, double j, double i, double pixelH, double pixelW, Point3D pc) {
 
         Point3D pIJ = pc;
 
         //𝑅𝑦 = ℎ/𝑁𝑦
-        double rY = pixelH / nY;
+        double rY = pixelH / n;
         //𝑅𝑥 = 𝑤/𝑁x
-        double rX = pixelW / nX;
+        double rX = pixelW / m;
         //𝑥𝑗 = (𝑗 – (𝑁𝑥 − 1)/2) ∙ 𝑅x
-        double xJ = ((j + r.nextDouble()/(r.nextBoolean() ? 2:-2)) - ((nX - 1) / 2d)) * rX;
+        double xJ = ((j + r.nextDouble() / (r.nextBoolean() ? 2 : -2)) - ((m - 1) / 2d)) * rX;
         //𝑦𝑖 = −(𝑖 – (𝑁𝑦 − 1)/2) ∙ 𝑅𝑦
-        double yI = -((i  +  r.nextDouble()/(r.nextBoolean() ? 2:-2)) - ((nY - 1) / 2d)) * rY;
+        double yI = -((i + r.nextDouble() / (r.nextBoolean() ? 2 : -2)) - ((n - 1) / 2d)) * rY;
 
         if (xJ != 0) {
             pIJ = pIJ.add(_vRight.scale(xJ));
@@ -227,9 +238,9 @@ public class Camera {
         //𝑅𝑥 = 𝑤/𝑁x
         double rX = pixelW / nX;
         //𝑥𝑗 = (𝑗 – (𝑁𝑥 − 1)/2) ∙ 𝑅x
-        double xJ = ((j + r.nextDouble()/(r.nextBoolean() ? 2:-2)) - ((nX - 1) / 2d)) * rX;
+        double xJ = ((j + r.nextDouble() / (r.nextBoolean() ? 2 : -2)) - ((nX - 1) / 2d)) * rX;
         //𝑦𝑖 = −(𝑖 – (𝑁𝑦 − 1)/2) ∙ 𝑅𝑦
-        double yI = -((i  +  r.nextDouble()/(r.nextBoolean() ? 2:-2)) - ((nY - 1) / 2d)) * rY;
+        double yI = -((i + r.nextDouble() / (r.nextBoolean() ? 2 : -2)) - ((nY - 1) / 2d)) * rY;
 
         if (xJ != 0) {
             pIJ = pIJ.add(_vRight.scale(xJ));
@@ -245,6 +256,18 @@ public class Camera {
 
     }
 
+
+    /**
+     * This function get a ray launched in the center of a pixel and launch n*m others rays
+     * on the same pixel
+     *
+     * @param nX  number of pixels in a row of view plane
+     * @param nY  number of pixels in a column of view plane
+     * @param n   number of the rays to launch in pixel
+     * @param m   number of the ray to launch in the pixel
+     * @param ray the ray that it is already launched in the center of the pixel
+     * @return list of rays when every ray is launched inside a pixel with random emplacement
+     */
     public List<Ray> constructRaysGridFromRay(int nX, int nY, int n, int m, Ray ray) {
 
         Point3D p0 = ray.getPoint(_distance); //center of the pixel
@@ -252,6 +275,8 @@ public class Camera {
 
         double pixelHeight = alignZero(_height / nY);
         double pixelHWidth = alignZero(_width / nX);
+
+        //We call the function constructRayThroughPixel like we used to but this time we launch m*n ray in the same pixel
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
@@ -279,190 +304,6 @@ public class Camera {
         return myRays;
     }
 
-
-    /**
-     * The function constructs a ray from Camera location throw the center of a
-     * pixel (i,j) in the view plane
-     *
-     * @param nX number of pixels in a row of view plane
-     * @return the ray through pixel's center
-     */
-    public List<Ray> construct64RaysFromRay(int nX, int nY, Ray ray) {
-
-        Point3D p0 = ray.getPoint(_distance); //center of the pixel
-        List<Ray> myRays = new LinkedList<>(); //to save all the rays
-
-        double microPixelHeight = alignZero(_height / (8 * nY));
-        double microPixelHWidth = alignZero(_width / (8 * nX));
-
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                Point3D p1 = p0.add(_vRight.scale(((i - 1 / 2) + r.nextDouble()) * microPixelHWidth).add(_vUp.scale(((j - 1 / 2) + r.nextDouble()) * microPixelHeight)));
-                myRays.add(new Ray(_p0, p1.subtract(_p0)));
-                p1 = p0.add(_vRight.scale(-((i - 1 / 2) + r.nextDouble()) * microPixelHWidth).add(_vUp.scale(-((j - 1 / 2) + r.nextDouble()) * microPixelHeight)));
-                myRays.add(new Ray(_p0, p1.subtract(_p0)));
-                p1 = p0.add(_vRight.scale(-((i - 1 / 2) + r.nextDouble()) * microPixelHWidth).add(_vUp.scale(((j - 1 / 2) + r.nextDouble()) * microPixelHeight)));
-                myRays.add(new Ray(_p0, p1.subtract(_p0)));
-                p1 = p0.add(_vRight.scale(((i - 1 / 2) + r.nextDouble()) * microPixelHWidth).add(_vUp.scale(-((j - 1 / 2) + r.nextDouble()) * microPixelHeight)));
-                myRays.add(new Ray(_p0, p1.subtract(_p0)));
-            }
-        }
-
-        return myRays;
-    }
-
-    /**
-     * The function constructs a ray from Camera location throw the center of a
-     * pixel (i,j) in the view plane
-     *
-     * @param nX number of pixels in a row of view plane
-     * @param nY number of pixels in a column of view plane
-     * @param j  number of the pixel in a row
-     * @param i  number of the pixel in a column
-     * @return the ray through pixel's center
-     */
-    public List<Ray> construct5RaysThroughPixel(double nX, double nY, double j, double i) {
-
-        //Pc = P0 + d * vTo
-        Point3D pc = _p0.add(_vTo.scale(_distance));
-
-        //Ry = h / nY - pixel height ratio
-        double rY = alignZero(_height / nY);
-        //Rx = h / nX - pixel width ratio
-        double rX = alignZero(_width / nX);
-
-        //𝑥𝑗 = (𝑗 – (𝑁𝑥 − 1)/2) ∙ 𝑅x
-        double xJ = alignZero((j - ((nX - 1) / 2d)) * rX);
-        //𝑦𝑖 = −(𝑖 – (𝑁𝑦 − 1)/2) ∙ 𝑅𝑦
-        double yI = alignZero(-(i - ((nY - 1) / 2d)) * rY);
-
-        Point3D pIJ = pc;
-        if (xJ != 0) {
-            pIJ = pIJ.add(_vRight.scale(xJ));
-        }
-        if (yI != 0) {
-            pIJ = pIJ.add(_vUp.scale(yI));
-        }
-
-        Point3D center = new Point3D(pIJ);
-
-        List<Ray> myRays = new LinkedList<>();
-        myRays.add(new Ray(_p0, center.subtract(_p0)));
-
-        /** First pixel up/left **/
-/*        pIJ.add(_vRight.scale(-rX/2)).add(_vUp.scale(-rY/2));
-        Vector vIJ1 = pIJ.subtract(_p0);*/
-        myRays.add(new Ray(_p0, center.add(_vUp.scale(-rY / 2)).add(_vRight.scale(-rX / 2)).subtract(_p0)));
-        myRays.add(new Ray(_p0, center.add(_vUp.scale(rY / 2)).add(_vRight.scale(-rX / 2)).subtract(_p0)));
-        myRays.add(new Ray(_p0, center.add(_vUp.scale(-rY / 2)).add(_vRight.scale(rX / 2)).subtract(_p0)));
-        myRays.add(new Ray(_p0, center.add(_vUp.scale(rY / 2)).add(_vRight.scale(rX / 2)).subtract(_p0)));
-
-
-       /* pIJ = pc;
-        if (xJ != 0) {
-            pIJ = pIJ.add(_vRight.scale(xJ));
-        }
-        if (yI != 0) {
-            pIJ = pIJ.add(_vUp.scale(yI));
-        }
-
-        *//** second pixel up/right **//*
-        pIJ.add(_vRight.scale(-rX/2)).add(_vUp.scale(rY/2));
-        Vector vIJ2 = pIJ.subtract(_p0);
-        myRays.add(new Ray(_p0, vIJ2));
-
-        pIJ = pc;
-        if (xJ != 0) {
-            pIJ = pIJ.add(_vRight.scale(xJ));
-        }
-        if (yI != 0) {
-            pIJ = pIJ.add(_vUp.scale(yI));
-        }
-
-        *//** third pixel down/left **//*
-        pIJ.add(_vRight.scale(rX/2)).add(_vUp.scale(-rY/2));
-        Vector vIJ3 = pIJ.subtract(_p0);
-        myRays.add(new Ray(_p0, vIJ3));
-
-        pIJ = pc;
-        if (xJ != 0) {
-            pIJ = pIJ.add(_vRight.scale(xJ));
-        }
-        if (yI != 0) {
-            pIJ = pIJ.add(_vUp.scale(yI));
-        }
-
-        *//** fourth pixel down/left **//*
-        pIJ.add(_vRight.scale(rX/2)).add(_vUp.scale(rY/2));
-        Vector vIJ4 = pIJ.subtract(_p0);
-        myRays.add(new Ray(_p0, vIJ4));*/
-
-        return myRays;
-    }
-
-
-    public HashMap<Integer, Ray> construct5RaysFromRay(HashMap<Integer, Ray> myRays, double nX, double nY) {
-
-        //Ry = h / nY - pixel height ratio
-        double rY = alignZero(_height / nY);
-        //Rx = h / nX - pixel width ratio
-        double rX = alignZero(_width / nX);
-
-        if (myRays.containsKey(3)) {
-            Ray myRay = myRays.get(3);
-            Point3D center = _p0.add(myRay.get_dir());
-            //[-1/2, -1/2]
-            myRays.put(1, new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
-            //[1/2, -1/2]
-            myRays.put(2, new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
-            //[-1/2, 1/2]
-            myRays.put(4, new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(-rY / 2)).subtract(_p0)));
-            //[1/2, 1/2]
-            myRays.put(5, new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(-rY / 2)).subtract(_p0)));
-            return myRays;
-        } else if (myRays.containsKey(1)) {
-            Ray myRay = myRays.get(1);
-            Point3D center = _p0.add(myRay.get_dir());
-            //[-1/2, -1/2]
-            myRays.put(2, new Ray(_p0, center.add(_vRight.scale(rX)).subtract(_p0)));
-            //[1/2, -1/2]
-            myRays.put(3, new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(-rY)).subtract(_p0)));
-            //[-1/2, 1/2]
-            myRays.put(4, new Ray(_p0, center.add(_vUp.scale(-rY)).subtract(_p0)));
-            return myRays;
-        } else if (myRays.containsKey(2)) {
-            Ray myRay = myRays.get(2);
-            Point3D center = _p0.add(myRay.get_dir());
-            //[-1/2, -1/2]
-            myRays.put(1, new Ray(_p0, center.add(_vRight.scale(-rX)).subtract(_p0)));
-            //[1/2, -1/2]
-            myRays.put(3, new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(-rY / 2)).subtract(_p0)));
-            //[-1/2, 1/2]
-            myRays.put(5, new Ray(_p0, center.add(_vUp.scale(-rY)).subtract(_p0)));
-            return myRays;
-        } else if (myRays.containsKey(4)) {
-            Ray myRay = myRays.get(4);
-            Point3D center = _p0.add(myRay.get_dir());
-            //[-1/2, -1/2]
-            myRays.put(1, new Ray(_p0, center.add(_vUp.scale(rY)).subtract(_p0)));
-            //[1/2, -1/2]
-            myRays.put(3, new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
-            //[-1/2, 1/2]
-            myRays.put(5, new Ray(_p0, center.add(_vRight.scale(rX)).subtract(_p0)));
-            return myRays;
-        } else if (myRays.containsKey(5)) {
-            Ray myRay = myRays.get(5);
-            Point3D center = _p0.add(myRay.get_dir());
-            //[-1/2, -1/2]
-            myRays.put(2, new Ray(_p0, center.add(_vUp.scale(rY)).subtract(_p0)));
-            //[1/2, -1/2]
-            myRays.put(3, new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
-            //[-1/2, 1/2]
-            myRays.put(4, new Ray(_p0, center.add(_vRight.scale(-rX)).subtract(_p0)));
-            return myRays;
-        }
-        return null;
-    }
 
     @Override
     public String toString() {
