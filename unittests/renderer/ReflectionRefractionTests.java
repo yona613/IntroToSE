@@ -28,6 +28,7 @@ public class ReflectionRefractionTests {
 	public void twoSpheres() {
 		Camera camera = new Camera.CameraBuilder(new Point3D(0, 0, 1000), new Vector(0, 0, -1), new Vector(0, 1, 0)) //
 				.setViewPlaneSize(150, 150).setDistance(1000)
+				.setDepthOfField(10)
 				.build();
 
 		scene.geometries.add( //
@@ -46,7 +47,7 @@ public class ReflectionRefractionTests {
 				.setCamera(camera) //
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
-		render.renderImageWithAntialiasing();
+		render.renderImageWithDepthOfField();
 		render.writeToImage();
 	}
 

@@ -26,6 +26,8 @@ public class Camera {
     private double _distance;
     private double _width;
     private double _height;
+    private double _depthOfField;
+    private double _dOFRadius;
 
     private Camera(CameraBuilder builder) {
         this._p0 = builder._p0;
@@ -35,6 +37,8 @@ public class Camera {
         this._distance = builder._distance;
         this._width = builder._width;
         this._height = builder._height;
+        this._depthOfField = builder._depthOfField;
+        this._dOFRadius = builder._dOFRadius;
     }
 
     public Point3D getP0() {
@@ -63,6 +67,8 @@ public class Camera {
         double _distance;
         double _width;
         double _height;
+        double _depthOfField;
+        double _dOFRadius;
 
         public CameraBuilder(Point3D p0, Vector vTo, Vector vUp) {
             this._p0 = p0;
@@ -82,6 +88,8 @@ public class Camera {
             this._distance = camera._distance;
             this._height = camera._height;
             this._width = camera._width;
+            this._depthOfField = camera._depthOfField;
+            this._dOFRadius = camera._dOFRadius;
         }
 
         public CameraBuilder setViewPlaneSize(double width, double height) {
@@ -95,6 +103,16 @@ public class Camera {
                 throw new IllegalArgumentException("Distance can't be ZERO");
             }
             _distance = distance;
+            return this;
+        }
+
+        public CameraBuilder setDepthOfField(double depthOfField){
+            _depthOfField =depthOfField;
+            return this;
+        }
+
+        public CameraBuilder setApertureRadius(double radius){
+            _dOFRadius = radius;
             return this;
         }
 
@@ -200,6 +218,33 @@ public class Camera {
 
     }
 
+    public Ray constructRayFromPixel(int nX, int nY, double j, double i, double pixelH, double pixelW, Ray ray) {
+
+        Point3D pIJ = ray.getPoint(_distance);
+
+        //𝑅𝑦 = ℎ/𝑁𝑦
+        double rY = pixelH / nY;
+        //𝑅𝑥 = 𝑤/𝑁x
+        double rX = pixelW / nX;
+        //𝑥𝑗 = (𝑗 – (𝑁𝑥 − 1)/2) ∙ 𝑅x
+        double xJ = ((j + r.nextDouble()/(r.nextBoolean() ? 2:-2)) - ((nX - 1) / 2d)) * rX;
+        //𝑦𝑖 = −(𝑖 – (𝑁𝑦 − 1)/2) ∙ 𝑅𝑦
+        double yI = -((i  +  r.nextDouble()/(r.nextBoolean() ? 2:-2)) - ((nY - 1) / 2d)) * rY;
+
+        if (xJ != 0) {
+            pIJ = pIJ.add(_vRight.scale(xJ));
+        }
+        if (yI != 0) {
+            pIJ = pIJ.add(_vUp.scale(yI));
+        }
+
+        //𝒗𝒊,𝒋 = 𝑷𝒊,𝒋 − 𝑷𝟎
+        Vector vIJ = ray.getPoint(_distance + _depthOfField).subtract(pIJ);
+
+        return new Ray(pIJ, vIJ);
+
+    }
+
     public List<Ray> constructRaysGridFromRay(int nX, int nY, int n, int m, Ray ray) {
 
         Point3D p0 = ray.getPoint(_distance); //center of the pixel
@@ -211,6 +256,23 @@ public class Camera {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 myRays.add(constructRayThroughPixel(m, n, j, i, pixelHeight, pixelHWidth, p0));
+            }
+        }
+
+        return myRays;
+    }
+
+    public List<Ray> constructRaysGridFromPixel(int nX, int nY, int n, int m, Ray ray) {
+
+        Point3D p0 = ray.getPoint(_distance); //center of the pixel
+        List<Ray> myRays = new LinkedList<>(); //to save all the rays
+
+        double pixelHeight = alignZero(_height / nY);
+        double pixelHWidth = alignZero(_width / nX);
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                myRays.add(constructRayFromPixel(m, n, j, i, pixelHeight, pixelHWidth, ray));
             }
         }
 

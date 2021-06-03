@@ -32,13 +32,17 @@ public class Cylinder extends Tube {
     @Override
     public Vector getNormal(Point3D point) {
 
-        //When point is center of 1st base or center of top's base (do not construct vector 0)
-        if (point.equals(_axisRay.get_p0()) || point.equals(_axisRay.get_p0().add(_axisRay.get_dir().scale(_height))))
-            return _axisRay.get_dir();
+        //When point is center of 1st base (do not construct vector 0)
+        if (point.equals(_axisRay.get_p0()))
+            return _axisRay.get_dir().scale(-1);
 
+        //When point is center of top's base (do not construct vector 0)
+        if (point.equals(_axisRay.get_p0().add(_axisRay.get_dir().scale(_height)))){
+            return _axisRay.get_dir();
+        }
         //when point is on the base
         if (point.subtract(_axisRay.get_p0()).dotProduct(_axisRay.get_dir()) == 0){
-            return _axisRay.get_dir();
+            return _axisRay.get_dir().scale(-1);
         }
         //when point is on the top
         else if (point.subtract(_axisRay.get_p0().add(_axisRay.get_dir().scale(_height))).dotProduct(_axisRay.get_dir()) == 0){
@@ -63,13 +67,13 @@ public class Cylinder extends Tube {
             for (GeoPoint point : result2) {
                 if (point.point.equals(p1)){ //to avoid vector ZERO
                     if (point.point.distance(ray.get_p0()) <= maxDistance){
-                        result.add(point);
+                        result.add(new GeoPoint(this, point.point));
                     }
                 }
                 //Formula that checks that point is inside the base
                 else if ((point.point.subtract(p1).dotProduct(point.point.subtract(p1)) < this._radius * this._radius)){
                     if (point.point.distance(ray.get_p0()) <= maxDistance){
-                        result.add(point);
+                        result.add(new GeoPoint(this, point.point));
                     }
                 }
             }
@@ -82,7 +86,7 @@ public class Cylinder extends Tube {
             for (GeoPoint point:result1) {
                 if (va.dotProduct(point.point.subtract(p1)) > 0 && va.dotProduct(point.point.subtract(p2)) < 0){
                     if (point.point.distance(ray.get_p0()) <= maxDistance){
-                        result.add(point);
+                        result.add(new GeoPoint(this, point.point));
                     }
                 }
             }
@@ -96,13 +100,13 @@ public class Cylinder extends Tube {
             for (GeoPoint point : result3) {
                 if (point.point.equals(p2)){ //to avoid vector ZERO
                     if (point.point.distance(ray.get_p0()) <= maxDistance){
-                        result.add(point);
+                        result.add(new GeoPoint(this, point.point));
                     }
                 }
                 //Formula that checks that point is inside the base
                 else if ((point.point.subtract(p2).dotProduct(point.point.subtract(p2)) < this._radius * this._radius)){
                     if (point.point.distance(ray.get_p0()) <= maxDistance){
-                        result.add(point);
+                        result.add(new GeoPoint(this, point.point));
                     }
                 }
             }

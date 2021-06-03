@@ -169,6 +169,32 @@ public class Render {
         }
     }
 
+    public void renderImageWithDepthOfField() {
+        if (_imageWriter == null)
+            throw new MissingResourceException("You need to enter a image writer", ImageWriter.class.getName(), "");
+        if (_camera == null)
+            throw new MissingResourceException("You need to enter a camera", Camera.class.getName(), "");
+        if (_rayTracer == null)
+            throw new MissingResourceException("You need to enter a ray tracer", RayTracerBase.class.getName(), "");
+
+        for (int i = 0; i < _imageWriter.getNy(); i++) {
+            for (int j = 0; j < _imageWriter.getNx(); j++) {
+                Ray myRay = _camera.constructRayThroughPixel(
+                        _imageWriter.getNx(),
+                        _imageWriter.getNy(),
+                        j,
+                        i);
+                List<Ray> myRays = _camera.constructRaysGridFromPixel(_imageWriter.getNx(), _imageWriter.getNy(),8,8, myRay);
+                //List<Ray> myRays = _camera.construct64RaysFromRay(_imageWriter.getNx(), _imageWriter.getNy(), myRay);
+                Color myColor = new Color(0,0,0);
+                for (Ray ray : myRays) {
+                    myColor = myColor.add(_rayTracer.traceRay(ray));
+                }
+                _imageWriter.writePixel(j, i, myColor.reduce(8*8));
+            }
+        }
+    }
+
 
     /*    */
 
