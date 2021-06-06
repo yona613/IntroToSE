@@ -117,7 +117,7 @@ public class DepthOfFieldTest {
     @Test
     void depthOfFieldTest3() {
 
-        Scene scene3 = new Scene.SceneBuilder("basic depth of field test").setAmbientLight(new AmbientLight(Color.WHITE, 0.3)).build();
+        Scene scene3 = new Scene.SceneBuilder("basic depth of field test").build();
 
         Camera camera3 = new Camera.CameraBuilder(new Point3D(0,10,500),new Vector(0,0,-1),new Vector(0,1,0))
                 .setDistance(450)
@@ -128,9 +128,7 @@ public class DepthOfFieldTest {
 
         Material mat = new Material().setKd(0.5).setkT(0.1).setkR(0.8).setKs(0.5).setnShininess(500);
 
-        scene3.lights.add(new PointLight(Color.BLUE, new Point3D(0,100,500))
-            .setkL(0.00001).setkQ(0.00001)
-        );
+        scene3.lights.add(new DirectionalLight(new Color(300,300,300), new Vector(-1,-1,-1)));
 
         scene3.geometries.add(
                 new Sphere(3, new Point3D(6,12,-100)).setEmission(new Color(180,0,0)).setMaterial(mat),

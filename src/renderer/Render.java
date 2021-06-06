@@ -36,14 +36,16 @@ public class Render {
     private RayTracerBase _rayTracer;
 
     /**
-     * Height of the grid for antialiasing
+     * Height of the grid for picture improvements
      */
     private int _N;
 
     /**
-     * Width of the grid for antialiasing
+     * Width of the grid for picture improvements
      */
     private int _M;
+
+
     //We made a real Build Pattern,here is it's implementation
 
     /**
@@ -167,12 +169,12 @@ public class Render {
                         _imageWriter.getNy(),
                         j,
                         i);
-                List<Ray> myRays = _camera.constructRaysGridFromCamera(8, 8,  myRay);
+                List<Ray> myRays = _camera.constructRaysGridFromCamera(_N, _M,  myRay);
                 Color myColor = new Color(0, 0, 0);
                 for (Ray ray : myRays) {
                     myColor = myColor.add(_rayTracer.traceRay(ray));
                 }
-                _imageWriter.writePixel(j, i, myColor.reduce(8 * 8));
+                _imageWriter.writePixel(j, i, myColor.reduce(_N * _M));
             }
         }
     }
