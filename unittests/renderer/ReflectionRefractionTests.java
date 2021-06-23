@@ -47,7 +47,7 @@ public class ReflectionRefractionTests {
 				.setCamera(camera) //
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
-		render.renderImageWithDepthOfField();
+		render.renderImageAdaptive();
 		render.writeToImage();
 	}
 
@@ -89,7 +89,7 @@ public class ReflectionRefractionTests {
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
 
-		render.renderImageWithAntialiasing();
+		render.renderImageAdaptive();
 		render.writeToImage();
 	}
 
@@ -115,7 +115,7 @@ public class ReflectionRefractionTests {
 						.setEmission(new Color(java.awt.Color.BLUE)) //
 						.setMaterial(new Material().setKd(0.2).setKs(0.2).setnShininess(30).setkT(0.6)));
 
-		scene.lights.add(new SpotLight(new Color(700, 400, 400), new Point3D(60, 50, 0), new Vector(0, 0, -1)) //
+		scene.lights.add(new SpotLight(new Color(700, 400, 400), new Point3D(60, 50, 0), new Vector(0, 0, -1), 3d) //
 				.setkL(4E-5).setkQ(2E-7));
 
 		ImageWriter imageWriter = new ImageWriter("refractionShadow", 600, 600);
@@ -125,7 +125,7 @@ public class ReflectionRefractionTests {
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
 
-		render.renderImageWithAntialiasing();
+		render.renderImageSoftShadows();
 		render.writeToImage();
 	}
 }

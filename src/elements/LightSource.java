@@ -4,6 +4,8 @@ import primitives.Color;
 import primitives.Point3D;
 import primitives.Vector;
 
+import java.util.List;
+
 /**
  * Interface to implement ligt source of the scene
  */
@@ -21,6 +23,13 @@ public interface LightSource {
      * @return the direction
      */
     Vector getL(Point3D p);
+
+    /**
+     * Get the direction of the light from a point
+     * @param p the point
+     * @return the direction
+     */
+    List<Vector> getListL(Point3D p);
 
     /**
      * Get distance from the light to the point

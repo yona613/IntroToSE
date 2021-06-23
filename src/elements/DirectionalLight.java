@@ -4,6 +4,8 @@ import primitives.Color;
 import primitives.Point3D;
 import primitives.Vector;
 
+import java.util.List;
+
 /**
  * Class implementing a direction oriented light source
  */
@@ -33,6 +35,10 @@ public class DirectionalLight extends Light implements LightSource{
         return _direction;
     }
 
+    @Override
+    public List<Vector> getListL(Point3D p) {
+        return List.of(getL(p));
+    }
 
     @Override
     public double getDistance(Point3D point) {

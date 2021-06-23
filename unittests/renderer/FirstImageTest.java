@@ -91,10 +91,11 @@ public class FirstImageTest {
                 .setCamera(myCamera) //
                 .setRayTracer(new RayTracerBasic(myScene))
                 .build();
-        render.renderImageWithAntialiasing();
+        render.setMultithreading(3).setDebugPrint();
+        render.renderImage2();
         render.writeToImage();
 
-        myCamera.moveCamera(40, 150, -40);
+/*        myCamera.moveCamera(40, 150, -40);
         myCamera.rotateCamera(new Vector(1 / 3, 0, 1), 40);
 
         render = new Render.RenderBuilder(). //
@@ -103,7 +104,7 @@ public class FirstImageTest {
                 .setRayTracer(new RayTracerBasic(myScene))
                 .build();
         render.renderImageWithAntialiasing();
-        render.writeToImage();
+        render.writeToImage();*/
 
     }
 

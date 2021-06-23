@@ -142,6 +142,8 @@ public class DepthOfFieldTest {
                 .setImageWriter(new ImageWriter("depth2", 500, 500)) //
                 .setCamera(camera3) //
                 .setRayTracer(new RayTracerBasic(scene3))
+                .setN(8)
+                .setM(8)
                 .build();
         render.renderImageWithDepthOfField();
         render.writeToImage();

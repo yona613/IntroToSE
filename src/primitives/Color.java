@@ -193,7 +193,7 @@ public class Color {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Color color = (Color) o;
-        return Math.abs(this.r - ((Color) o).r) < 2 && Math.abs(this.g - ((Color) o).g) < 2 && Math.abs(this.b - ((Color) o).b) < 2;
+        return Math.abs(this.r - color.r) < 10 && Math.abs(this.g - color.g) < 10 && Math.abs(this.b - color.b) < 10;
     }
 
     @Override

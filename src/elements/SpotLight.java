@@ -20,6 +20,12 @@ public class SpotLight extends PointLight implements LightSource {
         this._dir = direction.normalized();
     }
 
+
+    public SpotLight(Color c, Point3D pos, Vector direction, double radius) {
+        super(c, pos, radius);
+        this._dir = direction.normalized();
+    }
+
     @Override
     public Color getIntensity(Point3D p) {
         double projection = _dir.dotProduct(getL(p));

@@ -2,6 +2,7 @@ package geometries;
 
 import primitives.Point3D;
 import primitives.Ray;
+import primitives.Util;
 import primitives.Vector;
 
 import java.util.LinkedList;
@@ -40,15 +41,15 @@ public class Cylinder extends Tube {
             return _axisRay.get_dir().scale(-1);
 
         //When point is center of top's base (do not construct vector 0)
-        if (point.equals(_axisRay.get_p0().add(_axisRay.get_dir().scale(_height)))){
+        if (point.equals(_axisRay.getPoint(_height))){
             return _axisRay.get_dir();
         }
         //when point is on the base
-        if (point.subtract(_axisRay.get_p0()).dotProduct(_axisRay.get_dir()) == 0){
+        if (Util.isZero(point.subtract(_axisRay.get_p0()).dotProduct(_axisRay.get_dir()))){
             return _axisRay.get_dir().scale(-1);
         }
         //when point is on the top
-        else if (point.subtract(_axisRay.get_p0().add(_axisRay.get_dir().scale(_height))).dotProduct(_axisRay.get_dir()) == 0){
+        else if (Util.isZero(point.subtract(_axisRay.get_p0().add(_axisRay.get_dir().scale(_height))).dotProduct(_axisRay.get_dir()))){
             return _axisRay.get_dir();
         }
         //when point on the surface, same normal as tube

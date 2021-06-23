@@ -125,8 +125,16 @@ public class Tube extends Geometry {
                 c = (deltaP.dotProduct(deltaP)) - this._radius * this._radius;
             }
             else {
-                a = (v.substract(va.scale(vva))).dotProduct(v.substract(va.scale(vva)));
+                Vector vSubstractScaleVa;
                 Vector scale;
+                try {
+                    vSubstractScaleVa = v.substract(va.scale(vva));
+
+                }
+                catch (Exception e){
+                    vSubstractScaleVa = v;
+                }
+                a = vSubstractScaleVa.dotProduct(vSubstractScaleVa);
                 try {
                     scale = va.scale(deltaP.dotProduct(va));
                     if (deltaP.equals(scale)){
@@ -134,11 +142,11 @@ public class Tube extends Geometry {
                         c = - _radius * _radius;
                     }
                     else{
-                        b = 2 * v.substract(va.scale(vva)).dotProduct(deltaP.substract(scale));
+                        b = 2 * vSubstractScaleVa.dotProduct(deltaP.substract(scale));
                         c = (deltaP.substract(scale).dotProduct(deltaP.substract(scale))) - this._radius * this._radius;
                     }
                 } catch (Exception e) {
-                    b = 2 * v.substract(va.scale(vva)).dotProduct(deltaP);
+                    b = 2 * vSubstractScaleVa.dotProduct(deltaP);
                     c = (deltaP.dotProduct(deltaP)) - this._radius * this._radius;
                 }
 

@@ -377,8 +377,130 @@ public class Camera {
         Vector vIJ = point.subtract(pIJ);
 
         return new Ray(pIJ, vIJ);
-
     }
+
+    public HashMap<Integer, Ray> construct5RaysFromRay(HashMap<Integer, Ray> myRays, double nX, double nY) {
+
+        //Ry = h / nY - pixel height ratio
+        double rY = alignZero(_height / nY);
+        //Rx = h / nX - pixel width ratio
+        double rX = alignZero(_width / nX);
+
+        if (myRays.containsKey(3)) {
+            Ray myRay = myRays.get(3);
+
+            double t0 = _distance;
+            double t = t0/(_vTo.dotProduct(myRay.get_dir())); //cosinus on the angle
+            Point3D center = myRay.getPoint(t);
+
+            //[-1/2, -1/2]
+            myRays.put(1, new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
+            //[1/2, -1/2]
+            myRays.put(2, new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
+            //[-1/2, 1/2]
+            myRays.put(4, new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(-rY / 2)).subtract(_p0)));
+            //[1/2, 1/2]
+            myRays.put(5, new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(-rY / 2)).subtract(_p0)));
+            return myRays;
+        } else if (myRays.containsKey(1)) {
+            Ray myRay = myRays.get(1);
+
+            double t0 = _distance;
+            double t = t0/(_vTo.dotProduct(myRay.get_dir())); //cosinus on the angle
+            Point3D center = myRay.getPoint(t);
+
+            //[-1/2, -1/2]
+            myRays.put(2, new Ray(_p0, center.add(_vRight.scale(rX)).subtract(_p0)));
+            //[1/2, -1/2]
+            myRays.put(3, new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(-rY)).subtract(_p0)));
+            //[-1/2, 1/2]
+            myRays.put(4, new Ray(_p0, center.add(_vUp.scale(-rY)).subtract(_p0)));
+            return myRays;
+        } else if (myRays.containsKey(2)) {
+            Ray myRay = myRays.get(2);
+
+            double t0 = _distance;
+            double t = t0/(_vTo.dotProduct(myRay.get_dir())); //cosinus on the angle
+            Point3D center = myRay.getPoint(t);
+
+
+            //[-1/2, -1/2]
+            myRays.put(1, new Ray(_p0, center.add(_vRight.scale(-rX)).subtract(_p0)));
+            //[1/2, -1/2]
+            myRays.put(3, new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(-rY / 2)).subtract(_p0)));
+            //[-1/2, 1/2]
+            myRays.put(5, new Ray(_p0, center.add(_vUp.scale(-rY)).subtract(_p0)));
+            return myRays;
+        } else if (myRays.containsKey(4)) {
+            Ray myRay = myRays.get(4);
+
+            double t0 = _distance;
+            double t = t0/(_vTo.dotProduct(myRay.get_dir())); //cosinus on the angle
+            Point3D center = myRay.getPoint(t);
+
+
+            //[-1/2, -1/2]
+            myRays.put(1, new Ray(_p0, center.add(_vUp.scale(rY)).subtract(_p0)));
+            //[1/2, -1/2]
+            myRays.put(3, new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
+            //[-1/2, 1/2]
+            myRays.put(5, new Ray(_p0, center.add(_vRight.scale(rX)).subtract(_p0)));
+            return myRays;
+        } else if (myRays.containsKey(5)) {
+            Ray myRay = myRays.get(5);
+
+            double t0 = _distance;
+            double t = t0/(_vTo.dotProduct(myRay.get_dir())); //cosinus on the angle
+            Point3D center = myRay.getPoint(t);
+
+            //[-1/2, -1/2]
+            myRays.put(2, new Ray(_p0, center.add(_vUp.scale(rY)).subtract(_p0)));
+            //[1/2, -1/2]
+            myRays.put(3, new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
+            //[-1/2, 1/2]
+            myRays.put(4, new Ray(_p0, center.add(_vRight.scale(-rX)).subtract(_p0)));
+            return myRays;
+        }
+        return null;
+    }
+
+    public List<Ray> construct4RaysThroughPixel(Ray ray, double nX, double nY){
+
+        //Ry = h / nY - pixel height ratio
+        double height = alignZero(_height / nY);
+        //Rx = h / nX - pixel width ratio
+        double width = alignZero(_width / nX);
+
+        List<Ray> myRays = new ArrayList<>();
+        double t0 = _distance;
+        double t = t0/(_vTo.dotProduct(ray.get_dir())); //cosinus on the angle
+        Point3D center = ray.getPoint(t);
+        Point3D point1 = center.add(_vUp.scale(height/2));
+        Point3D point2 = center.add(_vRight.scale(-width/2));
+        Point3D point3 = center.add(_vRight.scale(width/2));
+        Point3D point4 = center.add(_vUp.scale(-height/2));
+        myRays.add(new Ray(_p0, point1.subtract(_p0)));
+        myRays.add(new Ray(_p0, point2.subtract(_p0)));
+        myRays.add(new Ray(_p0, point3.subtract(_p0)));
+        myRays.add(new Ray(_p0, point4.subtract(_p0)));
+        return myRays;
+    }
+
+
+    public Ray constructPixelCenterRay(Ray ray, double nX, double nY){
+
+        //Ry = h / nY - pixel height ratio
+        double height = alignZero(_height / nY);
+        //Rx = h / nX - pixel width ratio
+        double width = alignZero(_width / nX);
+
+        double t0 = _distance;
+        double t = t0/(_vTo.dotProduct(ray.get_dir())); //cosinus on the angle
+        Point3D point = ray.getPoint(t);
+        point = point.add(_vRight.scale(width/2)).add(_vUp.scale(-height/2));
+        return new Ray(_p0, point.subtract(_p0));
+    }
+
 
 
     @Override
