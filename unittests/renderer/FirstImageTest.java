@@ -93,14 +93,14 @@ public class FirstImageTest {
                 .setRayTracer(new RayTracerBasic(myScene))
                 .setDepthAdaptive(3)
                 .build();
-        render.setMultithreading(3).setDebugPrint();
+        render.setMultithreading(0).setDebugPrint();
 
 
         myCamera.moveCamera(40, 150, -40);
         myCamera.rotateCamera(new Vector(1 / 3, 0, 1), 40);
 
         try {
-            render.renderImage(Options.THREADS, Options.DEFAULT);
+            render.renderImage(Options.THREADS, Options.ADAPTIVE_ANTI_ALIASING);
         } catch (ExecutionControl.NotImplementedException e) {
             e.printStackTrace();
         }
