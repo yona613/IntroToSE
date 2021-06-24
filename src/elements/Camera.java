@@ -1,11 +1,9 @@
 package elements;
 
-import geometries.Intersectable;
 import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
 
-import javax.swing.plaf.ViewportUI;
 import java.util.*;
 
 import static primitives.Util.alignZero;
@@ -237,10 +235,10 @@ public class Camera {
      * The function constructs a ray from Camera location through a point (i,j) on the grid of a
      * pixel in the view plane
      *
-     * @param m   grid's height
-     * @param n   grid's width
-     * @param j   number of the pixel in the row
-     * @param i   number of the pixel in the column
+     * @param m      grid's height
+     * @param n      grid's width
+     * @param j      number of the pixel in the row
+     * @param i      number of the pixel in the column
      * @param pixelH height of the pixel
      * @param pixelW width of the pixel
      * @param pc     pixel center
@@ -320,13 +318,7 @@ public class Camera {
 
         List<Ray> myRays = new LinkedList<>(); //to save all the rays
 
-        //distance from the camera p0 to the depth of field plane
-        //we need to calculate the distance from the point on the aperture grid to the depth of field plane
-        //for that we use the cos of the angle of the direction ray with vTo vector
-        double t0 = _depthOfField + _distance;
-        double t = t0/(_vTo.dotProduct(ray.get_dir())); //cosinus on the angle
-        //we get the point on the depth of field plane
-        Point3D point = ray.getPoint(t);
+        Point3D point = getPointOnViewPlane(ray);
 
         double pixelSize = alignZero((_dOFRadius * 2) / n);
 
@@ -336,27 +328,26 @@ public class Camera {
             for (int j = 0; j < m; j++) {
                 Ray tmpRay = constructRayFromPixel(n, m, j, i, pixelSize, point);
                 //check that the point of base of the ray is inside the aperture circle
-                if (tmpRay.get_p0().equals(_p0)){ //to avoid vector ZERO
+                if (tmpRay.get_p0().equals(_p0)) { //to avoid vector ZERO
                     myRays.add(tmpRay);
-                }
-                else if (tmpRay.get_p0().subtract(_p0).dotProduct(tmpRay.get_p0().subtract(_p0)) <= _dOFRadius * _dOFRadius){
+                } else if (tmpRay.get_p0().distance(_p0) <= _dOFRadius) {
                     myRays.add(tmpRay);
                 }
             }
         }
-
         return myRays;
     }
 
 
     /**
      * This function returns a ray from a point in the aperture circle
-     * @param nX grid's width
-     * @param nY grid's height
-     * @param j y emplacement of the point
-     * @param i x emplacement of the point
+     *
+     * @param nX        grid's width
+     * @param nY        grid's height
+     * @param j         y emplacement of the point
+     * @param i         x emplacement of the point
      * @param pixelSize size of side of the pixel on the grid
-     * @param point point on the depth of field plane
+     * @param point     point on the depth of field plane
      * @return a ray to the point on the depth of field plane
      */
     private Ray constructRayFromPixel(int nX, int nY, double j, double i, double pixelSize, Point3D point) {
@@ -379,92 +370,51 @@ public class Camera {
         return new Ray(pIJ, vIJ);
     }
 
-    public HashMap<Integer, Ray> construct5RaysFromRay(HashMap<Integer, Ray> myRays, double nX, double nY) {
+    /**
+     * Function that gets a pixel's center ray and constructs a list of 5 rays from that ray,
+     * one at each corner of the pixel and one in the center
+     * @param myRay the center's ray
+     * @param nX number of pixel in width
+     * @param nY number of pixels in height
+     * @return list of rays
+     */
+    public List<Ray> construct5RaysFromRay(Ray myRay, double nX, double nY) {
+
+        List<Ray> myRays = new LinkedList<>();
 
         //Ry = h / nY - pixel height ratio
         double rY = alignZero(_height / nY);
         //Rx = h / nX - pixel width ratio
         double rX = alignZero(_width / nX);
 
-        if (myRays.containsKey(3)) {
-            Ray myRay = myRays.get(3);
 
-            double t0 = _distance;
-            double t = t0/(_vTo.dotProduct(myRay.get_dir())); //cosinus on the angle
-            Point3D center = myRay.getPoint(t);
+        Point3D center = getPointOnViewPlane(myRay);
 
-            //[-1/2, -1/2]
-            myRays.put(1, new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
-            //[1/2, -1/2]
-            myRays.put(2, new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
-            //[-1/2, 1/2]
-            myRays.put(4, new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(-rY / 2)).subtract(_p0)));
-            //[1/2, 1/2]
-            myRays.put(5, new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(-rY / 2)).subtract(_p0)));
-            return myRays;
-        } else if (myRays.containsKey(1)) {
-            Ray myRay = myRays.get(1);
+        //[-1/2, -1/2]
+        myRays.add( new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
+        //[1/2, -1/2]
+        myRays.add( new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
 
-            double t0 = _distance;
-            double t = t0/(_vTo.dotProduct(myRay.get_dir())); //cosinus on the angle
-            Point3D center = myRay.getPoint(t);
-
-            //[-1/2, -1/2]
-            myRays.put(2, new Ray(_p0, center.add(_vRight.scale(rX)).subtract(_p0)));
-            //[1/2, -1/2]
-            myRays.put(3, new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(-rY)).subtract(_p0)));
-            //[-1/2, 1/2]
-            myRays.put(4, new Ray(_p0, center.add(_vUp.scale(-rY)).subtract(_p0)));
-            return myRays;
-        } else if (myRays.containsKey(2)) {
-            Ray myRay = myRays.get(2);
-
-            double t0 = _distance;
-            double t = t0/(_vTo.dotProduct(myRay.get_dir())); //cosinus on the angle
-            Point3D center = myRay.getPoint(t);
-
-
-            //[-1/2, -1/2]
-            myRays.put(1, new Ray(_p0, center.add(_vRight.scale(-rX)).subtract(_p0)));
-            //[1/2, -1/2]
-            myRays.put(3, new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(-rY / 2)).subtract(_p0)));
-            //[-1/2, 1/2]
-            myRays.put(5, new Ray(_p0, center.add(_vUp.scale(-rY)).subtract(_p0)));
-            return myRays;
-        } else if (myRays.containsKey(4)) {
-            Ray myRay = myRays.get(4);
-
-            double t0 = _distance;
-            double t = t0/(_vTo.dotProduct(myRay.get_dir())); //cosinus on the angle
-            Point3D center = myRay.getPoint(t);
-
-
-            //[-1/2, -1/2]
-            myRays.put(1, new Ray(_p0, center.add(_vUp.scale(rY)).subtract(_p0)));
-            //[1/2, -1/2]
-            myRays.put(3, new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
-            //[-1/2, 1/2]
-            myRays.put(5, new Ray(_p0, center.add(_vRight.scale(rX)).subtract(_p0)));
-            return myRays;
-        } else if (myRays.containsKey(5)) {
-            Ray myRay = myRays.get(5);
-
-            double t0 = _distance;
-            double t = t0/(_vTo.dotProduct(myRay.get_dir())); //cosinus on the angle
-            Point3D center = myRay.getPoint(t);
-
-            //[-1/2, -1/2]
-            myRays.put(2, new Ray(_p0, center.add(_vUp.scale(rY)).subtract(_p0)));
-            //[1/2, -1/2]
-            myRays.put(3, new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
-            //[-1/2, 1/2]
-            myRays.put(4, new Ray(_p0, center.add(_vRight.scale(-rX)).subtract(_p0)));
-            return myRays;
-        }
-        return null;
+        myRays.add(myRay);
+        //[-1/2, 1/2]
+        myRays.add( new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(-rY / 2)).subtract(_p0)));
+        //[1/2, 1/2]
+        myRays.add( new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(-rY / 2)).subtract(_p0)));
+        return myRays;
     }
 
-    public List<Ray> construct4RaysThroughPixel(Ray ray, double nX, double nY){
+    /**
+     * Function that returns a list of 4 rays in a pixel 
+     * one on the top upper the center point
+     * one on the left of the center
+     * one on the right of the center
+     * one on the bottom of the center
+     * @param ray the center's ray
+     * @param nX number of pixel in width
+     * @param nY number of pixels in height
+     * @return list of rays
+     */
+    public List<Ray> construct4RaysThroughPixel(Ray ray, double nX, double nY) {
 
         //Ry = h / nY - pixel height ratio
         double height = alignZero(_height / nY);
@@ -472,13 +422,13 @@ public class Camera {
         double width = alignZero(_width / nX);
 
         List<Ray> myRays = new ArrayList<>();
-        double t0 = _distance;
-        double t = t0/(_vTo.dotProduct(ray.get_dir())); //cosinus on the angle
-        Point3D center = ray.getPoint(t);
-        Point3D point1 = center.add(_vUp.scale(height/2));
-        Point3D point2 = center.add(_vRight.scale(-width/2));
-        Point3D point3 = center.add(_vRight.scale(width/2));
-        Point3D point4 = center.add(_vUp.scale(-height/2));
+        Point3D center = getPointOnViewPlane(ray);
+        
+        
+        Point3D point1 = center.add(_vUp.scale(height / 2));
+        Point3D point2 = center.add(_vRight.scale(-width / 2));
+        Point3D point3 = center.add(_vRight.scale(width / 2));
+        Point3D point4 = center.add(_vUp.scale(-height / 2));
         myRays.add(new Ray(_p0, point1.subtract(_p0)));
         myRays.add(new Ray(_p0, point2.subtract(_p0)));
         myRays.add(new Ray(_p0, point3.subtract(_p0)));
@@ -486,21 +436,38 @@ public class Camera {
         return myRays;
     }
 
-
-    public Ray constructPixelCenterRay(Ray ray, double nX, double nY){
+    /**
+     * Construct ray through nthe center of a pixel when we have only the bottom right corner's ray
+     * @param ray the ray
+     * @param nX number of pixel in width
+     * @param nY number of pixels in height
+     * @return center's ray
+     */
+    public Ray constructPixelCenterRay(Ray ray, double nX, double nY) {
 
         //Ry = h / nY - pixel height ratio
         double height = alignZero(_height / nY);
         //Rx = h / nX - pixel width ratio
         double width = alignZero(_width / nX);
 
-        double t0 = _distance;
-        double t = t0/(_vTo.dotProduct(ray.get_dir())); //cosinus on the angle
-        Point3D point = ray.getPoint(t);
-        point = point.add(_vRight.scale(width/2)).add(_vUp.scale(-height/2));
+  
+        Point3D point = getPointOnViewPlane(ray);
+        point = point.add(_vRight.scale(width / 2)).add(_vUp.scale(-height / 2));
         return new Ray(_p0, point.subtract(_p0));
     }
 
+    /**
+     * Function to calculate distance from the camera p0 to a specific point on the plane
+     * we need to calculate the distance from the point on the camera to the plane
+     * for that we use the cos of the angle of the direction ray with vTo vector
+     * @param ray ray to the specific point
+     * @return the distance to the point
+     */
+    private Point3D getPointOnViewPlane(Ray ray) {
+        double t0 = _distance;
+        double t = t0 / (_vTo.dotProduct(ray.get_dir())); //cosinus on the angle
+        return ray.getPoint(t);
+    }
 
 
     @Override

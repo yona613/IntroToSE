@@ -1,18 +1,19 @@
 package renderer;
 
 import elements.Camera;
+import jdk.jshell.spi.ExecutionControl;
 import primitives.Color;
+import primitives.ColoredRay;
 import primitives.Ray;
-import scene.Scene;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Class to implement the rendering of our scene
  */
 public class Render {
 
-    // ...........
     private int _threads = 1;
     private final int SPARE_THREADS = 2;
     private boolean _print = false;
@@ -23,6 +24,7 @@ public class Render {
         this._camera = renderBuilder._camera;
         this._M = renderBuilder._M;
         this._N = renderBuilder._N;
+        this._depthAdaptive = renderBuilder._depthAdaptive;
     }
 
     /**
@@ -50,6 +52,11 @@ public class Render {
      */
     private int _M;
 
+    /**
+     * Depth of recurssion for adaptive antialiasing
+     */
+    private int _depthAdaptive;
+
 
     //We made a real Build Pattern,here is it's implementation
 
@@ -61,8 +68,9 @@ public class Render {
         private ImageWriter _imageWriter;
         private Camera _camera;
         private RayTracerBase _rayTracer;
-        private int _N;
-        private int _M;
+        private int _N = 8;
+        private int _M = 8;
+        private int _depthAdaptive = 3;
 
         public RenderBuilder setImageWriter(ImageWriter imageWriter) {
             this._imageWriter = imageWriter;
@@ -86,6 +94,11 @@ public class Render {
 
         public RenderBuilder setM(int h) {
             this._M = h;
+            return this;
+        }
+
+        public RenderBuilder setDepthAdaptive(int depth){
+            this._depthAdaptive = depth;
             return this;
         }
 
@@ -192,57 +205,62 @@ public class Render {
     /**
      * This function renders image's pixel color map from the scene included with
      * the Renderer object
+     * @param opt Option of rendering
+     * @param isSoftShadows is rendering with soft shadows improvement
      */
-    public void renderImage2() {
+    private void renderImage(Options opt, boolean isSoftShadows) {
         final int nX = _imageWriter.getNx();
         final int nY = _imageWriter.getNy();
-        //final double dist = _rayTracer._scene.getDistance();
-        final double width = _imageWriter.getNx();
-        final double height = _imageWriter.getNy();
-        final Camera camera = _camera;
 
         final Pixel thePixel = new Pixel(nY, nX);
 
         // Generate threads
         Thread[] threads = new Thread[_threads];
         for (int i = _threads - 1; i >= 0; --i) {
-            threads[i] = new Thread(() -> {
+            threads[i] = new Thread(()-> {
                 Pixel pixel = new Pixel();
                 while (thePixel.nextPixel(pixel)) {
-
                     //construct ray for every pixel
                     Ray myRay = _camera.constructRayThroughPixel(
                             _imageWriter.getNx(),
                             _imageWriter.getNy(),
                             pixel.col,
                             pixel.row);
-                    HashMap<Integer, Ray> myRays = new HashMap<>();
-                    myRays.put(3, myRay);
 
-                    //Get the color of every pixel
-                    Color myColor = renderPixel(_imageWriter.getNx(), _imageWriter.getNy(), 6, myRays);
-                    //write the color on the image
-                    _imageWriter.writePixel(pixel.col,pixel.row, myColor);
-
-
-       /*             Ray myRay = _camera.constructRayThroughPixel(
-                            _imageWriter.getNx(),
-                            _imageWriter.getNy(),
-                            pixel.col,
-                            pixel.row);
-                    List<Ray> myRays = _camera.constructRaysGridFromRay(_imageWriter.getNx(), _imageWriter.getNy(), _N, _M, myRay);
-                    Color myColor = new Color(0, 0, 0);
-                    for (Ray ray : myRays) {
-                        myColor = myColor.add(_rayTracer.traceRay(ray));
+                    //Checks the option and renders according to this option
+                    if (opt == null || opt == Options.DEFAULT || opt == Options.SOFT_SHADOWS) {
+                        _imageWriter.writePixel(pixel.col, pixel.row, _rayTracer.traceRay(myRay, isSoftShadows));
                     }
-                    _imageWriter.writePixel(pixel.col,pixel.row, myColor.reduce(_N * _M));
-                }*/
-                }
+                    else if (opt == Options.ADAPTIVE_ANTI_ALIASING){
+                        //Get the color of every pixel
+                        Color myColor = renderPixel(_imageWriter.getNx(), _imageWriter.getNy(), _depthAdaptive, myRay, isSoftShadows);
+                        //write the color on the image
+                        _imageWriter.writePixel(pixel.col, pixel.row, myColor);
+                    }
+                    else if (opt == Options.ANTI_ALIASING){
+                        if (_N == 0 || _M == 0)
+                            throw new MissingResourceException("You need to set the n*m value for the rays launching", RayTracerBase.class.getName(), "");
 
+                        List<Ray> myRays = _camera.constructRaysGridFromRay(_imageWriter.getNx(), _imageWriter.getNy(), _N, _M, myRay);
+                        Color myColor = new Color(0, 0, 0);
+                        for (Ray ray : myRays) {
+                            myColor = myColor.add(_rayTracer.traceRay(ray, isSoftShadows));
+                        }
+                        _imageWriter.writePixel(pixel.col, pixel.row, myColor.reduce(_N * _M));
+                    }
+                    else if (opt == Options.DEPTH_OF_FIELD){
+                        List<Ray> myRays = _camera.constructRaysGridFromCamera(_N, _M, myRay);
+                        Color myColor = new Color(0, 0, 0);
+                        for (Ray ray : myRays) {
+                            myColor = myColor.add(_rayTracer.traceRay(ray, isSoftShadows));
+                        }
+                        _imageWriter.writePixel(pixel.col, pixel.row, myColor.reduce(myRays.size()));
+                    }
+                }
             });
         }
         // Start threads
-        for (Thread thread : threads) thread.start();
+        for (Thread thread : threads) thread.run();
 
         // Wait for all threads to finish
         for (Thread thread : threads)
@@ -285,10 +303,14 @@ public class Render {
         return this;
     }
 
+
     /**
      * Render the image by writing every pixel of the grid
+     * @param opt1 first improvement option
+     * @param opt2 second improvement option
+     * @throws ExecutionControl.NotImplementedException if improvement not implemented
      */
-    public void renderImage() {
+    public void renderImage(Options opt1, Options opt2) throws ExecutionControl.NotImplementedException {
         if (_imageWriter == null)
             throw new MissingResourceException("You need to enter a image writer", ImageWriter.class.getName(), "");
         if (_camera == null)
@@ -296,56 +318,75 @@ public class Render {
         if (_rayTracer == null)
             throw new MissingResourceException("You need to enter a ray tracer", RayTracerBase.class.getName(), "");
 
-        if (this._M != 0 && this._N != 0) {
-            renderImageWithAntialiasing();
-        } else {
-            //Render every pixel of the image
-            for (int i = 0; i < _imageWriter.getNy(); i++) {
-                for (int j = 0; j < _imageWriter.getNx(); j++) {
-                    //construct ray for every pixel
-                    Ray myRay = _camera.constructRayThroughPixel(
-                            _imageWriter.getNx(),
-                            _imageWriter.getNy(),
-                            j,
-                            i);
-                    //Get the color of every pixel
-                    Color myColor = _rayTracer.traceRay(myRay);
-                    //write the color on the image
-                    _imageWriter.writePixel(j, i, myColor);
+        switch (opt1) {
+            case DEFAULT:
+                defaultRender(false);
+                break;
+            case THREADS:
+                switch (opt2) {
+                    case DEFAULT -> renderImage(null, false);
+                    case SOFT_SHADOWS -> renderImage(null, true);
+                    case ANTI_ALIASING -> renderImage(Options.ANTI_ALIASING, true);
+                    case DEPTH_OF_FIELD -> renderImage(Options.DEPTH_OF_FIELD, true);
+                    case ADAPTIVE_ANTI_ALIASING -> renderImage(Options.ADAPTIVE_ANTI_ALIASING, true);
                 }
-            }
+                break;
+            case SOFT_SHADOWS:
+                switch (opt2) {
+                    case DEFAULT -> defaultRender(true);
+                    case THREADS -> renderImage(null, true);
+                    case ANTI_ALIASING -> renderImageWithAntialiasing(true);
+                    case DEPTH_OF_FIELD -> throw new ExecutionControl.NotImplementedException("Not implemented yet !!!");
+                    case ADAPTIVE_ANTI_ALIASING -> renderImageAdaptive(true);
+                }
+                break;
+            case ANTI_ALIASING:
+                switch (opt2) {
+                    case DEFAULT -> renderImageWithAntialiasing(false);
+                    case THREADS -> renderImage(Options.ANTI_ALIASING, true);
+                    case SOFT_SHADOWS -> renderImageWithAntialiasing(true);
+                    case DEPTH_OF_FIELD -> throw new ExecutionControl.NotImplementedException("Not implemented yet !!!");
+                    case ADAPTIVE_ANTI_ALIASING -> throw new IllegalArgumentException("Cannot render two types of anti-aliasing");
+                }
+                break;
+            case DEPTH_OF_FIELD:
+                switch (opt2) {
+                    case DEFAULT -> renderImageWithDepthOfField(false);
+                    case THREADS -> renderImage(Options.THREADS, false);
+                    case SOFT_SHADOWS -> renderImageWithDepthOfField(true);
+                    case ANTI_ALIASING, ADAPTIVE_ANTI_ALIASING -> throw new ExecutionControl.NotImplementedException("Not implemented yet !!!");
+                }
+                break;
+            case ADAPTIVE_ANTI_ALIASING:
+                switch (opt2) {
+                    case DEFAULT -> renderImageAdaptive(false);
+                    case THREADS -> renderImage(Options.ADAPTIVE_ANTI_ALIASING, false);
+                    case ANTI_ALIASING -> throw new IllegalArgumentException("Cannot render two types of anti-aliasing");
+                    case SOFT_SHADOWS -> renderImageAdaptive(true);
+                    case DEPTH_OF_FIELD -> throw new ExecutionControl.NotImplementedException("Not implemented yet !!!");
+                }
+                break;
         }
     }
 
-
     /**
      * Render the image by writing every pixel of the grid
+     * @param isSoftShadows is rendering with soft shadows improvement
      */
-    public void renderImageSoftShadows() {
-        if (_imageWriter == null)
-            throw new MissingResourceException("You need to enter a image writer", ImageWriter.class.getName(), "");
-        if (_camera == null)
-            throw new MissingResourceException("You need to enter a camera", Camera.class.getName(), "");
-        if (_rayTracer == null)
-            throw new MissingResourceException("You need to enter a ray tracer", RayTracerBase.class.getName(), "");
-
-        if (this._M != 0 && this._N != 0) {
-            renderImageWithAntialiasing();
-        } else {
-            //Render every pixel of the image
-            for (int i = 0; i < _imageWriter.getNy(); i++) {
-                for (int j = 0; j < _imageWriter.getNx(); j++) {
-                    //construct ray for every pixel
-                    Ray myRay = _camera.constructRayThroughPixel(
-                            _imageWriter.getNx(),
-                            _imageWriter.getNy(),
-                            j,
-                            i);
-                    //Get the color of every pixel
-                    Color myColor = _rayTracer.traceRaySoftShadows(myRay);
-                    //write the color on the image
-                    _imageWriter.writePixel(j, i, myColor);
-                }
+    private void defaultRender(boolean isSoftShadows) {
+        //Render every pixel of the image
+        for (int i = 0; i < _imageWriter.getNy(); i++) {
+            for (int j = 0; j < _imageWriter.getNx(); j++) {
+                //construct ray for every pixel
+                Ray myRay = _camera.constructRayThroughPixel(
+                        _imageWriter.getNx(),
+                        _imageWriter.getNy(),
+                        j,
+                        i);
+                //Get the color of every pixel
+                Color myColor = _rayTracer.traceRay(myRay, isSoftShadows);
+                //write the color on the image
+                _imageWriter.writePixel(j, i, myColor);
             }
         }
     }
@@ -354,8 +395,9 @@ public class Render {
     /**
      * Render the image by writing every pixel by launching into it N*M rays to get the more closest color
      * of the real image ,in order to avoid aliasing
+     * @param isSoftShadows is rendering with soft shadows improvement
      */
-    public void renderImageWithAntialiasing() {
+    private void renderImageWithAntialiasing(boolean isSoftShadows) {
         if (_N == 0 || _M == 0)
             throw new MissingResourceException("You need to set the n*m value for the rays launching", RayTracerBase.class.getName(), "");
 
@@ -369,7 +411,7 @@ public class Render {
                 List<Ray> myRays = _camera.constructRaysGridFromRay(_imageWriter.getNx(), _imageWriter.getNy(), _N, _M, myRay);
                 Color myColor = new Color(0, 0, 0);
                 for (Ray ray : myRays) {
-                    myColor = myColor.add(_rayTracer.traceRay(ray));
+                    myColor = myColor.add(_rayTracer.traceRay(ray, isSoftShadows));
                 }
                 _imageWriter.writePixel(j, i, myColor.reduce(_N * _M));
             }
@@ -378,15 +420,9 @@ public class Render {
 
     /**
      * Render the image with implementation of the depth of field
+     * @param isSoftShadows is rendering with soft shadows improvement
      */
-    public void renderImageWithDepthOfField() {
-        if (_imageWriter == null)
-            throw new MissingResourceException("You need to enter a image writer", ImageWriter.class.getName(), "");
-        if (_camera == null)
-            throw new MissingResourceException("You need to enter a camera", Camera.class.getName(), "");
-        if (_rayTracer == null)
-            throw new MissingResourceException("You need to enter a ray tracer", RayTracerBase.class.getName(), "");
-
+    private void renderImageWithDepthOfField(boolean isSoftShadows) {
         for (int i = 0; i < _imageWriter.getNy(); i++) {
             for (int j = 0; j < _imageWriter.getNx(); j++) {
                 Ray myRay = _camera.constructRayThroughPixel(
@@ -397,7 +433,7 @@ public class Render {
                 List<Ray> myRays = _camera.constructRaysGridFromCamera(_N, _M, myRay);
                 Color myColor = new Color(0, 0, 0);
                 for (Ray ray : myRays) {
-                    myColor = myColor.add(_rayTracer.traceRay(ray));
+                    myColor = myColor.add(_rayTracer.traceRay(ray, isSoftShadows));
                 }
                 _imageWriter.writePixel(j, i, myColor.reduce(myRays.size()));
             }
@@ -405,49 +441,14 @@ public class Render {
     }
 
 
-    //region Adaptive Super Sampling
-    /*    */
 
     /**
      * Render the image by writing every pixel of the grid
      * Use of AntiAliasing method that is shooting lots of beams in place of only one in the
      * center of the pixel
-     *//*
-public void renderImageWithAntialiasing() {
-    if (_imageWriter == null)
-        throw new MissingResourceException("You need to enter a image writer", ImageWriter.class.getName(), "");
-    if (_camera == null)
-        throw new MissingResourceException("You need to enter a camera", Camera.class.getName(), "");
-    if (_rayTracer == null)
-        throw new MissingResourceException("You need to enter a ray tracer", RayTracerBase.class.getName(), "");
-
-    for (int i = 0; i < _imageWriter.getNy(); i++) {
-        for (int j = 0; j < _imageWriter.getNx(); j++) {
-            Ray myRay = _camera.constructRayThroughPixel(
-                    _imageWriter.getNx(),
-                    _imageWriter.getNy(),
-                    j,
-                    i);
-            HashMap<Integer, Ray> myRays = new HashMap<>();
-            myRays.put(3, myRay);
-            Color myColor = renderPixel(_imageWriter.getNx(), _imageWriter.getNy(), _antiAliasingDepth, myRays);
-            _imageWriter.writePixel(j, i, myColor);
-        }
-    }
-}*/
-
-    /**
-     * Render the image by writing every pixel of the grid
+     * @param isSoftShadows is rendering with soft shadows improvement
      */
-    public void renderImageAdaptive() {
-        if (_imageWriter == null)
-            throw new MissingResourceException("You need to enter a image writer", ImageWriter.class.getName(), "");
-        if (_camera == null)
-            throw new MissingResourceException("You need to enter a camera", Camera.class.getName(), "");
-        if (_rayTracer == null)
-            throw new MissingResourceException("You need to enter a ray tracer", RayTracerBase.class.getName(), "");
-
-
+    private void renderImageAdaptive(boolean isSoftShadows) {
         //Render every pixel of the image
         for (int i = 0; i < _imageWriter.getNy(); i++) {
             for (int j = 0; j < _imageWriter.getNx(); j++) {
@@ -457,11 +458,8 @@ public void renderImageWithAntialiasing() {
                         _imageWriter.getNy(),
                         j,
                         i);
-                HashMap<Integer, Ray> myRays = new HashMap<>();
-                myRays.put(3, myRay);
-
                 //Get the color of every pixel
-                Color myColor = renderPixel(_imageWriter.getNx(), _imageWriter.getNy(), 3, myRays);
+                Color myColor = renderPixel(_imageWriter.getNx(), _imageWriter.getNy(), 3, myRay, isSoftShadows);
                 //write the color on the image
                 _imageWriter.writePixel(j, i, myColor);
             }
@@ -469,144 +467,100 @@ public void renderImageWithAntialiasing() {
     }
 
 
-    private Color renderPixel(double nX, double nY, int depth, HashMap<Integer, Ray> firstRays) {
-        HashMap<Integer, Ray> myRays = _camera.construct5RaysFromRay(firstRays, nX, nY);
-        return renderPixelRecursive(myRays, nX, nY, depth);
-        /*Color mainColor = _rayTracer.traceRay(myRays.get(3));
-        Color pixelColor = new Color(0, 0, 0);
-        pixelColor = pixelColor.add(mainColor);
-        for (int i = 1; i <= 5; i++) {
-            if (i != 3) {
-                Color tempColor = _rayTracer.traceRay(myRays.get(i));
-                if (!tempColor.equals(mainColor) && depth > 1) {
-                    HashMap<Integer, Ray> rays = new HashMap<>();
-                    rays.put(i, myRays.get(i));
-                    if (i == 1) {
-                        rays.put(5, myRays.get(3));
-                    } else if (i == 2) {
-                        rays.put(4, myRays.get(3));
-                    } else if (i == 4) {
-                        rays.put(2, myRays.get(3));
-                    } else {
-                        rays.put(1, myRays.get(3));
-                    }
-                    tempColor = renderPixel(nX * 2, nY * 2, depth - 1, rays);
-                }
-                pixelColor = pixelColor.add(tempColor);
-            }
+    /**
+     * Render every pixel by calling recursive adaptive render function
+     * @param nX nb of pixels in col
+     * @param nY nb of pixels in row
+     * @param depth depth of recursion
+     * @param firstRay first ray traced in center of the pixel
+     * @param isSoftShadows is rendering with soft shadows improvement
+     * @return the color of the pixel
+     */
+    private Color renderPixel(double nX, double nY, int depth, Ray firstRay, boolean isSoftShadows) {
+        List<Ray> myRays = _camera.construct5RaysFromRay(firstRay, nX, nY); //construct 5 rays into the pixel
+        HashMap<Integer, ColoredRay> rays = new HashMap<>();
+        int i = 0;
+        //trace all the rays and store the colors with the rays
+        for (Ray myRay : myRays) {
+            rays.put(++i, new ColoredRay(myRay, _rayTracer.traceRay(myRay, isSoftShadows)));
         }
-        return pixelColor.reduce(5);*/
+        //render the pixel in recursive function
+        return renderPixelRecursive(rays, nX, nY, depth, isSoftShadows);
     }
 
-
-    private Color renderPixelRecursive(HashMap<Integer, Ray> myRays, double nX, double nY, int depth) {
-
+    /**
+     * Render the pixel by doing recursion until the color is the same in all the 5 rays or end of depth
+     * @param myRays the rays
+     * @param nX nb of pixels in col
+     * @param nY nb of pixels in row
+     * @param depth recursion depth
+     * @param isSoftShadows is rendering with soft shadows improvement
+     * @return the color of the pixel
+     */
+    private Color renderPixelRecursive(HashMap<Integer, ColoredRay> myRays, double nX, double nY, int depth, boolean isSoftShadows) {
         boolean flag = false;
-        Ray mainRay = myRays.get(3);
-        Color mainColor = _rayTracer.traceRay(mainRay);
+        //get the center of the pixel ray
+        ColoredRay mainRay = myRays.get(3);
+        //get center's color
+        Color mainColor = mainRay.getColor();
         if (depth >= 1) {
+            //get color of all the 4 different points
+            //if one differs than center need to send the pixel to compute color in recursion
             for (Integer integer : myRays.keySet()) {
                 if (integer != 3) {
-                    Color tmpColor = _rayTracer.traceRay(myRays.get(integer));
+                    ColoredRay tmpRay = myRays.get(integer);
+                    Color tmpColor = tmpRay.getColor();
+                    if (tmpRay.getColor() == null) {
+                        tmpColor = _rayTracer.traceRay(tmpRay.getRay(), isSoftShadows);
+                        myRays.put(integer, new ColoredRay(tmpRay.getRay(), tmpColor));
+                    }
                     if (!tmpColor.equals(mainColor)) {
                         flag = true;
-                        break;
                     }
                 }
             }
             if (flag) {
-                List<Ray> newRays = _camera.construct4RaysThroughPixel(myRays.get(3), nX, nY);
-                HashMap<Integer, Ray> rays = new HashMap<>();
+                //Create a map of Colored rays for the 4 under pixels and send to recursion
+                List<ColoredRay> newRays = _camera.construct4RaysThroughPixel(myRays.get(3).getRay(), nX, nY).stream().map(
+                        x -> new ColoredRay(x, _rayTracer.traceRay(x, isSoftShadows))
+                ).collect(Collectors.toList());
+                HashMap<Integer, ColoredRay> rays = new HashMap<>();
                 rays.put(1, myRays.get(1));
                 rays.put(2, newRays.get(0));
-                rays.put(3, _camera.constructPixelCenterRay(myRays.get(1), nX * 2, nY * 2));
+                Ray tempCenter = _camera.constructPixelCenterRay(myRays.get(1).getRay(), nX * 2, nY * 2);
+                rays.put(3, new ColoredRay(tempCenter, _rayTracer.traceRay(tempCenter, isSoftShadows)));
                 rays.put(4, newRays.get(1));
                 rays.put(5, myRays.get(3));
-                mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
+                mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1, isSoftShadows));
                 rays = new HashMap<>();
                 rays.put(1, newRays.get(0));
                 rays.put(2, myRays.get(2));
-                rays.put(3, _camera.constructPixelCenterRay(newRays.get(0), nX * 2, nY * 2));
+                tempCenter = _camera.constructPixelCenterRay(newRays.get(0).getRay(), nX * 2, nY * 2);
+                rays.put(3, new ColoredRay(tempCenter, _rayTracer.traceRay(tempCenter, isSoftShadows)));
                 rays.put(4, myRays.get(3));
                 rays.put(5, newRays.get(2));
-                mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
+                mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1, isSoftShadows));
                 rays = new HashMap<>();
                 rays.put(1, newRays.get(1));
                 rays.put(2, myRays.get(3));
-                rays.put(3, _camera.constructPixelCenterRay(newRays.get(1), nX * 2, nY * 2));
+                tempCenter = _camera.constructPixelCenterRay(newRays.get(1).getRay(), nX * 2, nY * 2);
+                rays.put(3, new ColoredRay(tempCenter, _rayTracer.traceRay(tempCenter, isSoftShadows)));
                 rays.put(4, myRays.get(4));
                 rays.put(5, newRays.get(3));
-                mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
+                mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1, isSoftShadows));
                 rays = new HashMap<>();
                 rays.put(1, myRays.get(3));
                 rays.put(2, newRays.get(2));
-                rays.put(3, _camera.constructPixelCenterRay(myRays.get(3), nX * 2, nY * 2));
+                tempCenter = _camera.constructPixelCenterRay(myRays.get(3).getRay(), nX * 2, nY * 2);
+                rays.put(3, new ColoredRay(tempCenter, _rayTracer.traceRay(tempCenter, isSoftShadows)));
                 rays.put(4, newRays.get(3));
                 rays.put(5, myRays.get(5));
-                mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
+                mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1, isSoftShadows));
                 mainColor = mainColor.reduce(5);
             }
         }
         return mainColor;
     }
-
-
-    /**
-     * Render the image by writing every pixel of the grid
-     * Use of AntiAliasing method that is shooting lots of beams in place of only one in the
-     * center of the pixel
-     *//*
-
-    public void renderImageWithAntialiasing1() {
-        if (_imageWriter == null)
-            throw new MissingResourceException("You need to enter a image writer", ImageWriter.class.getName(), "");
-        if (_camera == null)
-            throw new MissingResourceException("You need to enter a camera", Camera.class.getName(), "");
-        if (_rayTracer == null)
-            throw new MissingResourceException("You need to enter a ray tracer", RayTracerBase.class.getName(), "");
-
-        for (int i = 0; i < _imageWriter.getNy(); i++) {
-            for (int j = 0; j < _imageWriter.getNx(); j++) {
-                Color myColor = new Color(0, 0, 0);
-                for (double k = 0; k < this._numberOfRaySamples; k++) {
-                    for (double l = 0; l < this._numberOfRaySamples; l++) {
-                        Ray myRay = _camera.constructRayThroughPixel(
-                                _imageWriter.getNx(),
-                                _imageWriter.getNy(),
-                                (j + l / (this._numberOfRaySamples)),
-                                (i + k / this._numberOfRaySamples));
-                        Color color = _rayTracer.traceRay(myRay);
-                        myColor = myColor.add(color);
-                    }
-                }
-                _imageWriter.writePixel(j, i, myColor.reduce((this._numberOfRaySamples * this._numberOfRaySamples)));
-            }
-        }
-
-
-        */
-/*for (int i = 0; i < _imageWriter.getNy(); i++) {
-            for (int j = 0; j < _imageWriter.getNx(); j++) {
-                Color myColor = new Color(0, 0, 0);
-                for (double k = 0; k < this._numberOfRaySamples; k++) {
-                    for (double l = 0; l < this._numberOfRaySamples; l++) {
-                        Ray myRay = _camera.constructRayThroughPixel(
-                                _imageWriter.getNx(),
-                                _imageWriter.getNy(),
-                                (j + l / (this._numberOfRaySamples)),
-                                (i + k / this._numberOfRaySamples));
-                        Color color = _rayTracer.traceRay(myRay);
-                        myColor = myColor.add(color);
-                    }
-                }
-                _imageWriter.writePixel(j, i, myColor.reduce((this._numberOfRaySamples * this._numberOfRaySamples)));
-            }
-        }*//*
-
-    }
-*/
-    //endregion
-
 
     /**
      * Create a grid [over the picture] in the pixel color map. given the grid's

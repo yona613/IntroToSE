@@ -2,6 +2,7 @@ package renderer;
 
 import elements.*;
 import geometries.*;
+import jdk.jshell.spi.ExecutionControl;
 import org.junit.jupiter.api.Test;
 import primitives.*;
 import scene.Scene;
@@ -47,7 +48,11 @@ public class LightsTests {
                 .setCamera(camera1) //
                 .setRayTracer(new RayTracerBasic(scene1))
                 .build();
-        render.renderImage();
+        try {
+            render.renderImage(Options.DEFAULT, null);
+        } catch (ExecutionControl.NotImplementedException e) {
+            e.printStackTrace();
+        }
         render.writeToImage();
     }
 
@@ -66,7 +71,11 @@ public class LightsTests {
                 .setCamera(camera1) //
                 .setRayTracer(new RayTracerBasic(scene1))
                 .build();
-        render.renderImage();
+        try {
+            render.renderImage(Options.DEFAULT, null);
+        } catch (ExecutionControl.NotImplementedException e) {
+            e.printStackTrace();
+        }
         render.writeToImage();
     }
 
@@ -85,7 +94,11 @@ public class LightsTests {
                 .setCamera(camera1) //
                 .setRayTracer(new RayTracerBasic(scene1))
                 .build();
-        render.renderImage();
+        try {
+            render.renderImage(Options.DEFAULT, null);
+        } catch (ExecutionControl.NotImplementedException e) {
+            e.printStackTrace();
+        }
         render.writeToImage();
     }
 
@@ -104,7 +117,11 @@ public class LightsTests {
                 .setCamera(camera2) //
                 .setRayTracer(new RayTracerBasic(scene2))
                 .build();
-        render.renderImage();
+        try {
+            render.renderImage(Options.DEFAULT, null);
+        } catch (ExecutionControl.NotImplementedException e) {
+            e.printStackTrace();
+        }
         render.writeToImage();
     }
 
@@ -124,7 +141,11 @@ public class LightsTests {
                 .setCamera(camera2) //
                 .setRayTracer(new RayTracerBasic(scene2))
                 .build();
-        render.renderImage();
+        try {
+            render.renderImage(Options.DEFAULT, null);
+        } catch (ExecutionControl.NotImplementedException e) {
+            e.printStackTrace();
+        }
         render.writeToImage();
     }
 
@@ -144,7 +165,11 @@ public class LightsTests {
 				.setCamera(camera2) //
 				.setRayTracer(new RayTracerBasic(scene2))
                 .build();
-		render.renderImage();
+        try {
+            render.renderImage(Options.DEFAULT, null);
+        } catch (ExecutionControl.NotImplementedException e) {
+            e.printStackTrace();
+        }
 		render.writeToImage();
 	}
 
@@ -163,7 +188,11 @@ public class LightsTests {
 				.setCamera(camera1) //
 				.setRayTracer(new RayTracerBasic(scene1))
                 .build();
-		render.renderImage();
+        try {
+            render.renderImage(Options.DEFAULT, null);
+        } catch (ExecutionControl.NotImplementedException e) {
+            e.printStackTrace();
+        }
 		render.writeToImage();
 	}
 
@@ -184,7 +213,11 @@ public class LightsTests {
                 .setCamera(camera2) //
                 .setRayTracer(new RayTracerBasic(scene2))
                 .build();
-        render.renderImage();
+        try {
+            render.renderImage(Options.DEFAULT, null);
+        } catch (ExecutionControl.NotImplementedException e) {
+            e.printStackTrace();
+        }
         render.writeToImage();
     }
 

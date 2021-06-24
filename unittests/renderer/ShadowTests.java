@@ -3,6 +3,7 @@ package renderer;
 
 import elements.*;
 import geometries.*;
+import jdk.jshell.spi.ExecutionControl;
 import org.junit.jupiter.api.Test;
 import primitives.*;
 import scene.Scene;
@@ -40,7 +41,11 @@ public class ShadowTests {
 				.setCamera(camera) //
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
-		render.renderImage();
+		try {
+			render.renderImage(Options.DEFAULT, null);
+		} catch (ExecutionControl.NotImplementedException e) {
+			e.printStackTrace();
+		}
 		render.writeToImage();
 	}
 
@@ -67,7 +72,11 @@ public class ShadowTests {
 				.setCamera(camera) //
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
-		render.renderImage();
+		try {
+			render.renderImage(Options.DEFAULT, null);
+		} catch (ExecutionControl.NotImplementedException e) {
+			e.printStackTrace();
+		}
 		render.writeToImage();
 	}
 
@@ -95,7 +104,11 @@ public class ShadowTests {
 				.setCamera(camera) //
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
-		render.renderImage();
+		try {
+			render.renderImage(Options.DEFAULT, null);
+		} catch (ExecutionControl.NotImplementedException e) {
+			e.printStackTrace();
+		}
 		render.writeToImage();
 	}
 
@@ -122,7 +135,11 @@ public class ShadowTests {
 				.setCamera(camera) //
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
-		render.renderImage();
+		try {
+			render.renderImage(Options.DEFAULT, null);
+		} catch (ExecutionControl.NotImplementedException e) {
+			e.printStackTrace();
+		}
 		render.writeToImage();
 	}
 
@@ -149,7 +166,11 @@ public class ShadowTests {
 				.setCamera(camera) //
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
-		render.renderImage();
+		try {
+			render.renderImage(Options.DEFAULT, null);
+		} catch (ExecutionControl.NotImplementedException e) {
+			e.printStackTrace();
+		}
 		render.writeToImage();
 	}
 
@@ -180,7 +201,11 @@ public class ShadowTests {
 				.setCamera(camera) //
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
-		render.renderImage();
+		try {
+			render.renderImage(Options.DEFAULT, null);
+		} catch (ExecutionControl.NotImplementedException e) {
+			e.printStackTrace();
+		}
 		render.writeToImage();
 	}
 

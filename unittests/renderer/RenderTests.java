@@ -49,7 +49,11 @@ public class RenderTests {
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
 
-		render.renderImage();
+		try {
+			render.renderImage(Options.DEFAULT, null);
+		} catch (ExecutionControl.NotImplementedException e) {
+			e.printStackTrace();
+		}
 		render.printGrid(100, new Color(java.awt.Color.YELLOW));
 		render.writeToImage();
 	}
@@ -75,7 +79,11 @@ public class RenderTests {
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
 
-		render.renderImage();
+		try {
+			render.renderImage(Options.DEFAULT, null);
+		} catch (ExecutionControl.NotImplementedException e) {
+			e.printStackTrace();
+		}
 		render.printGrid(100, new Color(java.awt.Color.YELLOW));
 		render.writeToImage();
 	}
@@ -102,7 +110,11 @@ public class RenderTests {
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
 
-		render.renderImage();
+		try {
+			render.renderImage(Options.DEFAULT, null);
+		} catch (ExecutionControl.NotImplementedException e) {
+			e.printStackTrace();
+		}
 		render.printGrid(100, new Color(java.awt.Color.WHITE));
 		render.writeToImage();
 	}

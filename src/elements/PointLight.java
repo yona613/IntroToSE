@@ -102,33 +102,6 @@ public class PointLight extends Light implements LightSource {
 
             }
         }
-        /*for (int i = 0; i < 10; i++) {
-            double scale1;
-            double scale2;
-            double scale3;
-            do {
-                scale1 = r.nextDouble();
-                scale2 = r.nextDouble();
-                scale3 = r.nextDouble();
-            }
-            while (scale1 == 0d || scale2 == 0d || scale3 == 0d);
-            Point3D point1 = _position.add(new Vector(scale1, scale2, scale3).scale(_radius));
-            Point3D point2 = _position.add(new Vector(scale1, scale2, -scale3).scale(_radius));
-            Point3D point3 = _position.add(new Vector(scale1, -scale2, scale3).scale(_radius));
-            Point3D point4 = _position.add(new Vector(scale1, -scale2, -scale3).scale(_radius));
-            Point3D point5 = _position.add(new Vector(-scale1, scale2, scale3).scale(_radius));
-            Point3D point6 = _position.add(new Vector(-scale1, scale2, -scale3).scale(_radius));
-            Point3D point7 = _position.add(new Vector(-scale1, -scale2, scale3).scale(_radius));
-            Point3D point8 = _position.add(new Vector(-scale1, -scale2, -scale3).scale(_radius));
-            vectors.add(p.subtract(point1).normalized());
-            vectors.add(p.subtract(point2).normalized());
-            vectors.add(p.subtract(point3).normalized());
-            vectors.add(p.subtract(point4).normalized());
-            vectors.add(p.subtract(point5).normalized());
-            vectors.add(p.subtract(point6).normalized());
-            vectors.add(p.subtract(point7).normalized());
-            vectors.add(p.subtract(point8).normalized());
-        }*/
         vectors.add(getL(p));
         return vectors;
     }

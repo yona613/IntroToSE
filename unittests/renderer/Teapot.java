@@ -3,9 +3,9 @@ package renderer;
 
 import elements.*;
 import geometries.*;
+import jdk.jshell.spi.ExecutionControl;
 import org.junit.jupiter.api.Test;
 import primitives.*;
-import renderer.*;
 import scene.Scene;
 
 /**
@@ -1562,7 +1562,11 @@ public class Teapot {
                 .setImageWriter(imageWriter) //
                 .setRayTracer(new RayTracerBasic(scene)).build() //
                 .setMultithreading(8).setDebugPrint();
-        render.renderImage2();
+        try {
+            render.renderImage(Options.THREADS, Options.DEFAULT);
+        } catch (ExecutionControl.NotImplementedException e) {
+            e.printStackTrace();
+        }
         render.printGrid(50, new Color(java.awt.Color.YELLOW));
         render.writeToImage();
     }

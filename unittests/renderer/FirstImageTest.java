@@ -2,6 +2,7 @@ package renderer;
 
 import elements.*;
 import geometries.*;
+import jdk.jshell.spi.ExecutionControl;
 import org.junit.jupiter.api.Test;
 import primitives.*;
 import scene.Scene;
@@ -71,15 +72,15 @@ public class FirstImageTest {
         myScene = new Scene.SceneBuilder(myScene).setAmbientLight(new AmbientLight(Color.MAGENTA, 0.2)).setBackground(Color.PINK).build();
 
         myScene.lights.add( //
-                new SpotLight(new Color(0, 100, 100), new Point3D(-200, -200, 300), new Vector(1, 1, -3)) //
+                new SpotLight(new Color(0, 100, 100), new Point3D(-200, -200, 300), new Vector(1, 1, -3), 3d) //
                         .setkL(1E-10).setkQ(1.5E-10));
 
         myScene.lights.add(
-                new PointLight(new Color(100, 0, 100), new Point3D(-100, -300, 500))
+                new PointLight(new Color(100, 0, 100), new Point3D(-100, -300, 500), 3d)
                         .setkL(1E-10).setkQ(1.5E-10));
 
         myScene.lights.add(
-                new PointLight(new Color(100, 40, 100), new Point3D(100, 300, 500))
+                new PointLight(new Color(100, 40, 100), new Point3D(100, 300, 500),3d)
                         .setkL(1E-10).setkQ(1.5E-10));
 
         myScene.lights.add(
@@ -90,22 +91,20 @@ public class FirstImageTest {
                 setImageWriter(new ImageWriter("firstImage", 800, 800)) //
                 .setCamera(myCamera) //
                 .setRayTracer(new RayTracerBasic(myScene))
+                .setDepthAdaptive(3)
                 .build();
         render.setMultithreading(3).setDebugPrint();
-        render.renderImage2();
-        render.writeToImage();
 
-/*        myCamera.moveCamera(40, 150, -40);
+
+        myCamera.moveCamera(40, 150, -40);
         myCamera.rotateCamera(new Vector(1 / 3, 0, 1), 40);
 
-        render = new Render.RenderBuilder(). //
-                setImageWriter(new ImageWriter("SecondImage", 800, 800)) //
-                .setCamera(myCamera) //
-                .setRayTracer(new RayTracerBasic(myScene))
-                .build();
-        render.renderImageWithAntialiasing();
-        render.writeToImage();*/
-
+        try {
+            render.renderImage(Options.SOFT_SHADOWS, Options.ADAPTIVE_ANTI_ALIASING);
+        } catch (ExecutionControl.NotImplementedException e) {
+            e.printStackTrace();
+        }
+        render.writeToImage();
     }
 
 
@@ -193,7 +192,11 @@ public class FirstImageTest {
                 .setCamera(myCamera) //
                 .setRayTracer(new RayTracerBasic(myScene))
                 .build();
-        render.renderImage();
+        try {
+            render.renderImage(Options.ADAPTIVE_ANTI_ALIASING, null);
+        } catch (ExecutionControl.NotImplementedException e) {
+            e.printStackTrace();
+        }
         render.writeToImage();
 
         myCamera.moveCamera(40, 200, -400);
@@ -204,7 +207,11 @@ public class FirstImageTest {
                 .setCamera(myCamera) //
                 .setRayTracer(new RayTracerBasic(myScene))
                 .build();
-        render.renderImage();
+        try {
+            render.renderImage(Options.DEFAULT, null);
+        } catch (ExecutionControl.NotImplementedException e) {
+            e.printStackTrace();
+        }
         render.writeToImage();
 
     }

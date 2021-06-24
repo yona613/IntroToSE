@@ -21,14 +21,9 @@ public abstract class RayTracerBase {
     /**
      * This function trace's the ray and returns the color given by the scene's model
      * @param ray tracing ray
+     * @param isSoftShadows is rendering with soft shadows improvement
      * @return the color
      */
-    public abstract Color traceRay(Ray ray);
+    public abstract Color traceRay(Ray ray, boolean isSoftShadows);
 
-    /**
-     * This function trace's the ray and returns the color given by the scene's model
-     * @param ray tracing ray
-     * @return the color
-     */
-    public abstract Color traceRaySoftShadows(Ray ray);
 }

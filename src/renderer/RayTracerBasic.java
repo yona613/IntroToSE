@@ -28,32 +28,16 @@ public class RayTracerBasic extends RayTracerBase {
      * Get color of the intersection of the ray with the scene
      *
      * @param ray Ray to trace
+     * @param isSoftShadows is rendering with soft shadows improvement
      * @return Color of intersection
      */
     @Override
-    public Color traceRay(Ray ray) {
+    public Color traceRay(Ray ray, boolean isSoftShadows) {
 
         List<GeoPoint> myPoints = _scene.geometries.findGeoIntersections(ray);
         if (myPoints != null) {
             GeoPoint myPoint = ray.getClosestGeoPoint(myPoints);
-            return calcColor(myPoint, ray);
-        }
-        return _scene.background;
-    }
-
-    /**
-     * Get color of the intersection of the ray with the scene
-     *
-     * @param ray Ray to trace
-     * @return Color of intersection
-     */
-    @Override
-    public Color traceRaySoftShadows(Ray ray) {
-
-        List<GeoPoint> myPoints = _scene.geometries.findGeoIntersections(ray);
-        if (myPoints != null) {
-            GeoPoint myPoint = ray.getClosestGeoPoint(myPoints);
-            return calcColorSoftShadows(myPoint, ray);
+            return calcColor(myPoint, ray, isSoftShadows);
         }
         return _scene.background;
     }
@@ -64,22 +48,11 @@ public class RayTracerBasic extends RayTracerBase {
      *
      * @param geopoint the point of intersection
      * @param ray      the ray
+     * @param isSoftShadows is rendering with soft shadows improvement
      * @return the color
      */
-    private Color calcColor(GeoPoint geopoint, Ray ray) {
-        return calcColor(geopoint, ray, MAX_CALC_COLOR_LEVEL, INITIAL_K)
-                .add(_scene.ambientLight.getIntensity());
-    }
-
-    /**
-     * Calculate color using recursive function
-     *
-     * @param geopoint the point of intersection
-     * @param ray      the ray
-     * @return the color
-     */
-    private Color calcColorSoftShadows(GeoPoint geopoint, Ray ray) {
-        return calcColorSoftShadows(geopoint, ray, MAX_CALC_COLOR_LEVEL, INITIAL_K)
+    private Color calcColor(GeoPoint geopoint, Ray ray, boolean isSoftShadows) {
+        return calcColor(geopoint, ray, MAX_CALC_COLOR_LEVEL, INITIAL_K, isSoftShadows)
                 .add(_scene.ambientLight.getIntensity());
     }
 
@@ -88,25 +61,13 @@ public class RayTracerBasic extends RayTracerBase {
      * Recursive function
      *
      * @param geoPoint point of intersection
+     * @param isSoftShadows is rendering with soft shadows improvement
      * @return Color of the intersection point
      */
-    private Color calcColor(GeoPoint geoPoint, Ray ray, int level, double k) {
+    private Color calcColor(GeoPoint geoPoint, Ray ray, int level, double k , boolean isSoftShadows) {
         Color color = geoPoint.geometry.getEmission()
-                .add(calcLocalEffects(geoPoint, ray, k));
-        return 1 == level ? color : color.add(calcGlobalEffects(geoPoint, ray, level, k));
-    }
-
-    /**
-     * Get the color of an intersection point using the Phong model
-     * Recursive function
-     *
-     * @param geoPoint point of intersection
-     * @return Color of the intersection point
-     */
-    private Color calcColorSoftShadows(GeoPoint geoPoint, Ray ray, int level, double k) {
-        Color color = geoPoint.geometry.getEmission()
-                .add(calcLocalEffectsSoftShadows(geoPoint, ray, k));
-        return 1 == level ? color : color.add(calcGlobalEffects(geoPoint, ray, level, k));
+                .add(calcLocalEffects(geoPoint, ray, k, isSoftShadows));
+        return 1 == level ? color : color.add(calcGlobalEffects(geoPoint, ray, level, k, isSoftShadows));
     }
 
     /**
@@ -116,9 +77,10 @@ public class RayTracerBasic extends RayTracerBase {
      * @param inRay    the ray
      * @param level    level
      * @param k
+     * @param isSoftShadows is rendering with soft shadows improvement
      * @return the color
      */
-    private Color calcGlobalEffects(GeoPoint geopoint, Ray inRay, int level, double k) {
+    private Color calcGlobalEffects(GeoPoint geopoint, Ray inRay, int level, double k, boolean isSoftShadows) {
         Color color = Color.BLACK;
         Material material = geopoint.geometry.getMaterial();
         double kr = material.kR;
@@ -128,7 +90,7 @@ public class RayTracerBasic extends RayTracerBase {
             Ray reflectedRay = constructReflectedRay(n, geopoint.point, inRay);
             GeoPoint reflectedPoint = findClosestIntersection(reflectedRay);
             if (reflectedPoint != null){
-                color = color.add(calcColor(reflectedPoint, reflectedRay, level - 1, kkr).scale(kr));
+                color = color.add(calcColor(reflectedPoint, reflectedRay, level - 1, kkr, isSoftShadows).scale(kr));
             }
         }
         double kt = material.kT;
@@ -137,7 +99,7 @@ public class RayTracerBasic extends RayTracerBase {
             Ray refractedRay = constructRefractedRay(n, geopoint.point, inRay);
             GeoPoint refractedPoint = findClosestIntersection(refractedRay);
             if (refractedPoint != null){
-                color = color.add(calcColor(refractedPoint, refractedRay, level - 1, kkt).scale(kt));
+                color = color.add(calcColor(refractedPoint, refractedRay, level - 1, kkt, isSoftShadows).scale(kt));
             }
         }
         return color;
@@ -190,9 +152,10 @@ public class RayTracerBasic extends RayTracerBase {
      *
      * @param point point calculated
      * @param ray ray entering to the point
+     * @param isSoftShadows is rendering with soft shadows improvement
      * @return local color effect on the point
      */
-    private Color calcLocalEffects(GeoPoint point, Ray ray, double k) {
+    private Color calcLocalEffects(GeoPoint point, Ray ray, double k, boolean isSoftShadows) {
         //direction vector of the ray
         Vector v = ray.get_dir();
         //normal to geometry of the point
@@ -205,61 +168,47 @@ public class RayTracerBasic extends RayTracerBase {
         double ks = point.geometry.getMaterial()._ks;
         Color color = Color.BLACK;
         //get color given by every light source
-        for (LightSource lightSource : _scene.lights) {
-            Vector l = lightSource.getL(point.point);
-            double nl = alignZero(n.dotProduct(l));
-            if (nl * nv > 0) { // sign(nl) == sign(nv)
-                //get transparency of the object
-                double ktr = transparency(lightSource, l, n, point);
-                if (ktr * k > MIN_CALC_COLOR_K) { //check if the depth of calculation was reached then don't calculate any more
-                    // color is scaled by transparency to get the right color effect
-                    Color lightIntensity = lightSource.getIntensity(point.point).scale(ktr);
-                    //get effects of the color and add them to the color
-                    color = color.add(calcDiffusive(kd, l, n, lightIntensity),
-                            calcSpecular(ks, l, n, v, nShininess, lightIntensity));
+        if (isSoftShadows){
+            for (LightSource lightSource : _scene.lights) {
+                Color color1 = new Color(0,0,0);
+                for (Vector l : lightSource.getListL(point.point) ) {
+                    double nl = alignZero(n.dotProduct(l));
+                    if (nl * nv > 0) { // sign(nl) == sign(nv)
+                        //get transparency of the object
+                        double ktr = transparency(lightSource, l, n, point);
+                        if (ktr * k > MIN_CALC_COLOR_K) { //check if the depth of calculation was reached then don't calculate any more
+                            // color is scaled by transparency to get the right color effect
+                            Color lightIntensity = lightSource.getIntensity(point.point).scale(ktr);
+                            //get effects of the color and add them to the color
+                            color1 = color1.add(calcDiffusive(kd, l, n, lightIntensity),
+                                    calcSpecular(ks, l, n, v, nShininess, lightIntensity));
+                        }
+                    }
+                }
+                color = color.add(color1.reduce(lightSource.getListL(point.point).size()));
+            }
+        }
+        else {
+            for (LightSource lightSource : _scene.lights) {
+                Vector l = lightSource.getL(point.point);
+                double nl = alignZero(n.dotProduct(l));
+                if (nl * nv > 0) { // sign(nl) == sign(nv)
+                    //get transparency of the object
+                    double ktr = transparency(lightSource, l, n, point);
+                    if (ktr * k > MIN_CALC_COLOR_K) { //check if the depth of calculation was reached then don't calculate any more
+                        // color is scaled by transparency to get the right color effect
+                        Color lightIntensity = lightSource.getIntensity(point.point).scale(ktr);
+                        //get effects of the color and add them to the color
+                        color = color.add(calcDiffusive(kd, l, n, lightIntensity),
+                                calcSpecular(ks, l, n, v, nShininess, lightIntensity));
+                    }
                 }
             }
         }
+
         return color;
     }
 
-    /**
-     * Calculate the color of the local effects of the light
-     *
-     * @param point point calculated
-     * @param ray ray entering to the point
-     * @return local color effect on the point
-     */
-    private Color calcLocalEffectsSoftShad(GeoPoint point, Ray ray, double k) {
-        //direction vector of the ray
-        Vector v = ray.get_dir();
-        //normal to geometry of the point
-        Vector n = point.geometry.getNormal(point.point);
-        //check if normal to the geometry is orthogonal to ray
-        double nv = alignZero(n.dotProduct(v));
-        if (nv == 0) return Color.BLACK; //then no color
-        double nShininess = point.geometry.getMaterial()._nShininess;
-        double kd = point.geometry.getMaterial()._kd;
-        double ks = point.geometry.getMaterial()._ks;
-        Color color = Color.BLACK;
-        //get color given by every light source
-        for (LightSource lightSource : _scene.lights) {
-            Vector l = lightSource.getL(point.point);
-            double nl = alignZero(n.dotProduct(l));
-            if (nl * nv > 0) { // sign(nl) == sign(nv)
-                //get transparency of the object
-                double ktr = transparency(lightSource, lightSource.getL(point.point), n, point);
-                if (ktr * k > MIN_CALC_COLOR_K) { //check if the depth of calculation was reached then don't calculate any more
-                    // color is scaled by transparency to get the right color effect
-                    Color lightIntensity = lightSource.getIntensity(point.point).scale(ktr);
-                    //get effects of the color and add them to the color
-                    color = color.add(calcDiffusive(kd, l, n, lightIntensity),
-                            calcSpecular(ks, l, n, v, nShininess, lightIntensity));
-                }
-            }
-        }
-        return color;
-    }
 
     /**
      * Calculate the color of the local effects of the light
@@ -281,25 +230,7 @@ public class RayTracerBasic extends RayTracerBase {
         double ks = point.geometry.getMaterial()._ks;
         Color color = Color.BLACK;
         //get color given by every light source
-        for (LightSource lightSource : _scene.lights) {
-            Color color1 = new Color(0,0,0);
-            for (Vector l : lightSource.getListL(point.point) ) {
-                double nl = alignZero(n.dotProduct(l));
-                if (nl * nv > 0) { // sign(nl) == sign(nv)
-                    //get transparency of the object
-                    double ktr = transparency(lightSource, l, n, point);
-                    if (ktr * k > MIN_CALC_COLOR_K) { //check if the depth of calculation was reached then don't calculate any more
-                        // color is scaled by transparency to get the right color effect
-                        Color lightIntensity = lightSource.getIntensity(point.point).scale(ktr);
-                        //get effects of the color and add them to the color
-                         color1 = color1.add(calcDiffusive(kd, l, n, lightIntensity),
-                                calcSpecular(ks, l, n, v, nShininess, lightIntensity));
-                    }
-                }
-            }
-            color = color.add(color1.reduce(lightSource.getListL(point.point).size()));
 
-        }
         return color;
     }
 
