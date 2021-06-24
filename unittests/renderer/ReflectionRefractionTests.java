@@ -135,7 +135,7 @@ public class ReflectionRefractionTests {
                 .build();
 
         try {
-            render.renderImage(Options.SOFT_SHADOWS, Options.ADAPTIVE_ANTI_ALIASING);
+            render.renderImage(Options.DEFAULT, Options.DEFAULT);
         } catch (ExecutionControl.NotImplementedException e) {
             e.printStackTrace();
         }

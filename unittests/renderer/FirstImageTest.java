@@ -100,7 +100,7 @@ public class FirstImageTest {
         myCamera.rotateCamera(new Vector(1 / 3, 0, 1), 40);
 
         try {
-            render.renderImage(Options.SOFT_SHADOWS, Options.ADAPTIVE_ANTI_ALIASING);
+            render.renderImage(Options.THREADS, Options.DEFAULT);
         } catch (ExecutionControl.NotImplementedException e) {
             e.printStackTrace();
         }

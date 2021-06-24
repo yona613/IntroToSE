@@ -1561,9 +1561,9 @@ public class Teapot {
                 .setCamera(camera) //
                 .setImageWriter(imageWriter) //
                 .setRayTracer(new RayTracerBasic(scene)).build() //
-                .setMultithreading(8).setDebugPrint();
+                .setMultithreading(3).setDebugPrint();
         try {
-            render.renderImage(Options.THREADS, Options.DEFAULT);
+            render.renderImage(Options.DEFAULT, Options.DEFAULT );
         } catch (ExecutionControl.NotImplementedException e) {
             e.printStackTrace();
         }

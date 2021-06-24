@@ -457,7 +457,7 @@ public class Camera {
     }
 
     /**
-     * Function to calculate distance from the camera p0 to a specific point on the plane
+     * Function to find a specific point on the plane
      * we need to calculate the distance from the point on the camera to the plane
      * for that we use the cos of the angle of the direction ray with vTo vector
      * @param ray ray to the specific point
@@ -465,7 +465,7 @@ public class Camera {
      */
     private Point3D getPointOnViewPlane(Ray ray) {
         double t0 = _distance;
-        double t = t0 / (_vTo.dotProduct(ray.get_dir())); //cosinus on the angle
+        double t = t0 / (_vTo.dotProduct(ray.get_dir())); //cosinus of the angle
         return ray.getPoint(t);
     }
 

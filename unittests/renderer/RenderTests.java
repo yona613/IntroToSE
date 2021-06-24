@@ -50,7 +50,7 @@ public class RenderTests {
 				.build();
 
 		try {
-			render.renderImage(Options.DEFAULT, null);
+			render.renderImage(Options.DEFAULT, Options.DEFAULT);
 		} catch (ExecutionControl.NotImplementedException e) {
 			e.printStackTrace();
 		}
@@ -80,7 +80,7 @@ public class RenderTests {
 				.build();
 
 		try {
-			render.renderImage(Options.DEFAULT, null);
+			render.renderImage(Options.DEFAULT, Options.DEFAULT);
 		} catch (ExecutionControl.NotImplementedException e) {
 			e.printStackTrace();
 		}
@@ -111,7 +111,7 @@ public class RenderTests {
 				.build();
 
 		try {
-			render.renderImage(Options.DEFAULT, null);
+			render.renderImage(Options.DEFAULT, Options.DEFAULT);
 		} catch (ExecutionControl.NotImplementedException e) {
 			e.printStackTrace();
 		}

@@ -49,7 +49,7 @@ public class LightsTests {
                 .setRayTracer(new RayTracerBasic(scene1))
                 .build();
         try {
-            render.renderImage(Options.DEFAULT, null);
+            render.renderImage(Options.DEFAULT, Options.DEFAULT);
         } catch (ExecutionControl.NotImplementedException e) {
             e.printStackTrace();
         }
@@ -72,7 +72,7 @@ public class LightsTests {
                 .setRayTracer(new RayTracerBasic(scene1))
                 .build();
         try {
-            render.renderImage(Options.DEFAULT, null);
+            render.renderImage(Options.DEFAULT, Options.DEFAULT);
         } catch (ExecutionControl.NotImplementedException e) {
             e.printStackTrace();
         }
@@ -95,7 +95,7 @@ public class LightsTests {
                 .setRayTracer(new RayTracerBasic(scene1))
                 .build();
         try {
-            render.renderImage(Options.DEFAULT, null);
+            render.renderImage(Options.DEFAULT, Options.DEFAULT);
         } catch (ExecutionControl.NotImplementedException e) {
             e.printStackTrace();
         }
@@ -118,7 +118,7 @@ public class LightsTests {
                 .setRayTracer(new RayTracerBasic(scene2))
                 .build();
         try {
-            render.renderImage(Options.DEFAULT, null);
+            render.renderImage(Options.DEFAULT, Options.DEFAULT);
         } catch (ExecutionControl.NotImplementedException e) {
             e.printStackTrace();
         }

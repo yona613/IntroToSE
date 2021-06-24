@@ -168,10 +168,10 @@ public class RayTracerBasic extends RayTracerBase {
         double ks = point.geometry.getMaterial()._ks;
         Color color = Color.BLACK;
         //get color given by every light source
-        if (isSoftShadows){
+        if (isSoftShadows) {
             for (LightSource lightSource : _scene.lights) {
-                Color color1 = new Color(0,0,0);
-                for (Vector l : lightSource.getListL(point.point) ) {
+                Color color1 = new Color(0, 0, 0);
+                for (Vector l : lightSource.getListL(point.point)) {
                     double nl = alignZero(n.dotProduct(l));
                     if (nl * nv > 0) { // sign(nl) == sign(nv)
                         //get transparency of the object
@@ -187,8 +187,7 @@ public class RayTracerBasic extends RayTracerBase {
                 }
                 color = color.add(color1.reduce(lightSource.getListL(point.point).size()));
             }
-        }
-        else {
+        } else {
             for (LightSource lightSource : _scene.lights) {
                 Vector l = lightSource.getL(point.point);
                 double nl = alignZero(n.dotProduct(l));
@@ -205,31 +204,6 @@ public class RayTracerBasic extends RayTracerBase {
                 }
             }
         }
-
-        return color;
-    }
-
-
-    /**
-     * Calculate the color of the local effects of the light
-     *
-     * @param point point calculated
-     * @param ray ray entering to the point
-     * @return local color effect on the point
-     */
-    private Color calcLocalEffectsSoftShadows(GeoPoint point, Ray ray, double k) {
-        //direction vector of the ray
-        Vector v = ray.get_dir();
-        //normal to geometry of the point
-        Vector n = point.geometry.getNormal(point.point);
-        //check if normal to the geometry is orthogonal to ray
-        double nv = alignZero(n.dotProduct(v));
-        if (nv == 0) return Color.BLACK; //then no color
-        double nShininess = point.geometry.getMaterial()._nShininess;
-        double kd = point.geometry.getMaterial()._kd;
-        double ks = point.geometry.getMaterial()._ks;
-        Color color = Color.BLACK;
-        //get color given by every light source
 
         return color;
     }

@@ -187,17 +187,39 @@ public class Render {
          * Public function for getting next pixel number into secondary Pixel object.
          * The function prints also progress percentage in the console window.
          *
-         * @param target target secondary Pixel object to copy the row/column of the next pixel
+         * @param target target secondary Pixel object to copy the row/column of the
+         *               next pixel
          * @return true if the work still in progress, -1 if it's done
          */
         public boolean nextPixel(Pixel target) {
-            int percents = nextP(target);
-            if (percents > 0)
-                if (Render.this._print) System.out.printf("\r %02d%%", percents);
-            if (percents >= 0)
+            int percent = nextP(target);
+            if (Render.this._print && percent > 0)
+                synchronized (this) {
+                    notifyAll();
+                }
+            if (percent >= 0)
                 return true;
-            if (Render.this._print) System.out.printf("\r %02d%%", 100);
+            if (Render.this._print)
+                synchronized (this) {
+                    notifyAll();
+                }
             return false;
+        }
+
+        /**
+         * Debug print of progress percentage - must be run from the main thread
+         */
+        public void print() {
+            if (Render.this._print)
+                while (this._percents < 100)
+                    try {
+                        synchronized (this) {
+                            wait();
+                        }
+                        System.out.printf("\r %02d%%", this._percents);
+                        System.out.flush();
+                    } catch (Exception e) {
+                    }
         }
     }
 
@@ -213,13 +235,12 @@ public class Render {
         final int nY = _imageWriter.getNy();
 
         final Pixel thePixel = new Pixel(nY, nX);
-
         // Generate threads
         Thread[] threads = new Thread[_threads];
         for (int i = _threads - 1; i >= 0; --i) {
-            threads[i] = new Thread(()-> {
+            threads[i] = new Thread(() -> {
                 Pixel pixel = new Pixel();
-                while (thePixel.nextPixel(pixel)) {
+                while (thePixel.nextPixel(pixel)){
                     //construct ray for every pixel
                     Ray myRay = _camera.constructRayThroughPixel(
                             _imageWriter.getNx(),
@@ -260,15 +281,21 @@ public class Render {
             });
         }
         // Start threads
-        for (Thread thread : threads) thread.run();
+        for (Thread thread : threads)
+            thread.start();
 
-        // Wait for all threads to finish
+        // Print percents on the console
+        thePixel.print();
+
+        // Ensure all threads have finished
         for (Thread thread : threads)
             try {
                 thread.join();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
-        if (_print) System.out.printf("\r100%%\n");
+
+        if (_print)
+            System.out.print("\r100%");
     }
 
     /**

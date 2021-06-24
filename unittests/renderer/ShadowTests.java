@@ -42,7 +42,7 @@ public class ShadowTests {
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
 		try {
-			render.renderImage(Options.DEFAULT, null);
+			render.renderImage(Options.DEFAULT, Options.DEFAULT);
 		} catch (ExecutionControl.NotImplementedException e) {
 			e.printStackTrace();
 		}
@@ -73,7 +73,7 @@ public class ShadowTests {
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
 		try {
-			render.renderImage(Options.DEFAULT, null);
+			render.renderImage(Options.DEFAULT, Options.DEFAULT);
 		} catch (ExecutionControl.NotImplementedException e) {
 			e.printStackTrace();
 		}
@@ -105,7 +105,7 @@ public class ShadowTests {
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
 		try {
-			render.renderImage(Options.DEFAULT, null);
+			render.renderImage(Options.DEFAULT, Options.DEFAULT);
 		} catch (ExecutionControl.NotImplementedException e) {
 			e.printStackTrace();
 		}
@@ -136,7 +136,7 @@ public class ShadowTests {
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
 		try {
-			render.renderImage(Options.DEFAULT, null);
+			render.renderImage(Options.DEFAULT, Options.DEFAULT);
 		} catch (ExecutionControl.NotImplementedException e) {
 			e.printStackTrace();
 		}
@@ -167,7 +167,7 @@ public class ShadowTests {
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
 		try {
-			render.renderImage(Options.DEFAULT, null);
+			render.renderImage(Options.DEFAULT, Options.DEFAULT);
 		} catch (ExecutionControl.NotImplementedException e) {
 			e.printStackTrace();
 		}
@@ -202,7 +202,7 @@ public class ShadowTests {
 				.setRayTracer(new RayTracerBasic(scene))
 				.build();
 		try {
-			render.renderImage(Options.DEFAULT, null);
+			render.renderImage(Options.DEFAULT, Options.DEFAULT);
 		} catch (ExecutionControl.NotImplementedException e) {
 			e.printStackTrace();
 		}
